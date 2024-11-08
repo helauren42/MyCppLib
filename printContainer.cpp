@@ -96,6 +96,11 @@ void	printContainer(const std::set<T>& my_set, int mode = 0) {
 	}
 }
 
+template<typename T>
+void	printContainer(const T& container, int mode = 0) {
+	std::cout << "Container is not supported" << std::endl;
+}
+
 /**
  * Printing Containers
  */
@@ -147,5 +152,10 @@ int	main() {
 	std::cout << "Queue: ";
 	printContainer(my_queue);
 
+
+	//unordered map
+	std::unordered_map<int, std::string> my_unordered_map = {{1, "apple"}, {2, "banana"}, {3, "cherry"}};
+	std::cout << "Unordered Map: ";
+	printContainer(my_unordered_map);
 	return 0;
 }
