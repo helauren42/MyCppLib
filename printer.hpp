@@ -18,11 +18,11 @@ class Printer
 {
 public:
 
-	static void	printInt(const int& a) {std::cout << a << std::endl; };
-	static void	printInt(const double& a) {std::cout << a << std::endl; };
-	static void	printInt(const int& a) {std::cout << a << std::endl; };
-	static void	printchar(const char& a) {std::cout << a << std::endl; };
-	static void	printchar(const std::string& a) {std::cout << a << std::endl; };
+	static void	printScalar(const int& a) {std::cout << a << std::endl; };
+	static void	printScalar(const double& a) {std::cout << a << std::endl; };
+	static void	printScalar(const int& a) {std::cout << a << std::endl; };
+	static void	printScalar(const char& a) {std::cout << a << std::endl; };
+	static void	printScalar(const std::string& a) {std::cout << a << std::endl; };
 	/**
 	 * @brief Prints the contents of a std::vector.
 	 *
