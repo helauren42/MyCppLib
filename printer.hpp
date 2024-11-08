@@ -1,5 +1,5 @@
-#ifndef PRINTCONTAINER_HPP
-#define PRINTCONTAINER_HPP
+#ifndef PRINTER_HPP
+#define PRINTER_HPP
 
 #include <iostream>
 #include <variant>
@@ -11,24 +11,25 @@
 #include <stack>
 #include <deque>
 #include <set>
+#include <variant>
 
 using std::cerr;
 using std::cout;
 using std::endl;
 
-using std::string;
-using std::variant;
+// using std::string;
+// using std::variant;
 
-using std::deque;
-using std::forward_list;
-using std::list;
-using std::map;
-using std::queue;
-using std::set;
-using std::stack;
-using std::vector;
+// 	using std::deque;
+// 	using std::forward_list;
+// 	using std::list;
+// 	using std::map;
+// 	using std::queue;
+// 	using std::set;
+// 	using std::stack;
+// 	using std::vector;
 
-class Cont
+class Printer
 {
 	public:
 		/**
@@ -40,7 +41,7 @@ class Cont
 		 *             - mode != : uses "\n" as separator between elements.
 		 */
 		template <typename T>
-		void printContainer(const vector<T> &vec, int mode = 0);
+		void printContainer(const std::vector<T> &vec, int mode = 0);
 
 		/**
 		 * @brief Prints the contents of a std::list.
@@ -51,7 +52,7 @@ class Cont
 		 *             - mode != : uses "\n" as separator between elements.
 		 */
 		template <typename T>
-		void printContainer(const list<T> &my_list, int mode = 0);
+		void printContainer(const std::list<T> &my_list, int mode = 0);
 
 		/**
 		 * @brief Prints the contents of a std::forward_list.
@@ -62,7 +63,7 @@ class Cont
 		 *             - mode != : uses "\n" as separator between elements.
 		 */
 		template <typename T>
-		void printContainer(const forward_list<T> &my_list, int mode = 0);
+		void printContainer(const std::forward_list<T> &my_list, int mode = 0);
 
 		/**
 		 * @brief Prints the contents of a std::deque.
@@ -73,7 +74,7 @@ class Cont
 		 *             - mode != 0: uses "\n" as separator between elements.
 		 */
 		template <typename T>
-		void printContainer(const deque<T> &my_deque, int mode = 0);
+		void printContainer(const std::deque<T> &my_deque, int mode = 0);
 
 		/**
 		 * @brief Prints the contents of a std::stack, first element is the top
@@ -84,7 +85,7 @@ class Cont
 		 *             - mode != 0: uses "\n" as separator between elements.
 		 */
 		template <typename T>
-		void printContainer(stack<T> my_stack, int mode = 0);
+		void printContainer(std::stack<T> my_stack, int mode = 0);
 
 		/**
 		 * @brief Prints the contents of a std::queue, first element is the front.
@@ -95,7 +96,7 @@ class Cont
 		 *             - mode != 0: uses "\n" as separator between elements.
 		 */
 		template <typename T>
-		void printContainer(queue<T> my_queue, int mode = 0);
+		void printContainer(std::queue<T> my_queue, int mode = 0);
 
 		/**
 		 * @brief Prints the contents of a std::map in different formats based on mode.
@@ -108,7 +109,7 @@ class Cont
 		 *             - mode = 1: Prints in "key: value" format without labels, for a cleaner, compact look.
 		 */
 		template <typename K, typename V>
-		void printContainer(const map<K, V> &my_map, int mode = 0);
+		void printContainer(const std::map<K, V> &my_map, int mode = 0);
 
 		/**
 		 * @brief Prints the contents of a std::set.
@@ -119,7 +120,7 @@ class Cont
 		 *             - mode != 0: uses "\n" as separator between elements.
 		 */
 		template <typename T>
-		void printContainer(const set<T> &my_set, int mode = 0);
+		void printContainer(const std::set<T> &my_set, int mode = 0);
 };
 
 #endif
