@@ -96,17 +96,6 @@ void	printContainer(const std::set<T>& my_set, int mode = 0) {
 	}
 }
 
-// template <class T, class = void>
-// struct is_container : std::false_type {};
-
-// template<class T>
-// bool is_container(T) {
-// 	if(typeid(T) == )
-// }
-
-
-// template<
-
 /**
  * Printing Containers
  */
