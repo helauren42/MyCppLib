@@ -14,13 +14,15 @@
 #include <variant>
 #include <unordered_map>
 
-using std::cerr;
-using std::cout;
-using std::endl;
-
 class Printer
 {
 public:
+
+	static void	printInt(const int& a) {std::cout << a << std::endl; };
+	static void	printInt(const double& a) {std::cout << a << std::endl; };
+	static void	printInt(const int& a) {std::cout << a << std::endl; };
+	static void	printchar(const char& a) {std::cout << a << std::endl; };
+	static void	printchar(const std::string& a) {std::cout << a << std::endl; };
 	/**
 	 * @brief Prints the contents of a std::vector.
 	 *
