@@ -20,9 +20,15 @@ class Printer
 {
 public:
 
-	/**
-	 * @brief Prints any scalar type including c++ string objects
-	 */
+	template <typename T, typename... Args>
+	static void	all(T first, Args... args)
+	{
+		Printer::print(first);
+		if constexpr (sizeof...(args) > 0) {
+			all(args...);
+		}
+	}
+
 	static void print(const std::string &a)
 	{
 		std::cout << a << std::endl;

@@ -2,17 +2,6 @@
 
 
 
-	template <typename T, typename... Args>
-	void	all(T first, Args... args)
-	{
-		Printer::print(first);
-		if constexpr (sizeof...(args) > 0) {
-			all(args...);
-		}
-	}
-
-
-
 /**
  * Printing Containers
  */
@@ -90,8 +79,7 @@ int	main() {
 
 	std::cout << std::endl;
 
-	// all(c);
-	all(my_vector, my_list, my_fwd_list, my_set, my_map, my_deque, my_stack, my_queue);
+	Printer::all(my_vector, my_list, my_fwd_list, my_set, my_map, my_deque, my_stack, my_queue, a, b, c, d, e, f);
 
 	return 0;
 }
