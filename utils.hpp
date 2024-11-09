@@ -1,33 +1,42 @@
+#pragma once
+
 #include <type_traits>
-#include <iterator>
+#include <vector>
+#include <list>
+#include <forward_list>
+#include <set>
+#include <map>
+#include <deque>
+#include <stack>
+#include <queue>
+#include <string>
 
 class TypeChecker {
-	public :
-	template <typename T>
-	struct has_c_str {
-		private :
+public:
+    template<typename T>
+    static std::true_type isContainer(const std::vector<T>*) { return std::true_type{}; }
 
-			template <typename U>
-			static auto check(int) -> decltype(std::declval<U>().c_str(), std::true_type{});
-			template <typename U> 
-			static auto check(...) -> std::false_type{ return std::false_type{};};
-		public :
-			static constexpr bool value = decltype(check<T>(0))::value;
-	};
+    template<typename T>
+    static std::true_type isContainer(const std::list<T>*) { return std::true_type{}; }
 
-	template <typename T>
-	static auto isContainer(T* p) -> std::enable_if_t<!has_c_str<T>::value, decltype(std::begin(*p), std::end(*p), std::true_type{})> {
-		return std::true_type{};
-	}
+    template<typename T>
+    static std::true_type isContainer(const std::forward_list<T>*) { return std::true_type{}; }
 
-	template <typename T>
-	static auto isContainer(T* p) -> decltype(p->pop(), std::true_type{}) {
-		return std::true_type{};
-	}
+    template<typename T>
+    static std::true_type isContainer(const std::set<T>*) { return std::true_type{}; }
 
-	template <typename T>
-	static auto isContainer(T) -> std::false_type {
-		return std::false_type{};
-	}
+    template<typename K, typename V>
+    static std::true_type isContainer(const std::map<K, V>*) { return std::true_type{}; }
+
+    template<typename T>
+    static std::true_type isContainer(const std::deque<T>*) { return std::true_type{}; }
+
+    template<typename T>
+    static std::true_type isContainer(const std::stack<T>*) { return std::true_type{}; }
+
+    template<typename T>
+    static std::true_type isContainer(const std::queue<T>*) { return std::true_type{}; }
+
+    template<typename T>
+    static std::false_type isContainer(const T*) { return std::false_type{}; }
 };
-

@@ -23,8 +23,50 @@ public:
 	/**
 	 * @brief Prints any scalar type including c++ string objects
 	 */
-	template <typename T>
-	static void printScalar(const T &a)
+	static void print(const std::string &a)
+	{
+		std::cout << a << std::endl;
+	}
+	static void print(const char &a)
+	{
+		std::cout << a << std::endl;
+	}
+	static void print(const int &a)
+	{
+		std::cout << a << std::endl;
+	}
+	static void print(const double &a)
+	{
+		std::cout << a << std::endl;
+	}
+	static void print(const bool &a)
+	{
+		std::cout << a << std::endl;
+	}
+	static void print(const float &a)
+	{
+		std::cout << a << std::endl;
+	}
+	static void print(const long &a)
+	{
+		std::cout << a << std::endl;
+	}
+	static void print(const long long &a)
+	{
+		std::cout << a << std::endl;
+	}
+
+	static void print(const short &a)
+	{
+		std::cout << a << std::endl;
+	}
+
+	static void print(const unsigned int &a)
+	{
+		std::cout << a << std::endl;
+	}
+
+	static void print(const unsigned long &a)
 	{
 		std::cout << a << std::endl;
 	}
@@ -38,7 +80,7 @@ public:
 	 *             - mode != : uses "\n" as separator between elements.
 	 */
 	template <class T>
-	static void printContainer(const std::vector<T> &vec, int mode = 0)
+	static void print(const std::vector<T> &vec, int mode = 0)
 	{
 		std::string sep = (mode == 0) ? ", " : "\n";
 		for (const auto &value : vec)
@@ -58,7 +100,7 @@ public:
 	 *             - mode != : uses "\n" as separator between elements.
 	 */
 	template <class T>
-	static void printContainer(const std::list<T> &my_list, int mode = 0)
+	static void print(const std::list<T> &my_list, int mode = 0)
 	{
 		std::string sep = (mode == 0) ? ", " : "\n";
 		for (const auto &value : my_list)
@@ -79,7 +121,7 @@ public:
 	 *             - mode != : uses "\n" as separator between elements.
 	 */
 	template <class T>
-	static void printContainer(const std::forward_list<T> &my_list, int mode = 0)
+	static void print(const std::forward_list<T> &my_list, int mode = 0)
 	{
 		std::string sep = (mode == 0) ? ", " : "\n";
 		const auto end = my_list.end();
@@ -101,7 +143,7 @@ public:
 	 *             - mode != 0: uses "\n" as separator between elements.
 	 */
 	template <class T>
-	static void printContainer(const std::deque<T> &my_deque, int mode = 0)
+	static void print(const std::deque<T> &my_deque, int mode = 0)
 	{
 		std::string sep = (mode == 0) ? ", " : "\n";
 		auto end = my_deque.end();
@@ -123,7 +165,7 @@ public:
 	 *             - mode != 0: uses "\n" as separator between elements.
 	 */
 	template <class T>
-	static void printContainer(std::stack<T> my_stack, int mode = 0)
+	static void print(std::stack<T> my_stack, int mode = 0)
 	{
 		std::string sep = (mode == 0) ? ", " : "\n";
 		while (!my_stack.empty())
@@ -145,7 +187,7 @@ public:
 	 *             - mode != 0: uses "\n" as separator between elements.
 	 */
 	template <class T>
-	static void printContainer(std::queue<T> my_queue, int mode = 0)
+	static void print(std::queue<T> my_queue, int mode = 0)
 	{
 		std::string sep = (mode == 0) ? ", " : "\n";
 		while (!my_queue.empty())
@@ -169,7 +211,7 @@ public:
 	 *             - mode = 1: Prints in "key: value" format without labels, for a cleaner, compact look.
 	 */
 	template <class K, class V>
-	static void printContainer(const std::map<K, V> &my_map, int mode = 0)
+	static void print(const std::map<K, V> &my_map, int mode = 0)
 	{
 		if (mode == 0)
 		{
@@ -196,7 +238,7 @@ public:
 	 *             - mode != 0: uses "\n" as separator between elements.
 	 */
 	template <class T>
-	static void printContainer(const std::set<T> &my_set, int mode = 0)
+	static void print(const std::set<T> &my_set, int mode = 0)
 	{
 		std::string sep = (mode == 0) ? ", " : "\n";
 		const auto end = my_set.end();
