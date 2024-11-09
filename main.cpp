@@ -1,85 +1,83 @@
-#include "printer.hpp"
+// #include "printer.hpp"
 
+// /**
+//  * Testing Printing
+//  */
 
+// int	main() {
+// 	// Vector
+// 	std::vector<int> my_vector = {1, 2, 3, 4, 5};
+// 	std::cout << "Vector: ";
+// 	Printer::print(my_vector, 1);
 
-/**
- * Printing Containers
- */
+// 	// List
+// 	std::list<int> my_list = {10, 20, 30, 40, 50};
+// 	std::cout << "List: ";
+// 	Printer::print(my_list);
 
-int	main() {
-	// Vector 
-	std::vector<int> my_vector = {1, 2, 3, 4, 5};
-	std::cout << "Vector: ";
-	Printer::print(my_vector, 1);
+// 	// Forward List
+// 	std::forward_list<int> my_fwd_list = {100, 200, 300};
+// 	std::cout << "Forward List: ";
+// 	Printer::print(my_fwd_list);
 
-	// List 
-	std::list<int> my_list = {10, 20, 30, 40, 50};
-	std::cout << "List: ";
-	Printer::print(my_list);
+// 	// Set
+// 	std::set<int> my_set = {5, 1, 3, 2, 4};
+// 	std::cout << "Set: ";
+// 	Printer::print(my_set);
 
-	// Forward List 
-	std::forward_list<int> my_fwd_list = {100, 200, 300};
-	std::cout << "Forward List: ";
-	Printer::print(my_fwd_list);
+// 	// Map
+// 	std::map<int, std::string> my_map = {{1, "apple"}, {2, "banana"}, {3, "cherry"}};
+// 	std::cout << "Map: ";
+// 	Printer::print(my_map, 1);
 
-	// Set 
-	std::set<int> my_set = {5, 1, 3, 2, 4};
-	std::cout << "Set: ";
-	Printer::print(my_set);
+// 	// Deque
+// 	std::deque<int> my_deque = {7, 8, 9, 10};
+// 	std::cout << "Deque: ";
+// 	Printer::print(my_deque);
 
-	// Map 
-	std::map<int, std::string> my_map = {{1, "apple"}, {2, "banana"}, {3, "cherry"}};
-	std::cout << "Map: ";
-	Printer::print(my_map, 1);
+// 	// Stack
+// 	std::stack<int> my_stack;
+// 	my_stack.push(1);
+// 	my_stack.push(2);
+// 	my_stack.push(3);
+// 	std::cout << "Stack: ";
+// 	Printer::print(my_stack);
 
-	// Deque
-	std::deque<int> my_deque = {7, 8, 9, 10};
-	std::cout << "Deque: ";
-	Printer::print(my_deque);
+// 	// Queue
+// 	std::queue<int> my_queue;
+// 	my_queue.push(10);
+// 	my_queue.push(20);
+// 	my_queue.push(30);
+// 	std::cout << "Queue: ";
+// 	Printer::print(my_queue);
 
-	// Stack 
-	std::stack<int> my_stack;
-	my_stack.push(1);
-	my_stack.push(2);
-	my_stack.push(3);
-	std::cout << "Stack: ";
-	Printer::print(my_stack);
+// 	char a = 'a';
+// 	std::cout << "Char: ";
+// 	Printer::print(a);
 
-	// Queue
-	std::queue<int> my_queue;
-	my_queue.push(10);
-	my_queue.push(20);
-	my_queue.push(30);
-	std::cout << "Queue: ";
-	Printer::print(my_queue);
+// 	int b = 10;
+// 	std::cout << "Int: ";
+// 	Printer::print(b);
 
-	char a = 'a';
-	std::cout << "Char: ";
-	Printer::print(a);
+// 	std::string c = "Hello";
+// 	std::cout << "String: ";
+// 	Printer::print(c);
 
-	int b = 10;
-	std::cout << "Int: ";
-	Printer::print(b);
+// 	double d = 3.14;
+// 	std::cout << "Double: ";
+// 	Printer::print(d);
 
-	std::string c = "Hello";
-	std::cout << "String: ";
-	Printer::print(c);
+// 	float e = 3.14f;
+// 	std::cout << "Float: ";
+// 	Printer::print(e);
 
-	double d = 3.14;
-	std::cout << "Double: ";
-	Printer::print(d);
+// 	bool f = true;
+// 	std::cout << "Bool: ";
+// 	Printer::print(f);
 
-	float e = 3.14f;
-	std::cout << "Float: ";
-	Printer::print(e);
+// 	std::cout << std::endl;
 
-	bool f = true;
-	std::cout << "Bool: ";
-	Printer::print(f);
+// 	Printer::all(my_vector, my_list, my_fwd_list, my_set, my_map, my_deque, my_stack, my_queue, a, b, c, d, e, f);
 
-	std::cout << std::endl;
-
-	Printer::all(my_vector, my_list, my_fwd_list, my_set, my_map, my_deque, my_stack, my_queue, a, b, c, d, e, f);
-
-	return 0;
-}
+// 	return 0;
+// }
