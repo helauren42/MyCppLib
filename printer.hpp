@@ -13,16 +13,20 @@
 #include <set>
 #include <variant>
 #include <unordered_map>
+#include <type_traits>
 
 class Printer
 {
 public:
+	/**
+	 * @brief Prints any scalar type including c++ string objects
+	 */
+	template <typename T>
+	static void printScalar(const T &a)
+	{
+		std::cout << a << std::endl;
+	}
 
-	static void	printScalar(const int& a) {std::cout << a << std::endl; };
-	static void	printScalar(const double& a) {std::cout << a << std::endl; };
-	static void	printScalar(const int& a) {std::cout << a << std::endl; };
-	static void	printScalar(const char& a) {std::cout << a << std::endl; };
-	static void	printScalar(const std::string& a) {std::cout << a << std::endl; };
 	/**
 	 * @brief Prints the contents of a std::vector.
 	 *
@@ -200,6 +204,34 @@ public:
 			if (std::next(it) != end)
 				std::cout << sep;
 		}
+	}
+
+	template<typename T>
+	struct has_begin_end<T> ->
+
+	/**
+	 * @brief Prints the contents of a any container with either begin() and end() methods or pop().
+	 *
+	 * @param container The container to print.
+	 * @param mode Determines the print format:
+	 *             - mode = 0: uses ", " as separator between elements.
+	 *             - mode != 0: uses "\n" as separator between elements.
+	 */
+	template <typename Container>
+	static auto printContainer(const Container &container, int mode = 0) 
+	-> decltype(has_begin_end<>)
+	{
+		std::ostringstream oss;
+	
+		std::string sep = (mode == 0) ? ", " : " \n";
+		const auto end =container.end();
+		for (auto it =container.begin(); it !=container.end(); it++)
+		{
+			std::cout << *it;
+			if (std::next(it) != end)
+				std::cout << sep;
+		}
+		std::cout << std::endl;
 	}
 };
 
