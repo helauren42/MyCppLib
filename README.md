@@ -5,7 +5,10 @@ This project was started recently and is still far from complete.
 This is a custom cpp library to improve my workflow on personal and professional projects.
 Namespace and using keyword have been omitted to facilitate integration to projects.
 
-## Features
+- A more convenient way of printing than std::cout
+- More utility functions for your workflow
+
+## Features / How to use
 
 ### printer.hpp
 
@@ -14,3 +17,7 @@ Namespace and using keyword have been omitted to facilitate integration to proje
 ### utils.hpp
 
   TypeChecker::isContainer(), will check if the parameter given is a container or not, returning true or false.
+
+
+
+PS: Feel free to provide suggestions
