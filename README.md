@@ -1,9 +1,9 @@
 # MyCppLib
 
-This project was started recentyl and is still far from complete.
+This project was started recently and is still far from complete.
 
 This is a custom cpp library to improve my workflow on personal and professional projects.
-Namespace and using keyword have been ommited to facilitate integration to projects.
+Namespace and using keyword have been omitted to facilitate integration to projects.
 
 ## Features
 
