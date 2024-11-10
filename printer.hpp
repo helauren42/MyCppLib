@@ -37,6 +37,10 @@ public:
 	{
 		std::cout << a << std::endl;
 	}
+	static void print(const char *s)
+	{
+		std::cout << s << std::endl;
+	}
 	static void print(const int &a)
 	{
 		std::cout << a << std::endl;
