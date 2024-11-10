@@ -5,10 +5,12 @@
  */
 
 int	main() {
+
+	std::cout << "CONTAINERS:\n\n";
 	// Vector
 	std::vector<int> my_vector = {1, 2, 3, 4, 5};
 	std::cout << "Vector: ";
-	Printer::print(my_vector, 1);
+	Printer::print(my_vector);
 
 	// List
 	std::list<int> my_list = {10, 20, 30, 40, 50};
@@ -28,7 +30,7 @@ int	main() {
 	// Map
 	std::map<int, std::string> my_map = {{1, "apple"}, {2, "banana"}, {3, "cherry"}};
 	std::cout << "Map: ";
-	Printer::print(my_map, 1);
+	Printer::print(my_map);
 
 	// Deque
 	std::deque<int> my_deque = {7, 8, 9, 10};
@@ -50,6 +52,9 @@ int	main() {
 	my_queue.push(30);
 	std::cout << "Queue: ";
 	Printer::print(my_queue);
+
+	std::cout << std::endl;
+	std::cout << "Scalar Types:\n\n";
 
 	char a = 'a';
 	std::cout << "Char: ";
@@ -77,7 +82,30 @@ int	main() {
 
 	std::cout << std::endl;
 
+	std::cout << "All in one function call:\n";
+
 	Printer::all(my_vector, my_list, my_fwd_list, my_set, my_map, my_deque, my_stack, my_queue, a, b, c, d, e, f);
+
+	std::cout << std::endl;
+
+	std::cout << "Nested container:\n\n";
+	std::vector<std::vector<int>> vectorVectorInt;
+	vectorVectorInt.push_back(my_vector);
+	std::vector<int> aa = {5, 9, 5, 9};
+	vectorVectorInt.push_back(aa);
+	std::vector<int> bb = {9, 9, 9, 9};
+	vectorVectorInt.push_back(bb);
+	std::cout << "all vectorVectorInt:\n";
+	Printer::all(vectorVectorInt);
+
+	std::cout << "print vectorVectorInt:\n";
+	Printer::print(vectorVectorInt);
+	std::cout << std::endl;
+
+
+	int arr[4] = {1, 2, 3, 4};
+	// Printer::all(arr);
+	std::cout << arr << std::endl;
 
 	return 0;
 }
