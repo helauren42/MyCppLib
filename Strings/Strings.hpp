@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include "../Conversions/Conversions.hpp"
 
 using namespace std;
 
@@ -49,9 +50,17 @@ std::string strip(const std::string& str, const std::string& remove = WHITE_SPAC
 	return ret;
 }
 
-
-
 std::string replaceAll(const std::string& str, const std::string& from, const std::string& to) {
-	
+	std::string ret = str;
+	size_t start_pos = 0;
+
+	while(true) {
+		start_pos = ret.find(from, start_pos);
+		if(start_pos == std::string::npos)
+			break;
+		ret = ret.replace(start_pos, from.length(), to);
+		start_pos += to.length();
+	}
+	return(ret);
 }
 

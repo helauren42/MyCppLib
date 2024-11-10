@@ -16,4 +16,12 @@ int main(void) {
 	str3 = strip(str3, "dog");
 	Printer::all("strip 3: ", str3);
 
+	std::string og = "what day ewre day awq day!";
+	std::string from = "day";
+	std::string to = "night";
+
+	std::string ng = replaceAll(og, from, to);
+
+	Printer::all(og);
+	Printer::all(ng);
 }
