@@ -50,18 +50,14 @@ class Printer {
 			const auto end = container.end();
 
 			std::string new_sep = sep;
-			bool newLine = true;
+			bool newLine = false;
 
 			for (auto it = container.begin(); it != container.end(); it++)
 			{
-				if(TypeChecker::isContainer(*it)) {
-					new_sep = "";
-					newLine = false;
-				}
-				if (std::next(it) != end)
-					Printer::print(*it, sep, newLine);
-				else
+				if (std::next(it) == end && !TypeChecker::isContainer(*it))
 					Printer::print(*it, "", newLine);
+				else
+					Printer::print(*it, sep, newLine);
 
 				// to output the separator in case of nested containers
 				if(TypeChecker::isContainer(*it) && std::next(it) != end) {
@@ -113,68 +109,92 @@ class Printer {
 			}
 		}
 
-		static void print(const std::string &a, const std::string& sep = "\n", const bool& newLine = true)
+		static void print(const std::string &a, const std::string& sep = "", const bool& newLine = true)
 		{
 			std::cout << a;
-			Printer::printSep(sep);
+			std::cout << sep;
+			if(newLine == true)
+				std::cout << std::endl;
 		}
-		static void print(const char &a, const std::string& sep = "\n", const bool& newLine = true)
+		static void print(const char &a, const std::string& sep = "", const bool& newLine = true)
 		{
 			std::cout << a;
-			Printer::printSep(sep);
+			std::cout << sep;
+			if(newLine == true)
+				std::cout << std::endl;
 		}
-		static void print(const char *s, const std::string& sep = "\n", const bool& newLine = true)
+		static void print(const char *s, const std::string& sep = "", const bool& newLine = true)
 		{
 			std::cout << s;
-			Printer::printSep(sep);
+			std::cout << sep;
+			if(newLine == true)
+				std::cout << std::endl;
 		}
-		static void print(const int &a, const std::string& sep = "\n", const bool& newLine = true)
+		static void print(const int &a, const std::string& sep = "", const bool& newLine = true)
 		{
 			std::cout << a;
-			Printer::printSep(sep);
+			std::cout << sep;
+			if(newLine == true)
+				std::cout << std::endl;
 		}
-		static void print(const double &a, const std::string& sep = "\n", const bool& newLine = true)
+		static void print(const double &a, const std::string& sep = "", const bool& newLine = true)
 		{
 			std::cout << a;
-			Printer::printSep(sep);
+			std::cout << sep;
+			if(newLine == true)
+				std::cout << std::endl;
 		}
-		static void print(const bool &a, const std::string& sep = "\n", const bool& newLine = true)
+		static void print(const bool &a, const std::string& sep = "", const bool& newLine = true)
 		{
 			std::cout << a;
-			Printer::printSep(sep);
+			std::cout << sep;
+			if(newLine == true)
+				std::cout << std::endl;
 		}
-		static void print(const float &a, const std::string& sep = "\n", const bool& newLine = true)
+		static void print(const float &a, const std::string& sep = "", const bool& newLine = true)
 		{
 			std::cout << a;
-			Printer::printSep(sep);
+			std::cout << sep;
+			if(newLine == true)
+				std::cout << std::endl;
 		}
-		static void print(const long &a, const std::string& sep = "\n", const bool& newLine = true)
+		static void print(const long &a, const std::string& sep = "", const bool& newLine = true)
 		{
 			std::cout << a;
-			Printer::printSep(sep);
+			std::cout << sep;
+			if(newLine == true)
+				std::cout << std::endl;
 		}
-		static void print(const long long &a, const std::string& sep = "\n", const bool& newLine = true)
+		static void print(const long long &a, const std::string& sep = "", const bool& newLine = true)
 		{
 			std::cout << a;
-			Printer::printSep(sep);
+			std::cout << sep;
+			if(newLine == true)
+				std::cout << std::endl;
 		}
 
-		static void print(const short &a, const std::string& sep = "\n", const bool& newLine = true)
+		static void print(const short &a, const std::string& sep = "", const bool& newLine = true)
 		{
 			std::cout << a;
-			Printer::printSep(sep);
+			std::cout << sep;
+			if(newLine == true)
+				std::cout << std::endl;
 		}
 
-		static void print(const unsigned int &a, const std::string& sep = "\n", const bool& newLine = true)
+		static void print(const unsigned int &a, const std::string& sep = "", const bool& newLine = true)
 		{
 			std::cout << a;
-			Printer::printSep(sep);
+			std::cout << sep;
+			if(newLine == true)
+				std::cout << std::endl;
 		}
 
-		static void print(const unsigned long &a, const std::string& sep = "\n", const bool& newLine = true)
+		static void print(const unsigned long &a, const std::string& sep = "", const bool& newLine = true)
 		{
 			std::cout << a;
-			Printer::printSep(sep);
+			std::cout << sep;
+			if(newLine == true)
+				std::cout << std::endl;
 		}
 
 		/**
@@ -295,14 +315,20 @@ class Printer {
 		 */
     template <class K, class V>
     static void print(const std::map<K, V> &my_map, const std::string& sep = ", ", const bool& newLine = true) {
-        Printer::printContainerDelimiters(MAP, 0, newLine);  // Print opening delimiter
+        
+		Printer::printContainerDelimiters(MAP, 0, newLine);  // Print opening delimiter
 
         bool first = true;
         for (const auto &pair : my_map) {
             if (!first) {
-                std::cout << sep;
+				Printer::printSep(sep);
             }
-            std::cout << pair.first << ": " << pair.second;
+			Printer::print(pair.first, "", false);
+			Printer::print(": ", "", false);
+			if(TypeChecker::isContainer(pair.second))
+				Printer::print(pair.second, sep, false);
+			else
+				Printer::print(pair.second, "", false);
             first = false;
         }
 

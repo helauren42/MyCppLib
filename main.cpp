@@ -102,6 +102,13 @@ int	main() {
 	Printer::print(vectorVectorInt);
 	std::cout << std::endl;
 
+	std::pair<std::string, std::vector<int>> p1("vector1", aa);
+	std::pair<std::string, std::vector<int>> p2("vector2", bb);
+	std::map<std::string, std::vector<int>> my_map2;
+	my_map2.insert(p1);
+	my_map2.insert(p2);
+	Printer::all("all map <string vector>:", my_map2);
+
 
 	int arr[4] = {1, 2, 3, 4};
 	// Printer::all(arr);
