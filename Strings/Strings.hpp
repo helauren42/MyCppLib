@@ -58,9 +58,12 @@ std::string replaceAll(const std::string& str, const std::string& from, const st
 		start_pos = ret.find(from, start_pos);
 		if(start_pos == std::string::npos)
 			break;
-		ret = ret.replace(start_pos, from.length(), to);
+		ret.replace(start_pos, from.length(), to);
 		start_pos += to.length();
 	}
 	return(ret);
 }
 
+std::string removeAll(const std::string& str, const std::string& remove) {
+	return replaceAll(str, remove, "");
+}

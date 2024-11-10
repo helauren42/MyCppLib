@@ -24,4 +24,6 @@ int main(void) {
 
 	Printer::all(og);
 	Printer::all(ng);
+	std::string removed = removeAll(ng, "night");
+	Printer::all(removed);
 }

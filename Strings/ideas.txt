@@ -19,22 +19,11 @@ std::string removeAll(const std::string& str, const std::string& substr)
 
 Removes all occurrences of substr from the string.
 
-std::string removeLeadingZeros(const std::string& str)
+-- std::string removeLeadingZeros(const std::string& str)
 
 Removes leading zeros from a numeric string.
 
 2. String Search and Find
-bool contains(const std::string& str, const std::string& substr)
-
-Checks if substr is present in str.
-
-int findFirstOf(const std::string& str, const std::string& chars)
-
-Returns the index of the first occurrence of any character in chars.
-
-int findLastOf(const std::string& str, const std::string& chars)
-
-Returns the index of the last occurrence of any character in chars.
 
 std::vector<int> findAll(const std::string& str, const std::string& substr)
 

@@ -1,7 +1,7 @@
 #ifndef PRINTER_HPP
 #define PRINTER_HPP
 
-#include "Utils.hpp"
+#include "../Checker/Checker.hpp"
 
 #include <string>
 #include <iostream>
