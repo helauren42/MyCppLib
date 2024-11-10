@@ -1,0 +1,779 @@
+1. Basic String Operations
+std::string trim(const std::string& str)
+
+Removes leading and trailing whitespace from the string.
+
+std::string trimLeft(const std::string& str)
+
+Removes leading whitespace from the string.
+
+std::string trimRight(const std::string& str)
+
+Removes trailing whitespace from the string.
+
+std::string replaceAll(const std::string& str, const std::string& from, const std::string& to)
+
+Replaces all occurrences of from with to in the string.
+
+std::string removeAll(const std::string& str, const std::string& substr)
+
+Removes all occurrences of substr from the string.
+
+std::string removeLeadingZeros(const std::string& str)
+
+Removes leading zeros from a numeric string.
+
+2. String Search and Find
+bool contains(const std::string& str, const std::string& substr)
+
+Checks if substr is present in str.
+
+int findFirstOf(const std::string& str, const std::string& chars)
+
+Returns the index of the first occurrence of any character in chars.
+
+int findLastOf(const std::string& str, const std::string& chars)
+
+Returns the index of the last occurrence of any character in chars.
+
+std::vector<int> findAll(const std::string& str, const std::string& substr)
+
+Returns a vector of all starting indices of substr in str.
+
+3. String Splitting and Joining
+std::vector<std::string> split(const std::string& str, const std::string& delimiter)
+
+Splits the string by the given delimiter.
+
+std::string join(const std::vector<std::string>& parts, const std::string& delimiter)
+
+Joins the vector of strings into a single string with the given delimiter.
+
+4. Advanced String Manipulations
+std::string reverse(const std::string& str)
+
+Reverses the string.
+
+std::string removeNonAlphanumeric(const std::string& str)
+
+Removes all non-alphanumeric characters from the string.
+
+std::string removeWhitespace(const std::string& str)
+
+Removes all whitespace characters from the string.
+
+std::string padLeft(const std::string& str, size_t length, char paddingChar = ' ')
+
+Pads the string on the left to the specified length with the given character.
+
+std::string padRight(const std::string& str, size_t length, char paddingChar = ' ')
+
+Pads the string on the right to the specified length with the given character.
+
+std::string truncate(const std::string& str, size_t length, const std::string& ellipsis = "...")
+
+Truncates the string to the specified length, adding an ellipsis if necessary.
+
+5. String Validation
+bool isNumeric(const std::string& str)
+
+Checks if the string is a valid numeric value.
+
+bool isAlpha(const std::string& str)
+
+Checks if the string contains only alphabetic characters.
+
+bool isAlphaNumeric(const std::string& str)
+
+Checks if the string contains only alphanumeric characters.
+
+bool isEmail(const std::string& str)
+
+Checks if the string is a valid email address.
+
+bool isURL(const std::string& str)
+
+Checks if the string is a valid URL.
+
+6. String Formatting
+std::string format(const std::string& format, const std::vector<std::string>& args)
+
+Formats a string using a format string and a vector of arguments.
+
+std::string toTitleCase(const std::string& str)
+
+Converts the string to title case (capitalizes the first letter of each word).
+
+7. String Encoding and Decoding
+std::string base64Encode(const std::string& str)
+
+Encodes the string to Base64.
+
+std::string base64Decode(const std::string& str)
+
+Decodes the string from Base64.
+
+std::string urlEncode(const std::string& str)
+
+Encodes the string for use in a URL.
+
+std::string urlDecode(const std::string& str)
+
+Decodes the string from a URL.
+
+8. String Case Conversion
+std::string toCamelCase(const std::string& str)
+
+Converts the string to camelCase.
+
+std::string toSnakeCase(const std::string& str)
+
+Converts the string to snake_case.
+
+std::string toKebabCase(const std::string& str)
+
+Converts the string to kebab-case.
+
+9. String Comparison
+bool equalsIgnoreCase(const std::string& str1, const std::string& str2)
+
+Compares two strings ignoring case.
+
+bool startsWith(const std::string& str, const std::string& prefix)
+
+Checks if the string starts with the given prefix.
+
+bool endsWith(const std::string& str, const std::string& suffix)
+
+Checks if the string ends with the given suffix.
+
+10. String Hashing
+std::string md5(const std::string& str)
+
+Computes the MD5 hash of the string.
+
+std::string sha1(const std::string& str)
+
+Computes the SHA-1 hash of the string.
+
+std::string sha256(const std::string& str)
+
+Computes the SHA-256 hash of the string.
+
+11. String Transformation
+std::string removeDiacritics(const std::string& str)
+
+Removes diacritical marks from the string.
+
+std::string normalize(const std::string& str)
+
+Normalizes the string (e.g., NFC, NFD, NFKC, NFKD).
+
+12. String Tokenization
+std::vector<std::string> tokenize(const std::string& str, const std::string& delimiters)
+
+Tokenizes the string based on the given delimiters.
+
+13. String Compression
+std::string compress(const std::string& str)
+
+Compresses the string using a compression algorithm (e.g., gzip).
+
+std::string decompress(const std::string& str)
+
+Decompresses the string using a compression algorithm (e.g., gzip).
+
+14. String Escaping
+std::string escapeHtml(const std::string& str)
+
+Escapes HTML special characters in the string.
+
+std::string unescapeHtml(const std::string& str)
+
+Unescapes HTML special characters in the string.
+
+15. String Randomization
+std::string randomString(size_t length, const std::string& charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
+Generates a random string of the specified length using the given character set.
+
+16. String Conversion
+std::string toString(int value)
+
+Converts an integer to a string.
+
+std::string toString(double value)
+
+Converts a double to a string.
+
+int toInt(const std::string& str)
+
+Converts a string to an integer.
+
+double toDouble(const std::string& str)
+
+Converts a string to a double.
+
+17. String Utility Functions
+size_t countOccurrences(const std::string& str, const std::string& substr)
+
+Counts the number of occurrences of substr in str.
+
+std::string repeat(const std::string& str, size_t times)
+
+Repeats the string times times.
+
+18. String Case Insensitive Comparison
+bool caseInsensitiveCompare(const std::string& str1, const std::string& str2)
+
+Compares two strings in a case-insensitive manner.
+
+19. String Normalization
+std::string normalizeWhitespace(const std::string& str)
+
+Normalizes multiple consecutive whitespace characters into a single space.
+
+20. String Encoding Detection
+std::string detectEncoding(const std::string& str)
+
+Detects the encoding of the string (e.g., UTF-8, ISO-8859-1).
+
+21. String Case Conversion (Advanced)
+std::string toPascalCase(const std::string& str)
+
+Converts the string to PascalCase.
+
+std::string toTitleCase(const std::string& str)
+
+Converts the string to Title Case.
+
+22. String Validation (Advanced)
+bool isPalindrome(const std::string& str)
+
+Checks if the string is a palindrome.
+
+bool isAnagram(const std::string& str1, const std::string& str2)
+
+Checks if two strings are anagrams of each other.
+
+23. String Hashing (Advanced)
+std::string sha512(const std::string& str)
+
+Computes the SHA-512 hash of the string.
+
+24. String Transformation (Advanced)
+std::string transliterate(const std::string& str)
+
+Transliterates the string (e.g., converting Cyrillic to Latin).
+
+25. String Tokenization (Advanced)
+std::vector<std::string> tokenizeWithQuotes(const std::string& str, const std::string& delimiters)
+
+Tokenizes the string based on the given delimiters, respecting quoted substrings.
+
+26. String Compression (Advanced)
+std::string compressWithLzma(const std::string& str)
+
+Compresses the string using the LZMA algorithm.
+
+std::string decompressWithLzma(const std::string& str)
+
+Decompresses the string using the LZMA algorithm.
+
+27. String Escaping (Advanced)
+std::string escapeJson(const std::string& str)
+
+Escapes JSON special characters in the string.
+
+std::string unescapeJson(const std::string& str)
+
+Unescapes JSON special characters in the string.
+
+28. String Randomization (Advanced)
+std::string randomUuid()
+
+Generates a random UUID (Universally Unique Identifier).
+
+29. String Conversion (Advanced)
+std::string toString(const std::vector<int>& values)
+
+Converts a vector of integers to a string.
+
+std::vector<int> toVectorOfInts(const std::string& str)
+
+Converts a string to a vector of integers.
+
+30. String Utility Functions (Advanced)
+std::string longestCommonSubstring(const std::string& str1, const std::string& str2)
+
+Finds the longest common substring between two strings.
+
+std::string longestPalindromicSubstring(const std::string& str)
+
+Finds the longest palindromic substring in the string.
+
+31. String Case Insensitive Comparison (Advanced)
+bool caseInsensitiveEquals(const std::string& str1, const std::string& str2)
+
+Compares two strings in a case-insensitive manner, returning true if they are equal.
+
+32. String Normalization (Advanced)
+std::string normalizeNewlines(const std::string& str)
+
+Normalizes newline characters to a consistent format (e.g., \n).
+
+33. String Encoding Detection (Advanced)
+std::string detectAndConvertEncoding(const std::string& str)
+
+Detects the encoding of the string and converts it to a standard encoding (e.g., UTF-8).
+
+34. String Case Conversion (Advanced)
+std::string toSentenceCase(const std::string& str)
+
+Converts the string to sentence case (capitalizes the first letter of the first word).
+
+35. String Validation (Advanced)
+bool isValidJson(const std::string& str)
+
+Checks if the string is a valid JSON.
+
+bool isValidXml(const std::string& str)
+
+Checks if the string is a valid XML.
+
+36. String Hashing (Advanced)
+std::string sha3(const std::string& str)
+
+Computes the SHA-3 hash of the string.
+
+37. String Transformation (Advanced)
+std::string transliterateWithMap(const std::string& str, const std::map<char, char>& transliterationMap)
+
+Transliterates the string using a custom transliteration map.
+
+38. String Tokenization (Advanced)
+std::vector<std::string> tokenizeWithEscapes(const std::string& str, const std::string& delimiters, const std::string& escapeChars)
+
+Tokenizes the string based on the given delimiters, respecting escaped characters.
+
+39. String Compression (Advanced)
+std::string compressWithBrotli(const std::string& str)
+
+Compresses the string using the Brotli algorithm.
+
+std::string decompressWithBrotli(const std::string& str)
+
+Decompresses the string using the Brotli algorithm.
+
+40. String Escaping (Advanced)
+std::string escapeSql(const std::string& str)
+
+Escapes SQL special characters in the string.
+
+std::string unescapeSql(const std::string& str)
+
+Unescapes SQL special characters in the string.
+
+41. String Randomization (Advanced)
+std::string randomPassword(size_t length, const std::string& charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()")
+
+Generates a random password of the specified length using the given character set.
+
+42. String Conversion (Advanced)
+std::string toString(const std::map<std::string, std::string>& map)
+
+Converts a map of strings to a string.
+
+std::map<std::string, std::string> toMapOfStrings(const std::string& str)
+
+Converts a string to a map of strings.
+
+43. String Utility Functions (Advanced)
+std::string longestIncreasingSubstring(const std::string& str)
+
+Finds the longest increasing substring in the string.
+
+std::string longestDecreasingSubstring(const std::string& str)
+
+Finds the longest decreasing substring in the string.
+
+44. String Case Insensitive Comparison (Advanced)
+bool caseInsensitiveStartsWith(const std::string& str, const std::string& prefix)
+
+Checks if the string starts with the given prefix in a case-insensitive manner.
+
+bool caseInsensitiveEndsWith(const std::string& str, const std::string& suffix)
+
+Checks if the string ends with the given suffix in a case-insensitive manner.
+
+45. String Normalization (Advanced)
+std::string normalizeTabs(const std::string& str)
+
+Normalizes tab characters to a consistent format (e.g., 4 spaces).
+
+46. String Encoding Detection (Advanced)
+std::string detectAndConvertToUtf8(const std::string& str)
+
+Detects the encoding of the string and converts it to UTF-8.
+
+47. String Case Conversion (Advanced)
+std::string toToggleCase(const std::string& str)
+
+Converts the string to toggle case (alternating upper and lower case).
+
+48. String Validation (Advanced)
+bool isValidRegex(const std::string& str)
+
+Checks if the string is a valid regular expression.
+
+bool isValidDateTime(const std::string& str)
+
+Checks if the string is a valid date-time format.
+
+49. String Hashing (Advanced)
+std::string blake2(const std::string& str)
+
+Computes the BLAKE2 hash of the string.
+
+50. String Transformation (Advanced)
+std::string transliterateWithRules(const std::string& str, const std::vector<std::pair<std::string, std::string>>& rules)
+
+Transliterates the string using a set of custom rules.
+
+51. String Tokenization (Advanced)
+std::vector<std::string> tokenizeWithDelimiters(const std::string& str, const std::vector<std::string>& delimiters)
+
+Tokenizes the string based on multiple delimiters.
+
+52. String Compression (Advanced)
+std::string compressWithZstd(const std::string& str)
+
+Compresses the string using the Zstandard algorithm.
+
+std::string decompressWithZstd(const std::string& str)
+
+Decompresses the string using the Zstandard algorithm.
+
+53. String Escaping (Advanced)
+std::string escapeCsv(const std::string& str)
+
+Escapes CSV special characters in the string.
+
+std::string unescapeCsv(const std::string& str)
+
+Unescapes CSV special characters in the string.
+
+54. String Randomization (Advanced)
+std::string randomHexString(size_t length)
+
+Generates a random hexadecimal string of the specified length.
+
+55. String Conversion (Advanced)
+std::string toString(const std::set<std::string>& set)
+
+Converts a set of strings to a string.
+
+std::set<std::string> toSetOfStrings(const std::string& str)
+
+Converts a string to a set of strings.
+
+56. String Utility Functions (Advanced)
+std::string longestRepeatingSubstring(const std::string& str)
+
+Finds the longest repeating substring in the string.
+
+std::string longestNonRepeatingSubstring(const std::string& str)
+
+Finds the longest non-repeating substring in the string.
+
+57. String Case Insensitive Comparison (Advanced)
+bool caseInsensitiveContains(const std::string& str, const std::string& substr)
+
+Checks if the string contains the given substring in a case-insensitive manner.
+
+58. String Normalization (Advanced)
+std::string normalizePunctuation(const std::string& str)
+
+Normalizes punctuation characters to a consistent format.
+
+59. String Encoding Detection (Advanced)
+std::string detectAndConvertToUtf16(const std::string& str)
+
+Detects the encoding of the string and converts it to UTF-16.
+
+60. String Case Conversion (Advanced)
+std::string toAlternatingCase(const std::string& str)
+
+Converts the string to alternating case (alternating upper and lower case).
+
+61. String Validation (Advanced)
+bool isValidIpAddress(const std::string& str)
+
+Checks if the string is a valid IP address.
+
+bool isValidMacAddress(const std::string& str)
+
+Checks if the string is a valid MAC address.
+
+62. String Hashing (Advanced)
+std::string murmurHash(const std::string& str)
+
+Computes the MurmurHash of the string.
+
+63. String Transformation (Advanced)
+std::string transliterateWithCustomMap(const std::string& str, const std::unordered_map<char, char>& customMap)
+
+Transliterates the string using a custom map.
+
+64. String Tokenization (Advanced)
+std::vector<std::string> tokenizeWithMultipleDelimiters(const std::string& str, const std::vector<std::string>& delimiters)
+
+Tokenizes the string based on multiple delimiters.
+
+65. String Compression (Advanced)
+std::string compressWithSnappy(const std::string& str)
+
+Compresses the string using the Snappy algorithm.
+
+std::string decompressWithSnappy(const std::string& str)
+
+Decompresses the string using the Snappy algorithm.
+
+66. String Escaping (Advanced)
+std::string escapeXml(const std::string& str)
+
+Escapes XML special characters in the string.
+
+std::string unescapeXml(const std::string& str)
+
+Unescapes XML special characters in the string.
+
+67. String Randomization (Advanced)
+std::string randomBase64String(size_t length)
+
+Generates a random Base64 string of the specified length.
+
+68. String Conversion (Advanced)
+std::string toString(const std::list<std::string>& list)
+
+Converts a list of strings to a string.
+
+std::list<std::string> toListOfStrings(const std::string& str)
+
+Converts a string to a list of strings.
+
+69. String Utility Functions (Advanced)
+std::string longestCommonPrefix(const std::vector<std::string>& strings)
+
+Finds the longest common prefix among a vector of strings.
+
+std::string longestCommonSuffix(const std::vector<std::string>& strings)
+
+Finds the longest common suffix among a vector of strings.
+
+70. String Case Insensitive Comparison (Advanced)
+bool caseInsensitiveEqualsAny(const std::string& str, const std::vector<std::string>& strings)
+
+Checks if the string is equal to any of the given strings in a case-insensitive manner.
+
+71. String Normalization (Advanced)
+std::string normalizeLineEndings(const std::string& str)
+
+Normalizes line endings to a consistent format (e.g., \n).
+
+72. String Encoding Detection (Advanced)
+std::string detectAndConvertToUtf32(const std::string& str)
+
+Detects the encoding of the string and converts it to UTF-32.
+
+73. String Case Conversion (Advanced)
+std::string toInverseCase(const std::string& str)
+
+Converts the string to inverse case (swaps upper and lower case).
+
+74. String Validation (Advanced)
+bool isValidHexColor(const std::string& str)
+
+Checks if the string is a valid hex color code.
+
+bool isValidBase64(const std::string& str)
+
+Checks if the string is a valid Base64 encoded string.
+
+75. String Hashing (Advanced)
+std::string sha384(const std::string& str)
+
+Computes the SHA-384 hash of the string.
+
+76. String Transformation (Advanced)
+std::string transliterateWithCustomRules(const std::string& str, const std::vector<std::pair<std::string, std::string>>& rules)
+
+Transliterates the string using a set of custom rules.
+
+77. String Tokenization (Advanced)
+std::vector<std::string> tokenizeWithCustomDelimiters(const std::string& str, const std::vector<std::string>& delimiters)
+
+Tokenizes the string based on custom delimiters.
+
+78. String Compression (Advanced)
+std::string compressWithLz4(const std::string& str)
+
+Compresses the string using the LZ4 algorithm.
+
+std::string decompressWithLz4(const std::string& str)
+
+Decompresses the string using the LZ4 algorithm.
+
+79. String Escaping (Advanced)
+std::string escapeC(const std::string& str)
+
+Escapes C special characters in the string.
+
+std::string unescapeC(const std::string& str)
+
+Unescapes C special characters in the string.
+
+80. String Randomization (Advanced)
+std::string randomAlphanumericString(size_t length)
+
+Generates a random alphanumeric string of the specified length.
+
+81. String Conversion (Advanced)
+std::string toString(const std::deque<std::string>& deque)
+
+Converts a deque of strings to a string.
+
+std::deque<std::string> toDequeOfStrings(const std::string& str)
+
+Converts a string to a deque of strings.
+
+82. String Utility Functions (Advanced)
+std::string longestPalindromicSubsequence(const std::string& str)
+
+Finds the longest palindromic subsequence in the string.
+
+std::string longestIncreasingSubsequence(const std::string& str)
+
+Finds the longest increasing subsequence in the string.
+
+83. String Case Insensitive Comparison (Advanced)
+bool caseInsensitiveEqualsAll(const std::string& str, const std::vector<std::string>& strings)
+
+Checks if the string is equal to all of the given strings in a case-insensitive manner.
+
+84. String Normalization (Advanced)
+std::string normalizeControlCharacters(const std::string& str)
+
+Normalizes control characters to a consistent format.
+
+85. String Encoding Detection (Advanced)
+std::string detectAndConvertToLatin1(const std::string& str)
+
+Detects the encoding of the string and converts it to Latin-1.
+
+86. String Case Conversion (Advanced)
+std::string toInverseTitleCase(const std::string& str)
+
+Converts the string to inverse title case (swaps upper and lower case of the first letter of each word).
+
+87. String Validation (Advanced)
+bool isValidUuid(const std::string& str)
+
+Checks if the string is a valid UUID.
+
+bool isValidMd5(const std::string& str)
+
+Checks if the string is a valid MD5 hash.
+
+88. String Hashing (Advanced)
+std::string sha224(const std::string& str)
+
+Computes the SHA-224 hash of the string.
+
+89. String Transformation (Advanced)
+std::string transliterateWithCustomMapAndRules(const std::string& str, const std::unordered_map<char, char>& customMap, const std::vector<std::pair<std::string, std::string>>& rules)
+
+Transliterates the string using a custom map and rules.
+
+90. String Tokenization (Advanced)
+std::vector<std::string> tokenizeWithCustomDelimitersAndQuotes(const std::string& str, const std::vector<std::string>& delimiters, const std::string& quoteChars)
+
+Tokenizes the string based on custom delimiters and respects quoted substrings.
+
+91. String Compression (Advanced)
+std::string compressWithBzip2(const std::string& str)
+
+Compresses the string using the Bzip2 algorithm.
+
+std::string decompressWithBzip2(const std::string& str)
+
+Decompresses the string using the Bzip2 algorithm.
+
+92. String Escaping (Advanced)
+std::string escapeShell(const std::string& str)
+
+Escapes shell special characters in the string.
+
+std::string unescapeShell(const std::string& str)
+
+Unescapes shell special characters in the string.
+
+93. String Randomization (Advanced)
+std::string randomBinaryString(size_t length)
+
+Generates a random binary string of the specified length.
+
+94. String Conversion (Advanced)
+std::string toString(const std::forward_list<std::string>& forwardList)
+
+Converts a forward list of strings to a string.
+
+std::forward_list<std::string> toForwardListOfStrings(const std::string& str)
+
+Converts a string to a forward list of strings.
+
+95. String Utility Functions (Advanced)
+std::string longestCommonSubsequence(const std::string& str1, const std::string& str2)
+
+Finds the longest common subsequence between two strings.
+
+std::string longestDecreasingSubsequence(const std::string& str)
+
+Finds the longest decreasing subsequence in the string.
+
+96. String Case Insensitive Comparison (Advanced)
+bool caseInsensitiveEqualsNone(const std::string& str, const std::vector<std::string>& strings)
+
+Checks if the string is not equal to any of the given strings in a case-insensitive manner.
+
+97. String Normalization (Advanced)
+std::string normalizeNonPrintableCharacters(const std::string& str)
+
+Normalizes non-printable characters to a consistent format.
+
+98. String Encoding Detection (Advanced)
+std::string detectAndConvertToWindows1252(const std::string& str)
+
+Detects the encoding of the string and converts it to Windows-1252.
+
+99. String Case Conversion (Advanced)
+std::string toInverseSentenceCase(const std::string& str)
+
+Converts the string to inverse sentence case (swaps upper and lower case of the first letter of the first word).
+
+100. String Validation (Advanced)
+bool isValidSha1(const std::string& str)
+
+Checks if the string is a valid SHA-1 hash.
+
+bool isValidSha256(const std::string& str)
+
+Checks if the string is a valid SHA-256 hash.
+
+101. String Hashing (Advanced)
+std::string sha512_224(const std::string& str)
+
+Computes the SHA-512/224 hash of the string.
+
+102. String Transformation (Advanced)
+std::string transliterateWithCustomMapAndRulesAndEscapes(const std::string& str, const std::unordered_map<char, char>& customMap, const std::vector<std::pair<std::string, std::string>>& rules, const std::string& escapeChars)
