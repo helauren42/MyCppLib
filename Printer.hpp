@@ -1,7 +1,7 @@
 #ifndef PRINTER_HPP
 #define PRINTER_HPP
 
-#include "utils.hpp"
+#include "Utils.hpp"
 
 #include <string>
 #include <iostream>
@@ -14,14 +14,6 @@
 #include <deque>
 #include <set>
 #include <variant>
-
-class ptr_int {
-	ptr_int (const int* a, const unsigned int len, int mode = 0) {
-		for(int i = 0; i < len; i++) {
-			std::cout <<  std::endl;
-		}
-	}
-};
 
 enum ContainerType {
     VECTOR,
