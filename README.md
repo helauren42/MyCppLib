@@ -18,6 +18,5 @@ Namespace and using keyword have been omitted to facilitate integration to proje
 
   TypeChecker::isContainer(), will check if the parameter given is a container or not, returning true or false.
 
-
-
+#
 PS: Feel free to provide suggestions
