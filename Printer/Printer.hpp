@@ -329,28 +329,28 @@ class Printer {
         Printer::printContainerDelimiters(MAP, 1, newLine);  // Print closing delimiter
     }
 
-
-		/**
-		 * @brief Prints the contents of a std::set.
-		 *
-		 * @param my_set The set to print.
-		 * @param mode Determines the print format:
-		 *             - mode = 0: uses ", " as separator between elements.
-		 *             - mode != 0: uses ", " as separator between elements.
-		 */
-		template <class T>
-		static void print(const std::set<T> &my_set, const std::string& sep = ", ", const bool& newLine = true)
+	/**
+	 * @brief Prints the contents of a std::set.
+	 *
+	 * @param my_set The set to print.
+	 * @param mode Determines the print format:
+	 *             - mode = 0: uses ", " as separator between elements.
+	 *             - mode != 0: uses ", " as separator between elements.
+	 */
+	template <class T>
+	static void print(const std::set<T> &my_set, const std::string& sep = ", ", const bool& newLine = true)
+	{
+		Printer::printContainerDelimiters(SET, 0, newLine);
+		const auto end = my_set.end();
+		for (auto it = my_set.begin(); it != my_set.end(); it++)
 		{
-			Printer::printContainerDelimiters(SET, 0, newLine);
-			const auto end = my_set.end();
-			for (auto it = my_set.begin(); it != my_set.end(); it++)
-			{
-				std::cout << *it;
-				if (std::next(it) != end)
-					Printer::printSep(sep);
-			}
-			Printer::printContainerDelimiters(SET, 1, newLine);
+			std::cout << *it;
+			if (std::next(it) != end)
+				Printer::printSep(sep);
 		}
+		Printer::printContainerDelimiters(SET, 1, newLine);
+	}
+
 };
 
 #endif
