@@ -6,7 +6,19 @@
 using namespace std;
 
 #define WHITE_SPACES " \t\n\r\v\f\u00A0\u200B"
+#define ALPHA_NUMERIC "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
+
+
+/**
+ * @brief Checks if a character is a whitespace character.
+ * 
+ * This function checks if the given character `c` is a whitespace character by
+ * searching for it in a predefined set of whitespace characters.
+ * 
+ * @param c The character to check.
+ * @return true if the character is a whitespace character, false otherwise.
+ */
 bool	isWhiteSpace(const char& c) {
 	const std::string white_spaces = WHITE_SPACES;
 
@@ -15,58 +27,7 @@ bool	isWhiteSpace(const char& c) {
 	return false;
 }
 
-std::string lstrip(const std::string& str, const std::string& remove = WHITE_SPACES) {
-	int i = 0;
 
-	while(i < str.length()) {
-
-		size_t found = remove.find(str[i]);
-		if(found ==  std::string::npos) {
-			break;
-		}
-		i++;
-	}
-
-	std::string ret = str.substr(i, str.length() - i);
-	return ret;
-}
-
-std::string rstrip(const std::string& str, const std::string& remove = WHITE_SPACES) {
-	int i = str.length() - 1;
-
-	while(i >= 0) {
-		if(remove.find(str[i]) == std::string::npos)
-			break;
-		i--;
-	}
-
-	std::string ret = str.substr(0, i +1);
-	return ret;
-}
-
-std::string strip(const std::string& str, const std::string& remove = WHITE_SPACES) {
-	std::string ret = lstrip(str, remove);
-	ret = rstrip(ret, remove);
-	return ret;
-}
-
-std::string replaceAll(const std::string& str, const std::string& from, const std::string& to) {
-	std::string ret = str;
-	size_t start_pos = 0;
-
-	while(true) {
-		start_pos = ret.find(from, start_pos);
-		if(start_pos == std::string::npos)
-			break;
-		ret.replace(start_pos, from.length(), to);
-		start_pos += to.length();
-	}
-	return(ret);
-}
-
-std::string removeAll(const std::string& str, const std::string& remove) {
-	return replaceAll(str, remove, "");
-}
 
 /**
  * @brief Splits a string into substrings based on a delimiter and stores the results in a container.
@@ -96,4 +57,217 @@ Container<std::string> split(const std::string& str, const std::string& delimite
 		start = end+1;
 	}
 	return(container);
+}
+
+/**
+ * @brief Joins a container of strings into a single string with an optional separator.
+ * 
+ * This function concatenates all strings in the input container `container` into a
+ * single string, with each string separated by the specified `sep` (separator).
+ * The container must hold `std::string` elements.
+ * 
+ * @tparam Container A template template parameter representing the container type that holds `std::string` elements.
+ * @param container The container of strings to join.
+ * @param sep The separator string to insert between each string. Defaults to an empty string.
+ * @return std::string The concatenated string.
+ */
+template<template<typename...> class Container>
+std::string joinStrings(const Container<std::string>& container, const std::string& sep = "") {
+	std::string ret;
+	for (auto it : container) {
+		ret += it;
+	}
+	return ret;
+}
+
+/**
+ * @brief Joins a queue of strings into a single string with an optional separator.
+ * 
+ * This function concatenates all strings in the input queue `container` into a
+ * single string, with each string separated by the specified `sep` (separator).
+ * The queue must hold `std::string` elements. The queue will be emptied as a
+ * result of this operation.
+ * 
+ * @param container The queue of strings to join.
+ * @param sep The separator string to insert between each string. Defaults to an empty string.
+ * @return std::string The concatenated string.
+ */
+std::string joinStrings(std::queue<std::string>& container, const std::string& sep = "") {
+	std::string ret;
+	while (!container.empty()) {
+		ret += container.front();
+		container.pop();
+		std::cout << "ret: " << ret << std::endl;
+	}
+	return ret;
+}
+
+/**
+ * @brief Joins a stack of strings into a single string with an optional separator.
+ * 
+ * This function concatenates all strings in the input stack `container` into a
+ * single string, with each string separated by the specified `sep` (separator).
+ * The stack must hold `std::string` elements. The stack will be emptied as a
+ * result of this operation.
+ * 
+ * @param container The stack of strings to join.
+ * @param sep The separator string to insert between each string. Defaults to an empty string.
+ * @return std::string The concatenated string.
+ */
+std::string joinStrings(std::stack<std::string>& container, const std::string& sep = "") {
+	std::string ret;
+	while (!container.empty()) {
+		ret += container.top();
+		container.pop();
+		std::cout << "ret: " << ret << std::endl;
+	}
+	return ret;
+}
+
+
+/**
+ * @brief Removes leading whitespace characters from a string.
+ * 
+ * This function removes all leading characters from the input string `str` that
+ * are found in the `remove` string. If `remove` is not provided, it defaults to
+ * a predefined set of whitespace characters.
+ * 
+ * @param str The input string to strip.
+ * @param remove The string containing characters to remove. Defaults to whitespace characters.
+ * @return std::string The input string with leading characters removed.
+ */
+std::string lstrip(const std::string& str, const std::string& remove = WHITE_SPACES) {
+	int i = 0;
+
+	while(i < str.length()) {
+
+		size_t found = remove.find(str[i]);
+		if(found ==  std::string::npos) {
+			break;
+		}
+		i++;
+	}
+
+	std::string ret = str.substr(i, str.length() - i);
+	return ret;
+}
+
+/**
+ * @brief Removes trailing whitespace characters from a string.
+ * 
+ * This function removes all trailing characters from the input string `str` that
+ * are found in the `remove` string. If `remove` is not provided, it defaults to
+ * a predefined set of whitespace characters.
+ * 
+ * @param str The input string to strip.
+ * @param remove The string containing characters to remove. Defaults to whitespace characters.
+ * @return std::string The input string with trailing characters removed.
+ */
+std::string rstrip(const std::string& str, const std::string& remove = WHITE_SPACES) {
+	int i = str.length() - 1;
+
+	while(i >= 0) {
+		if(remove.find(str[i]) == std::string::npos)
+			break;
+		i--;
+	}
+
+	std::string ret = str.substr(0, i +1);
+	return ret;
+}
+
+/**
+ * @brief Removes leading and trailing whitespace characters from a string.
+ * 
+ * This function removes all leading and trailing characters from the input string `str`
+ * that are found in the `remove` string. If `remove` is not provided, it defaults to
+ * a predefined set of whitespace characters.
+ * 
+ * @param str The input string to strip.
+ * @param remove The string containing characters to remove. Defaults to whitespace characters.
+ * @return std::string The input string with leading and trailing characters removed.
+ */
+std::string strip(const std::string& str, const std::string& remove = WHITE_SPACES) {
+    std::string ret = lstrip(str, remove);
+    ret = rstrip(ret, remove);
+    return ret;
+}
+
+/**
+ * @brief Replaces all occurrences of a substring with another substring in place.
+ * 
+ * This function replaces all occurrences of the substring `from` in the input string `str`
+ * with the substring `to`. The modifications are made directly to the input string.
+ * 
+ * @param str The input string to modify.
+ * @param from The substring to be replaced.
+ * @param to The substring to replace `from` with.
+ */
+void	replaceAll(std::string& str, const std::string& from, const std::string& to) {
+	size_t start_pos = 0;
+
+	while (true) {
+		start_pos = str.find(from, start_pos);
+		if (start_pos == std::string::npos)
+			break;
+		str.replace(start_pos, from.length(), to);
+		start_pos += to.length();
+	}
+}
+
+/**
+ * @brief Removes all occurrences of a substring from a string in place.
+ * 
+ * This function removes all occurrences of the substring `remove` from the input string `str`.
+ * The modifications are made directly to the input string.
+ * 
+ * @param str The input string to modify.
+ * @param remove The substring of characters to be removed.
+ */
+void	removeAll(std::string& str, const std::string& remove) {
+	replaceAll(str, remove, "");
+}
+
+/**
+ * @brief Removes all occurrences of white spaces from a string in place.
+ * 
+ * This function removes all occurrences of whitespaces from the input string `str`.
+ * The modifications are made directly to the input string.
+ * 
+ * @param str The input string to modify.
+ */
+void	removeWhiteSpaces(std::string& str) {
+	removeAll(str, WHITE_SPACES);
+}
+
+/**
+ * @brief Removes characters from a string that are not in a set of valid characters.
+ * 
+ * This function iterates through the input string `str` and removes any characters
+ * that are not found in the `valid_characters` string. The modifications are made
+ * directly to the input string.
+ * 
+ * @param str The input string to modify.
+ * @param valid_characters The string containing valid characters to keep.
+ */
+void	removeIntruder(std::string& str, const std::string& valid_characters) {
+	for (auto it = str.begin(); it != str.end(); it++) {
+		if(valid_characters.find(*it) == std::string::npos) {
+			str.erase(it);
+			it--;
+		}
+	}
+}
+
+/**
+ * @brief Removes non-alphanumeric characters from a string.
+ * 
+ * This function removes all characters from the input string `str` that are not
+ * alphanumeric (i.e., not in the set of valid alphanumeric characters). The
+ * modifications are made directly to the input string.
+ * 
+ * @param str The input string to modify.
+ */
+void	removeNonAlphaNumeric(std::string& str) {
+	removeIntruder(str, ALPHA_NUMERIC);
 }
