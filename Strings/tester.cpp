@@ -30,5 +30,26 @@
 
 int main() {
 	std::string og = "what day ewre day awq day!a";
-	Printer::all(split(og, "day"));
+	auto vec = split<std::vector>(og, "day");
+	Printer::all(vec);
 }
+
+// int main() {
+//     std::string str = "Hello,World,How,Are,You";
+//     std::string delimiter = ",";
+
+//     std::vector<std::string> vec = split<std::vector>(str, delimiter);
+//     std::list<std::string> lst = split<std::list>(str, delimiter);
+
+//     std::cout << "Vector:" << std::endl;
+//     for (const auto& elem : vec) {
+//         std::cout << elem << std::endl;
+//     }
+
+//     std::cout << "List:" << std::endl;
+//     for (const auto& elem : lst) {
+//         std::cout << elem << std::endl;
+//     }
+
+//     return 0;
+// }

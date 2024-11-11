@@ -68,9 +68,20 @@ std::string removeAll(const std::string& str, const std::string& remove) {
 	return replaceAll(str, remove, "");
 }
 
-// template<typename T>
-std::list<std::string> split(const std::string& str, const std::string& delimiter = "\n") {
-	std::list<std::string> container;
+/**
+ * @brief Splits a string into substrings based on a delimiter and stores the results in a container.
+ * 
+ * This function splits the input string `str` into substrings using the specified `delimiter`.
+ * The resulting substrings are stored in a container of type `Container<std::string>`.
+ * 
+ * @tparam Container A template template parameter representing the container type that holds `std::string` elements.
+ * @param str The input string to be split.
+ * @param delimiter The delimiter string used to split the input string. Defaults to newline character ("\n").
+ * @return Container<std::string> A container holding the resulting substrings.
+ */
+template<template<typename...> class Container>
+Container<std::string> split(const std::string& str, const std::string& delimiter = "\n") {
+	Container<std::string> container;
 
 	size_t start = 0;
 	size_t end = 0;
