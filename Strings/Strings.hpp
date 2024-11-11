@@ -86,6 +86,27 @@ bool	isAlphaNumeric(const std::string& str) {
 	return true;
 }
 
+bool hasDelim(const std::string& str, const char& delimiter) {
+    return str.find(delimiter) != std::string::npos;
+}
+
+bool hasDelim(const std::string& str, const std::string& delimiter) {
+    return str.find_first_of(delimiter) != std::string::npos;
+}
+
+bool isOnlyDelim(const std::string& str, const char& delimiter) {
+    for (char ch : str) {
+        if (ch != delimiter) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool isOnlyDelim(const std::string& str, const std::string& delimiter) {
+    return str.find_first_not_of(delimiter) == std::string::npos;
+}
+
 // bool isEmail(const std::string& str) {
 	
 // }
@@ -165,7 +186,6 @@ std::string joinStrings(std::stack<std::string>& container, const std::string& s
 	while (!container.empty()) {
 		ret += container.top();
 		container.pop();
-		std::cout << "ret: " << ret << std::endl;
 	}
 	ret = ret.substr(0, ret.length() - sep.length());
 	return ret;
@@ -234,13 +254,27 @@ Container<std::string> splitKeep(const std::string& str, const std::string& deli
 
 		container.push_back(str.substr(start, end - start));
 		if(!str[end+1])
-			return (container);
-		isDelimiter = delimiter.find(str[end+1]) != std::string::npos;
-		start = end +1;
+			break;
+		isDelimiter = delimiter.find(str[end]) != std::string::npos;
+		start = end;
 		if(start >= str.length())
 			break;
 	}
-	return container;
+
+	Container<std::string> cont2;
+	std::string temp;
+	for(auto it = container.begin(); it != container.end(); it++) {
+		if(hasDelim(*it, delimiter)) {
+			temp += *it;
+		}
+		else {
+			cont2.push_back(temp + *it);
+			temp = "";
+		}
+	}
+	if(temp != "")
+		cont2.push_back(temp);
+	return cont2;
 }
 
 /**
@@ -255,9 +289,10 @@ Container<std::string> splitKeep(const std::string& str, const std::string& deli
  */
 std::string toLowerCase(const std::string& str) {
 	std::string result = str;
-
+	std::string upper_case = UPPER_CASE;
 	for (char& c : result) {
-		c = std::tolower(c);
+		if(upper_case.find(c) != std::string::npos)
+			c = std::tolower(c);
 	}
 	return result;
 }
@@ -274,12 +309,16 @@ std::string toLowerCase(const std::string& str) {
  */
 std::string toUpperCase(const std::string& str) {
 	std::string result = str;
+	std::string lower_case = LOWER_CASE;
 	
 	for (char& c : result) {
-		c = std::toupper(c);
+		if(lower_case.find(c) != std::string::npos)
+			c = std::toupper(c);
 	}
 	return result;
 }
+
+
 
 std::string	toCamelCase(const std::string& str, const int& mode = spaceSeparated) {
 	std::string ret;
@@ -299,7 +338,8 @@ std::string	toCamelCase(const std::string& str, const int& mode = spaceSeparated
 		if((*it)[0])
 			(*it)[0] = std::toupper((*it)[0]);
 	}
-	ret = joinStrings<std::vector>(vec);
+	ret = joinStrings<std::vector>(vec, "");
+	ret[0] = std::tolower(ret[0]);
 	return ret;
 }
 
@@ -308,15 +348,21 @@ std::string	toSnakeCase(const std::string& str, const int& mode = spaceSeparated
 	if(mode == snakeCase)
 		return(ret = str, ret);
 
-	ret = toLowerCase(str);
+	ret = str;
 	std::string delimiter = [mode]() -> std::string { 
-		if (mode == camelCase) return " ";
+		if (mode == camelCase) return UPPER_CASE;
 		if (mode == kebabCase) return "-";
 		return WHITE_SPACES;
 	}();
-	std::vector<std::string> vec = split<std::vector>(ret, delimiter);
+
+	std::vector<std::string> vec;
+	if(mode == camelCase)
+		vec = splitKeep<std::vector>(ret, delimiter);
+	else
+		vec = split<std::vector>(ret, delimiter);
 
 	ret = joinStrings<std::vector>(vec, "_");
+	ret = toLowerCase(ret);
 	return ret;
 }
 
@@ -325,15 +371,21 @@ std::string	toKebabCase(const std::string& str, const int& mode = spaceSeparated
 	if(mode == kebabCase)
 		return(ret = str, ret);
 
-	ret = toLowerCase(str);
+	ret = str;
 	std::string delimiter = [mode]() -> std::string { 
-		if (mode == camelCase) return " ";
+		if (mode == camelCase) return UPPER_CASE;
 		if (mode == snakeCase) return "_";
 		return WHITE_SPACES;
 	}();
-	std::vector<std::string> vec = split<std::vector>(ret, delimiter);
+
+	std::vector<std::string> vec;
+	if(mode == camelCase)
+		vec = splitKeep<std::vector>(ret, delimiter);
+	else
+		vec = split<std::vector>(ret, delimiter);
 
 	ret = joinStrings<std::vector>(vec, "-");
+	ret = toLowerCase(ret);
 	return ret;
 }
 
