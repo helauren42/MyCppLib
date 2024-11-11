@@ -7,8 +7,15 @@
 
 #define WHITE_SPACES " \t\n\r\v\f\u00A0\u200B"
 #define ALPHA_NUMERIC "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+#define UPPER_CASE "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+#define LOWER_CASE "abcdefghijklmnopqrstuvwxyz"
 
-
+enum {
+	spaceSeparated,
+	camelCase,
+	snakeCase,
+	kebabCase,
+};
 
 /**
  * @brief Checks if a character is a whitespace character.
@@ -97,6 +104,74 @@ int countChar(const std::string& str, const char& c) {
 }
 
 /**
+ * @brief Joins a container of strings into a single string with an optional separator.
+ * 
+ * This function concatenates all strings in the input container `container` into a
+ * single string, with each string separated by the specified `sep` (separator).
+ * The container must hold `std::string` elements.
+ * 
+ * @tparam Container A template template parameter representing the container type that holds `std::string` elements.
+ * @param container The container of strings to join.
+ * @param sep The separator string to insert between each string. Defaults to an empty string.
+ * @return std::string The concatenated string.
+ */
+template<template<typename T> class Container>
+std::string joinStrings(const Container<std::string>& container, const std::string& sep = " ") {
+	std::string ret;
+	for (auto it : container) {
+		ret += it;
+		ret += sep;
+	}
+	ret = ret.substr(0, ret.length() - sep.length());
+	return ret;
+}
+
+/**
+ * @brief Joins a queue of strings into a single string with an optional separator.
+ * 
+ * This function concatenates all strings in the input queue `container` into a
+ * single string, with each string separated by the specified `sep` (separator).
+ * The queue must hold `std::string` elements. The queue will be emptied as a
+ * result of this operation.
+ * 
+ * @param container The queue of strings to join.
+ * @param sep The separator string to insert between each string. Defaults to an empty string.
+ * @return std::string The concatenated string.
+ */
+std::string joinStrings(std::queue<std::string>& container, const std::string& sep = " ") {
+	std::string ret;
+	while (!container.empty()) {
+		ret += container.front();
+		container.pop();
+	}
+	ret = ret.substr(0, ret.length() - sep.length());
+	return ret;
+}
+
+/**
+ * @brief Joins a stack of strings into a single string with an optional separator.
+ * 
+ * This function concatenates all strings in the input stack `container` into a
+ * single string, with each string separated by the specified `sep` (separator).
+ * The stack must hold `std::string` elements. The stack will be emptied as a
+ * result of this operation.
+ * 
+ * @param container The stack of strings to join.
+ * @param sep The separator string to insert between each string. Defaults to an empty string.
+ * @return std::string The concatenated string.
+ */
+std::string joinStrings(std::stack<std::string>& container, const std::string& sep = " ") {
+	std::string ret;
+	while (!container.empty()) {
+		ret += container.top();
+		container.pop();
+		std::cout << "ret: " << ret << std::endl;
+	}
+	ret = ret.substr(0, ret.length() - sep.length());
+	return ret;
+}
+
+/**
  * @brief Splits a string into substrings based on a delimiter and stores the results in a container.
  * 
  * This function splits the input string `str` into substrings using the specified `delimiter`.
@@ -169,70 +244,98 @@ Container<std::string> splitKeep(const std::string& str, const std::string& deli
 }
 
 /**
- * @brief Joins a container of strings into a single string with an optional separator.
+ * @brief Converts all characters in a string to lowercase.
  * 
- * This function concatenates all strings in the input container `container` into a
- * single string, with each string separated by the specified `sep` (separator).
- * The container must hold `std::string` elements.
+ * This function converts all characters in the input string `str` to lowercase.
+ * The conversion can be done in different modes, such as space-separated or not.
  * 
- * @tparam Container A template template parameter representing the container type that holds `std::string` elements.
- * @param container The container of strings to join.
- * @param sep The separator string to insert between each string. Defaults to an empty string.
- * @return std::string The concatenated string.
+ * @param str The input string to convert to lowercase.
+ * @param mode The mode of conversion (default is space-separated).
+ * @return std::string The input string with all characters converted to lowercase.
  */
-template<template<typename T> class Container>
-std::string joinStrings(const Container<std::string>& container, const std::string& sep = "") {
-	std::string ret;
-	for (auto it : container) {
-		ret += it;
+std::string toLowerCase(const std::string& str) {
+	std::string result = str;
+
+	for (char& c : result) {
+		c = std::tolower(c);
 	}
-	return ret;
+	return result;
 }
 
 /**
- * @brief Joins a queue of strings into a single string with an optional separator.
+ * @brief Converts all characters in a string to uppercase.
  * 
- * This function concatenates all strings in the input queue `container` into a
- * single string, with each string separated by the specified `sep` (separator).
- * The queue must hold `std::string` elements. The queue will be emptied as a
- * result of this operation.
+ * This function converts all characters in the input string `str` to uppercase.
+ * The conversion can be done in different modes, such as space-separated or not.
  * 
- * @param container The queue of strings to join.
- * @param sep The separator string to insert between each string. Defaults to an empty string.
- * @return std::string The concatenated string.
+ * @param str The input string to convert to uppercase.
+ * @param mode The mode of conversion (default is space-separated).
+ * @return std::string The input string with all characters converted to uppercase.
  */
-std::string joinStrings(std::queue<std::string>& container, const std::string& sep = "") {
-	std::string ret;
-	while (!container.empty()) {
-		ret += container.front();
-		container.pop();
-		std::cout << "ret: " << ret << std::endl;
+std::string toUpperCase(const std::string& str) {
+	std::string result = str;
+	
+	for (char& c : result) {
+		c = std::toupper(c);
 	}
+	return result;
+}
+
+std::string	toCamelCase(const std::string& str, const int& mode = spaceSeparated) {
+	std::string ret;
+	if(mode == camelCase)
+		return(ret = str, ret);
+
+	ret = toLowerCase(str);
+	std::string delimiter = [mode]() -> std::string { 
+		if (mode == kebabCase) return "-";
+		if (mode == snakeCase) return "_";
+		return WHITE_SPACES;
+	}();
+
+	std::vector<std::string> vec = split<std::vector>(ret, delimiter);
+
+	for(auto it = vec.begin(); it != vec.end(); it++) {
+		if((*it)[0])
+			(*it)[0] = std::toupper((*it)[0]);
+	}
+	ret = joinStrings<std::vector>(vec);
 	return ret;
 }
 
-/**
- * @brief Joins a stack of strings into a single string with an optional separator.
- * 
- * This function concatenates all strings in the input stack `container` into a
- * single string, with each string separated by the specified `sep` (separator).
- * The stack must hold `std::string` elements. The stack will be emptied as a
- * result of this operation.
- * 
- * @param container The stack of strings to join.
- * @param sep The separator string to insert between each string. Defaults to an empty string.
- * @return std::string The concatenated string.
- */
-std::string joinStrings(std::stack<std::string>& container, const std::string& sep = "") {
+std::string	toSnakeCase(const std::string& str, const int& mode = spaceSeparated) {
 	std::string ret;
-	while (!container.empty()) {
-		ret += container.top();
-		container.pop();
-		std::cout << "ret: " << ret << std::endl;
-	}
+	if(mode == snakeCase)
+		return(ret = str, ret);
+
+	ret = toLowerCase(str);
+	std::string delimiter = [mode]() -> std::string { 
+		if (mode == camelCase) return " ";
+		if (mode == kebabCase) return "-";
+		return WHITE_SPACES;
+	}();
+	std::vector<std::string> vec = split<std::vector>(ret, delimiter);
+
+	ret = joinStrings<std::vector>(vec, "_");
 	return ret;
 }
 
+std::string	toKebabCase(const std::string& str, const int& mode = spaceSeparated) {
+	std::string ret;
+	if(mode == kebabCase)
+		return(ret = str, ret);
+
+	ret = toLowerCase(str);
+	std::string delimiter = [mode]() -> std::string { 
+		if (mode == camelCase) return " ";
+		if (mode == snakeCase) return "_";
+		return WHITE_SPACES;
+	}();
+	std::vector<std::string> vec = split<std::vector>(ret, delimiter);
+
+	ret = joinStrings<std::vector>(vec, "-");
+	return ret;
+}
 
 /**
  * @brief Removes leading whitespace characters from a string.
@@ -297,9 +400,9 @@ std::string rstrip(const std::string& str, const std::string& remove = WHITE_SPA
  * @return std::string The input string with leading and trailing characters removed.
  */
 std::string strip(const std::string& str, const std::string& remove = WHITE_SPACES) {
-    std::string ret = lstrip(str, remove);
-    ret = rstrip(ret, remove);
-    return ret;
+	std::string ret = lstrip(str, remove);
+	ret = rstrip(ret, remove);
+	return ret;
 }
 
 /**
@@ -379,4 +482,11 @@ void	removeIntruder(std::string& str, const std::string& valid_characters) {
  */
 void	removeNonAlphaNumeric(std::string& str) {
 	removeIntruder(str, ALPHA_NUMERIC);
+}
+
+bool	stringCompareIgnoreCase(const std::string& s1, const std::string& s2) {
+	std::string lower_s1 = toLowerCase(s1);
+	std::string lower_s2 = toLowerCase(s2);
+
+	return lower_s1 == lower_s2;
 }
