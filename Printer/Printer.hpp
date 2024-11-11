@@ -93,11 +93,11 @@ class Printer {
 	public:
 
 		template <typename T, typename... Args>
-		static void	all(T first, Args... args)
+		static void	printAll(T first, Args... args)
 		{
 			Printer::print(first);
 			if constexpr (sizeof...(args) > 0) {
-				all(args...);
+				printAll(args...);
 			}
 		}
 
@@ -352,5 +352,10 @@ class Printer {
 	}
 
 };
+
+template<typename... Args>
+void	out(Args... args) {
+	Printer::printAll(args...);
+}
 
 #endif
