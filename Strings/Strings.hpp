@@ -79,7 +79,7 @@ std::string removeAll(const std::string& str, const std::string& remove) {
  * @param delimiter The delimiter string used to split the input string. Defaults to newline character ("\n").
  * @return Container<std::string> A container holding the resulting substrings.
  */
-template<template<typename...> class Container>
+template<template<typename T> class Container>
 Container<std::string> split(const std::string& str, const std::string& delimiter = "\n") {
 	Container<std::string> container;
 
