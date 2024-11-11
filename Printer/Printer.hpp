@@ -103,7 +103,9 @@ class Printer {
 
 		static void print(const std::string &a, const std::string& sep = "", const bool& newLine = true)
 		{
+			std::cout << "\"";
 			std::cout << a;
+			std::cout << "\"";
 			std::cout << sep;
 			if(newLine == true)
 				std::cout << std::endl;
