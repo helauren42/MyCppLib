@@ -117,13 +117,14 @@ class Printer {
 			if(newLine == true)
 				std::cout << std::endl;
 		}
-		static void print(const char *s, const std::string& sep = "", const bool& newLine = true)
+		static void print(const char *s, const std::string& sep = "", const bool& newLine = false)
 		{
 			std::cout << s;
 			std::cout << sep;
 			if(newLine == true)
 				std::cout << std::endl;
 		}
+
 		static void print(const int &a, const std::string& sep = "", const bool& newLine = true)
 		{
 			std::cout << a;
@@ -344,7 +345,7 @@ class Printer {
 		const auto end = my_set.end();
 		for (auto it = my_set.begin(); it != my_set.end(); it++)
 		{
-			std::cout << *it;
+			Printer::print(*it, ",", false);
 			if (std::next(it) != end)
 				Printer::printSep(sep);
 		}
