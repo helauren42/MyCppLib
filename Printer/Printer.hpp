@@ -141,7 +141,10 @@ class Printer {
 		}
 		static void print(const bool &a, const std::string& sep = "", const bool& newLine = true)
 		{
-			std::cout << a;
+			if(a == true)
+				std::cout << "true";
+			else
+				std::cout << "false";
 			std::cout << sep;
 			if(newLine == true)
 				std::cout << std::endl;
@@ -268,7 +271,11 @@ class Printer {
 			Printer::printContainerDelimiters(STACK, 0, newLine);
 			while (!my_stack.empty())
 			{
-				std::cout << my_stack.top();
+				auto elem = my_stack.top();
+				if(TypeChecker::isContainer(elem))
+					Printer::print(elem, sep, false);
+				else
+					Printer::print(elem, "", false);
 				my_stack.pop();
 				if (!my_stack.empty())
 					Printer::printSep(sep);
@@ -290,7 +297,11 @@ class Printer {
 			Printer::printContainerDelimiters(QUEUE, 0, newLine);
 			while (!my_queue.empty())
 			{
-				std::cout << my_queue.front();
+				auto elem = my_queue.front();
+				if(TypeChecker::isContainer(elem))
+					Printer::print(elem, sep, false);
+				else
+					Printer::print(elem, "", false);
 				my_queue.pop();
 				if (!my_queue.empty())
 					Printer::printSep(sep);
@@ -345,7 +356,12 @@ class Printer {
 		const auto end = my_set.end();
 		for (auto it = my_set.begin(); it != my_set.end(); it++)
 		{
-			Printer::print(*it, ",", false);
+				if(TypeChecker::isContainer(*it))
+					Printer::print(*it, sep, false);
+				else
+					Printer::print(*it, "", false);
+			Printer::print(*it, "", false);
+			// std::cout << *it;
 			if (std::next(it) != end)
 				Printer::printSep(sep);
 		}
