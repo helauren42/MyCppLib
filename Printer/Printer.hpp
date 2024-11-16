@@ -1,8 +1,6 @@
 #ifndef PRINTER_HPP
 #define PRINTER_HPP
 
-#include "../Checker/Checker.hpp"
-
 #include <string>
 #include <iostream>
 #include <vector>
@@ -26,6 +24,28 @@ enum ContainerType {
     SET
 };
 
+class TypeChecker {
+public:
+    template <typename T>
+    static constexpr bool isHandledContainer(const T& value) {
+        return is_specialization<T, std::vector>::value
+				|| is_specialization<T, std::list>::value
+				|| is_specialization<T, std::forward_list>::value
+				|| is_specialization<T, std::set>::value
+				|| is_specialization<T, std::map>::value
+				|| is_specialization<T, std::deque>::value
+				|| is_specialization<T, std::stack>::value
+				|| is_specialization<T, std::queue>::value;
+    }
+
+private:
+    template <typename T, template <typename...> class Template>
+    struct is_specialization : std::false_type {};
+
+    template <template <typename...> class Template, typename... Args>
+    struct is_specialization<Template<Args...>, Template> : std::true_type {};
+};
+
 class Printer {
 
 	private:
@@ -46,13 +66,13 @@ class Printer {
 
 			for (auto it = container.begin(); it != container.end(); it++)
 			{
-				if (std::next(it) == end && !TypeChecker::isContainer(*it))
+				if (std::next(it) == end && !TypeChecker::isHandledContainer(*it))
 					Printer::print(*it, "", newLine);
 				else
 					Printer::print(*it, sep, newLine);
 
 				// to output the separator in case of nested containers
-				if(TypeChecker::isContainer(*it) && std::next(it) != end) {
+				if(TypeChecker::isHandledContainer(*it) && std::next(it) != end) {
 					std::cout << ", ";
 				}
 			}
@@ -272,7 +292,7 @@ class Printer {
 			while (!my_stack.empty())
 			{
 				auto elem = my_stack.top();
-				if(TypeChecker::isContainer(elem))
+				if(TypeChecker::isHandledContainer(elem))
 					Printer::print(elem, sep, false);
 				else
 					Printer::print(elem, "", false);
@@ -298,7 +318,7 @@ class Printer {
 			while (!my_queue.empty())
 			{
 				auto elem = my_queue.front();
-				if(TypeChecker::isContainer(elem))
+				if(TypeChecker::isHandledContainer(elem))
 					Printer::print(elem, sep, false);
 				else
 					Printer::print(elem, "", false);
@@ -331,7 +351,7 @@ class Printer {
             }
 			Printer::print(pair.first, "", false);
 			Printer::print(": ", "", false);
-			if(TypeChecker::isContainer(pair.second))
+			if(TypeChecker::isHandledContainer(pair.second))
 				Printer::print(pair.second, sep, false);
 			else
 				Printer::print(pair.second, "", false);
@@ -356,7 +376,7 @@ class Printer {
 		const auto end = my_set.end();
 		for (auto it = my_set.begin(); it != my_set.end(); it++)
 		{
-				if(TypeChecker::isContainer(*it))
+				if(TypeChecker::isHandledContainer(*it))
 					Printer::print(*it, sep, false);
 				else
 					Printer::print(*it, "", false);

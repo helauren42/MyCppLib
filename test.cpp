@@ -1,16 +1,52 @@
 #include <iostream>
-#include <string>
+using namespace std;
 
-class Printer {
-public:
-    // Static method with an optional separator
-    static void print(const std::string &a, const std::string& sep = "\n") {
-        std::cout << a << sep;
-    }
+class Rectangle {
+    protected:
+        int width;
+        int height;
+    public:
+        void    display () {
+            cout << this->width << " ";
+            cout << this->height << endl;
+        }
+ };
+
+class RectangleArea : public Rectangle {
+    public:
+        void    read_input() {
+            std::string line;
+            getline(std::cin, line);
+            width = std::stoi(line);
+            int next = line.find_first_of(' ');
+            height = std::stoi(&line[next]);
+        };
+        void    display () {
+            cout << this->width * this->height << endl;
+        }
 };
 
-int main() {
-    Printer::print("Hello, World!");  // Uses default separator "\n"
-    Printer::print("Hello, World!", ", ");  // Uses custom separator ", "
+int main()
+{
+    /*
+     * Declare a RectangleArea object
+     */
+    RectangleArea r_area;
+    
+    /*
+     * Read the width and height
+     */
+    r_area.read_input();
+    
+    /*
+     * Print the width and height
+     */
+    r_area.Rectangle::display();
+    
+    /*
+     * Print the area
+     */
+    r_area.display();
+    
     return 0;
 }
