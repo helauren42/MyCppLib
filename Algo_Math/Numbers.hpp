@@ -13,18 +13,6 @@ int	getIndex(const Container& container, const T& value) {
 	return (std::distance(container.begin(), it));
 }
 
-// template <template<typename> class Container, typename T>
-// T findSpan(const Container<T>& container) {
-//     if (container.empty()) {
-//         throw std::invalid_argument("Container is empty");
-//     }
-
-//     const T min = *std::min_element(container.begin(), container.end());
-//     const T max = *std::max_element(container.begin(), container.end());
-
-//     return max - min;
-// }
-
 template <typename Container>
 auto findSpan(const Container& container) -> typename Container::value_type {
     if (container.empty())
