@@ -14,6 +14,8 @@ Here are the different sections of the library
   Usage: import Printer.hpp into your project and call out(), pass variables and objects as parameters to the out function.
   out() takes an arbitrary amount of arguments that can be scalar types or containers, some of the less common containers have not been included, out() prints a new line after every parameter, except for c strings.
   
+  The out function is calling write from unistd to output data, redirecting standard output will redirect the output of out()
+
 ### Strings/Strings.hpp
 
     

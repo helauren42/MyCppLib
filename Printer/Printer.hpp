@@ -1,5 +1,8 @@
-#ifndef PRINTER_HPP
-#define PRINTER_HPP
+#ifndef Out_HPP
+#define Out_HPP
+
+#include <sstream>
+#include <exception>
 
 #include <string>
 #include <iostream>
@@ -12,6 +15,20 @@
 #include <deque>
 #include <set>
 #include <variant>
+
+#include <unistd.h>
+#include <fcntl.h>
+#include <cstring>
+
+int	ft_strlen(const char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
+}
 
 enum ContainerType {
     VECTOR,
@@ -46,15 +63,14 @@ private:
     struct is_specialization<Template<Args...>, Template> : std::true_type {};
 };
 
-class Printer {
+int fout_fd = 1;
+
+class Out {
 
 	private:
 	
 		static void	printSep(const std::string& sep) {
-			if (sep == "\n")
-				std::cout << std::endl;
-			else
-				std::cout << (sep);
+			write(Out::fd, sep.c_str(), sep.length());
 		}
 
 		template<typename T>
@@ -67,13 +83,13 @@ class Printer {
 			for (auto it = container.begin(); it != container.end(); it++)
 			{
 				if (std::next(it) == end && !TypeChecker::isHandledContainer(*it))
-					Printer::print(*it, "", newLine);
+					Out::print(*it, "", newLine);
 				else
-					Printer::print(*it, sep, newLine);
+					Out::print(*it, sep, newLine);
 
 				// to output the separator in case of nested containers
 				if(TypeChecker::isHandledContainer(*it) && std::next(it) != end) {
-					std::cout << ", ";
+					write(Out::fd, ", ", 1);
 				}
 			}
 		}
@@ -102,20 +118,43 @@ class Printer {
 			}
 
 			if (side == 0) {
-				std::cout << delimiter[0];
+				write(Out::fd, &delimiter[0], 1);
 			} else {
-				std::cout << delimiter[1];
+				write(Out::fd, &delimiter[1], 1);
 				if(newLine)
-					std::cout << std::endl;
+					write(Out::fd, "\n", 1);
 			}
 		}
 
 	public:
 
+		static int fd;
+
+		static void	setFoutFd(const int file_descriptor) {
+			fout_fd = file_descriptor;
+		}
+
+		static void	setFoutFd(const char* file) {
+			fout_fd = open(file, O_CREAT | O_WRONLY, 0644);
+			if(fout_fd < 0) {
+				std::string s("could not open file: ");
+				s += file;
+				throw (std::runtime_error(s));
+			}
+		}
+
+		static void	setFoutFd(const std::string& file) {
+			fout_fd = open(file.c_str(), O_CREAT, O_WRONLY, 0644);
+			if(fout_fd < 0) {
+				std::string s("could not open file: " + file);
+				throw (std::runtime_error(s));
+			}
+		}
+	
 		template <typename T, typename... Args>
 		static void	printAll(T first, Args... args)
 		{
-			Printer::print(first);
+			Out::print(first);
 			if constexpr (sizeof...(args) > 0) {
 				printAll(args...);
 			}
@@ -123,96 +162,114 @@ class Printer {
 
 		static void print(const std::string &a, const std::string& sep = "", const bool& newLine = true)
 		{
-			std::cout << "\"";
-			std::cout << a;
-			std::cout << "\"";
-			std::cout << sep;
+			write(Out::fd, "\"", 1);
+			write(Out::fd, a.c_str(), a.length());
+			write(Out::fd, "\"", 1);
+			write(Out::fd, sep.c_str(), sep.length());
 			if(newLine == true)
-				std::cout << std::endl;
+				write(Out::fd, "\n", 1);
 		}
 		static void print(const char &a, const std::string& sep = "", const bool& newLine = true)
 		{
-			std::cout << a;
-			std::cout << sep;
+			write(Out::fd, &a, 1);
+			write(Out::fd, sep.c_str(), sep.length());
 			if(newLine == true)
-				std::cout << std::endl;
+				write(Out::fd, "\n", 1);
 		}
 		static void print(const char *s, const std::string& sep = "", const bool& newLine = false)
 		{
-			std::cout << s;
-			std::cout << sep;
+			write(Out::fd, s, ft_strlen(s));
+			write(Out::fd, sep.c_str(), sep.length());
 			if(newLine == true)
-				std::cout << std::endl;
+				write(Out::fd, "\n", 1);
 		}
 
 		static void print(const int &a, const std::string& sep = "", const bool& newLine = true)
 		{
-			std::cout << a;
-			std::cout << sep;
+			std::stringstream ss;
+			ss << a;
+			std::string s = ss.str();
+			write(Out::fd, s.c_str(), s.length());
+			write(Out::fd, sep.c_str(), sep.length());
 			if(newLine == true)
-				std::cout << std::endl;
+				write(Out::fd, "\n", 1);
 		}
 		static void print(const double &a, const std::string& sep = "", const bool& newLine = true)
 		{
-			std::cout << a;
-			std::cout << sep;
+			std::stringstream ss;
+			ss << a;
+			std::string s = ss.str();
+			write(Out::fd, s.c_str(), s.length());
+			write(Out::fd, sep.c_str(), sep.length());
 			if(newLine == true)
-				std::cout << std::endl;
+				write(Out::fd, "\n", 1);
 		}
 		static void print(const bool &a, const std::string& sep = "", const bool& newLine = true)
 		{
 			if(a == true)
-				std::cout << "true";
+				write(Out::fd, "true", 4);
 			else
-				std::cout << "false";
-			std::cout << sep;
+				write(Out::fd, "false", 5);
+			write(Out::fd, sep.c_str(), sep.length());
 			if(newLine == true)
-				std::cout << std::endl;
+				write(Out::fd, "\n", 1);
 		}
 		static void print(const float &a, const std::string& sep = "", const bool& newLine = true)
 		{
-			std::cout << a;
-			std::cout << sep;
+			std::stringstream ss;
+			ss << a;
+			std::string s = ss.str();
+			write(Out::fd, sep.c_str(), sep.length());
 			if(newLine == true)
-				std::cout << std::endl;
+				write(Out::fd, "\n", 1);
 		}
 		static void print(const long &a, const std::string& sep = "", const bool& newLine = true)
 		{
-			std::cout << a;
-			std::cout << sep;
+			std::stringstream ss;
+			ss << a;
+			std::string s = ss.str();
+			write(Out::fd, sep.c_str(), sep.length());
 			if(newLine == true)
-				std::cout << std::endl;
+				write(Out::fd, "\n", 1);
 		}
 		static void print(const long long &a, const std::string& sep = "", const bool& newLine = true)
 		{
-			std::cout << a;
-			std::cout << sep;
+			std::stringstream ss;
+			ss << a;
+			std::string s = ss.str();
+			write(Out::fd, sep.c_str(), sep.length());
 			if(newLine == true)
-				std::cout << std::endl;
+				write(Out::fd, "\n", 1);
 		}
 
 		static void print(const short &a, const std::string& sep = "", const bool& newLine = true)
 		{
-			std::cout << a;
-			std::cout << sep;
+			std::stringstream ss;
+			ss << a;
+			std::string s = ss.str();
+			write(Out::fd, sep.c_str(), sep.length());
 			if(newLine == true)
-				std::cout << std::endl;
+				write(Out::fd, "\n", 1);
 		}
 
 		static void print(const unsigned int &a, const std::string& sep = "", const bool& newLine = true)
 		{
-			std::cout << a;
-			std::cout << sep;
+			std::stringstream ss;
+			ss << a;
+			std::string s = ss.str();
+			write(Out::fd, sep.c_str(), sep.length());
 			if(newLine == true)
-				std::cout << std::endl;
+				write(Out::fd, "\n", 1);
 		}
 
 		static void print(const unsigned long &a, const std::string& sep = "", const bool& newLine = true)
 		{
-			std::cout << a;
-			std::cout << sep;
+			std::stringstream ss;
+			ss << a;
+			std::string s = ss.str();
+			write(Out::fd, sep.c_str(), sep.length());
 			if(newLine == true)
-				std::cout << std::endl;
+				write(Out::fd, "\n", 1);
 		}
 
 		/**
@@ -226,9 +283,9 @@ class Printer {
 		template <class T>
 		static void print(const std::vector<T> &vec, const std::string& sep = ", ", const bool& newLine = true)
 		{
-			Printer::printContainerDelimiters(VECTOR, 0, newLine);
-			Printer::printBeginEnd(vec, sep);
-			Printer::printContainerDelimiters(VECTOR, 1, newLine);
+			Out::printContainerDelimiters(VECTOR, 0, newLine);
+			Out::printBeginEnd(vec, sep);
+			Out::printContainerDelimiters(VECTOR, 1, newLine);
 		}
 		/**
 		 * @brief Prints the contents of a std::list.
@@ -241,9 +298,9 @@ class Printer {
 		template <class T>
 		static void print(const std::list<T> &my_list, const std::string& sep = ", ", const bool& newLine = true)
 		{
-			Printer::printContainerDelimiters(LIST, 0, newLine);
-			Printer::printBeginEnd(my_list, sep);
-			Printer::printContainerDelimiters(LIST, 1, newLine);
+			Out::printContainerDelimiters(LIST, 0, newLine);
+			Out::printBeginEnd(my_list, sep);
+			Out::printContainerDelimiters(LIST, 1, newLine);
 		}
 
 		/**
@@ -257,9 +314,9 @@ class Printer {
 		template <class T>
 		static void print(const std::forward_list<T> &my_list, const std::string& sep = ", ", const bool& newLine = true)
 		{
-			Printer::printContainerDelimiters(FORWARD_LIST, 0, newLine);
-			Printer::printBeginEnd(my_list, sep);
-			Printer::printContainerDelimiters(FORWARD_LIST, 1, newLine);
+			Out::printContainerDelimiters(FORWARD_LIST, 0, newLine);
+			Out::printBeginEnd(my_list, sep);
+			Out::printContainerDelimiters(FORWARD_LIST, 1, newLine);
 		}
 		/**
 		 * @brief Prints the contents of a std::deque.
@@ -272,9 +329,9 @@ class Printer {
 		template <class T>
 		static void print(const std::deque<T> &my_deque, const std::string& sep = ", ", const bool& newLine = true)
 		{
-			Printer::printContainerDelimiters(DEQUE, 0, newLine);
-			Printer::printBeginEnd(my_deque, sep);
-			Printer::printContainerDelimiters(DEQUE, 1, newLine);
+			Out::printContainerDelimiters(DEQUE, 0, newLine);
+			Out::printBeginEnd(my_deque, sep);
+			Out::printContainerDelimiters(DEQUE, 1, newLine);
 		}
 
 		/**
@@ -288,19 +345,19 @@ class Printer {
 		template <class T>
 		static void print(std::stack<T> my_stack, const std::string& sep = ", ", const bool& newLine = true)
 		{
-			Printer::printContainerDelimiters(STACK, 0, newLine);
+			Out::printContainerDelimiters(STACK, 0, newLine);
 			while (!my_stack.empty())
 			{
 				auto elem = my_stack.top();
 				if(TypeChecker::isHandledContainer(elem))
-					Printer::print(elem, sep, false);
+					Out::print(elem, sep, false);
 				else
-					Printer::print(elem, "", false);
+					Out::print(elem, "", false);
 				my_stack.pop();
 				if (!my_stack.empty())
-					Printer::printSep(sep);
+					Out::printSep(sep);
 			}
-			Printer::printContainerDelimiters(STACK, 1, newLine);
+			Out::printContainerDelimiters(STACK, 1, newLine);
 		}
 
 		/**
@@ -314,19 +371,19 @@ class Printer {
 		template <class T>
 		static void print(std::queue<T> my_queue, const std::string& sep = ", ", const bool& newLine = true)
 		{
-			Printer::printContainerDelimiters(QUEUE, 0, newLine);
+			Out::printContainerDelimiters(QUEUE, 0, newLine);
 			while (!my_queue.empty())
 			{
 				auto elem = my_queue.front();
 				if(TypeChecker::isHandledContainer(elem))
-					Printer::print(elem, sep, false);
+					Out::print(elem, sep, false);
 				else
-					Printer::print(elem, "", false);
+					Out::print(elem, "", false);
 				my_queue.pop();
 				if (!my_queue.empty())
-					Printer::printSep(sep);
+					Out::printSep(sep);
 			}
-			Printer::printContainerDelimiters(QUEUE, 1, newLine);
+			Out::printContainerDelimiters(QUEUE, 1, newLine);
 		}
 
 		/**
@@ -342,57 +399,65 @@ class Printer {
     template <class K, class V>
     static void print(const std::map<K, V> &my_map, const std::string& sep = ", ", const bool& newLine = true) {
         
-		Printer::printContainerDelimiters(MAP, 0, newLine);  // Print opening delimiter
+		Out::printContainerDelimiters(MAP, 0, newLine);  // Print opening delimiter
 
         bool first = true;
         for (const auto &pair : my_map) {
             if (!first) {
-				Printer::printSep(sep);
+				Out::printSep(sep);
             }
-			Printer::print(pair.first, "", false);
-			Printer::print(": ", "", false);
+			Out::print(pair.first, "", false);
+			Out::print(": ", "", false);
 			if(TypeChecker::isHandledContainer(pair.second))
-				Printer::print(pair.second, sep, false);
+				Out::print(pair.second, sep, false);
 			else
-				Printer::print(pair.second, "", false);
+				Out::print(pair.second, "", false);
             first = false;
         }
 
-        Printer::printContainerDelimiters(MAP, 1, newLine);  // Print closing delimiter
+        Out::printContainerDelimiters(MAP, 1, newLine);  // Print closing delimiter
     }
 
 	/**
 	 * @brief Prints the contents of a std::set.
 	 *
 	 * @param my_set The set to print.
-	 * @param mode Determines the print format:
-	 *             - mode = 0: uses ", " as separator between elements.
-	 *             - mode != 0: uses ", " as separator between elements.
+	 * @param sep Determines the print format:
+	 *             - uses ", " as separator between elements by default.
 	 */
 	template <class T>
 	static void print(const std::set<T> &my_set, const std::string& sep = ", ", const bool& newLine = true)
 	{
-		Printer::printContainerDelimiters(SET, 0, newLine);
+		Out::printContainerDelimiters(SET, 0, newLine);
 		const auto end = my_set.end();
 		for (auto it = my_set.begin(); it != my_set.end(); it++)
 		{
-				if(TypeChecker::isHandledContainer(*it))
-					Printer::print(*it, sep, false);
-				else
-					Printer::print(*it, "", false);
-			Printer::print(*it, "", false);
-			// std::cout << *it;
+			if(TypeChecker::isHandledContainer(*it))
+				Out::print(*it, sep, false);
+			else
+				Out::print(*it, "", false);
 			if (std::next(it) != end)
-				Printer::printSep(sep);
+				Out::printSep(sep);
 		}
-		Printer::printContainerDelimiters(SET, 1, newLine);
+		Out::printContainerDelimiters(SET, 1, newLine);
 	}
 
 };
 
+int Out::fd = 1;
+
 template<typename... Args>
 void	out(Args... args) {
-	Printer::printAll(args...);
+	Out::fd = 1;
+	Out::printAll(args...);
+}
+
+template<typename... Args>
+void	fout(Args... args) {
+	Out::fd = fout_fd;
+	// out("fout::fd: ", Out::fd);
+	
+	Out::printAll(args...);
 }
 
 #endif
