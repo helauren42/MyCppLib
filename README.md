@@ -8,7 +8,11 @@ Namespace and using keyword have been omitted to facilitate integration to proje
 - A more convenient way of printing than std::cout
 - More utility functions for your workflow
 
+Really the main component of this library for now is the out() function in Printer/Printer.hpp
+
 ## Features / How to use
+
+  out() takes an arbitrary amount of arguments that can be all scalar types and most containers, some of the less common containers have not been included, out() prints a new line after every parameter except for c strings, this allows users to print debug statements as such;
 
 ### printer.hpp
 
