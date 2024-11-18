@@ -15,7 +15,7 @@ Char: a
 Int: 10
 String: "Hello"
 Double: 3.14
-Float: 
+Float: 3.14
 Bool: true
 
 All in one function call:
@@ -31,7 +31,7 @@ a
 10
 "Hello"
 3.14
-
+3.14
 true
 
 Nested container:
@@ -52,3 +52,6 @@ list <vector>:
 [[1, 2, 3, 4, 5],[5, 9, 5, 9],[9, 9, 9, 9]]
 set <vector>:
 {[1, 2, 3, 4, 5], [5, 9, 5, 9], [9, 9, 9, 9]}
+, 9, 9, 9]]
+"set <vector>:
+"{[1, 2, 3, 4, 5], [5, 9, 5, 9], [9, 9, 9, 9]}
