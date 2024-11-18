@@ -20,16 +20,6 @@
 #include <fcntl.h>
 #include <cstring>
 
-int	ft_strlen(const char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
-
 enum ContainerType {
     VECTOR,
     LIST,
@@ -178,7 +168,7 @@ class Out {
 		}
 		static void print(const char *s, const std::string& sep = "", const bool& newLine = false)
 		{
-			write(Out::fd, s, ft_strlen(s));
+			write(Out::fd, s, strlen(s));
 			write(Out::fd, sep.c_str(), sep.length());
 			if(newLine == true)
 				write(Out::fd, "\n", 1);
