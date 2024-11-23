@@ -10,6 +10,7 @@
 #include <list>
 #include <forward_list>
 #include <map>
+#include <unordered_map>
 #include <queue>
 #include <stack>
 #include <deque>
@@ -28,6 +29,7 @@ enum ContainerType {
     STACK,
     QUEUE,
     MAP,
+	UNORDERED_MAP,
     SET
 };
 
@@ -113,6 +115,7 @@ class Out {
 					delimiter[1] = ']';
 					break;
 				case MAP:
+				case UNORDERED_MAP:
 				case SET:
 					delimiter[0] = '{';
 					delimiter[1] = '}';
@@ -545,6 +548,28 @@ class Out {
 
         Out::printContainerDelimiters(MAP, 1, newLine);  // Print closing delimiter
     }
+
+	template <class T, class V>
+	static void print(const std::unordered_map<T, V> &my_map, const std::string& sep = ", ", const bool& newLine = true) {
+
+		Out::printContainerDelimiters(UNORDERED_MAP, 0, newLine);
+
+		bool first = true;
+		for (const auto &pair : my_map) {
+			if (!first) {
+				Out::printSep(sep);
+			}
+			Out::print(pair.first, "", false);
+			Out::print(": ", "", false);
+			if(TypeChecker::isHandledContainer(pair.second))
+				Out::print(pair.second, sep, false);
+			else
+				Out::print(pair.second, "", false);
+			first = false;
+		}
+
+		Out::printContainerDelimiters(UNORDERED_MAP, 1, newLine);
+	}
 
 	/**
 	 * @brief Prints the contents of a std::set.
