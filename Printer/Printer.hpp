@@ -30,7 +30,8 @@ enum ContainerType {
     QUEUE,
     MAP,
 	UNORDERED_MAP,
-    SET
+    SET,
+	CUSTOM
 };
 
 class TypeChecker {
@@ -594,7 +595,10 @@ class Out {
 		}
 		Out::printContainerDelimiters(SET, 1, newLine);
 	}
-
+	template <class T>
+	static void print(const T& object, const std::string& sep = ", ", const bool& newLine = true) {
+		std::cout << object;
+	}
 };
 
 int Out::fd = 1;
