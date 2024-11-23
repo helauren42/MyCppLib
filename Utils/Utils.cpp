@@ -10,3 +10,7 @@
 #include <stack>
 #include <deque>
 #include <set>
+
+int main() {
+	out(executeCommand("cat | cat"));
+}
