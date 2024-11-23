@@ -16,7 +16,7 @@
 
 ### Implementation for custom objects:
 
-- To output custom objects it is required that the user has implemented an operator << overload to std::ostream for his object's type.
+- To enable output for custom objects, the user must implement an operator<< overload for std::ostream specific to the object's type.
 
 ![alt text](imgs/custom_object.png)
 
