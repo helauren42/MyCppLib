@@ -8,7 +8,9 @@
   out() takes an arbitrary amount of arguments that can be scalar types, containers or custom objects, some of the less common containers have not been included, out() prints a new line after every parameter, except for c strings.
   
   - fout:
-  fout() works like out(), except that calling Out::setFoutFd() will redirect its output making it easier to store text in debug log files, the method setFoutFd will not redirect the output of out, so that fout() can be used to effortlesly output into a file while out() is being used to redirect to std out in the same program.
+  fout() works like out(), except that calling Out::setFoutFd() will redirect its output making it easier to store text in debug log files, the method setFoutFd will not redirect the output of out, so that fout() can be used to effortlesly to output into a file while out() is being used to redirect to std out in the same program.
+
+![alt text](imgs/setFoutFd.png)
 
   These function are calling write from unistd to output data, be mindful when redirecting STDOUT_FILENO.
   For custom objects std::cout is used and requires operator << overload.
