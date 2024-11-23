@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Printer/Printer.hpp"
 #include <type_traits>
 #include <vector>
 #include <list>
@@ -11,31 +12,22 @@
 #include <queue>
 #include <string>
 
-// std::string executeCommand(const std::string& command) {
-//     std::string result;
-//     FILE* pipe = popen(command.c_str(), "r");
-//     if (!pipe) {
-//         throw std::runtime_error("popen() failed!");
-//     }
-//     try {
-//         char buffer[128];
-//         while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
-//             result += buffer;
-//         }
-//     } catch (...) {
-//         pclose(pipe);
-//         throw;
-//     }
-//     pclose(pipe);
-//     return result;
-// }
+#include <iostream>
 
-// int main() {
-//     try {
-//         std::string output = executeCommand("lscpu");
-//         std::cout << "Command Output:\n" << output << std::endl;
-//     } catch (const std::exception& e) {
-//         std::cerr << "Error: " << e.what() << std::endl;
-//     }
-//     return 0;
-// }
+std::string executeCommand(const std::string& command) {
+	std::string result;
+	int status = system(command.c_str());
+	if (WIFEXITED(status)) {
+		result = std::to_string(WEXITSTATUS(status));
+	}
+	return result;
+}
+
+template<typename T>
+std::istream& operator>>(std::istream& is, std::vector<T>& vec) {
+	T value;
+	std::cin >> value;
+	vec.push_back(value);
+
+    return is;
+}

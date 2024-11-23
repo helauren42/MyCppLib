@@ -542,3 +542,4 @@ bool	stringCompareIgnoreCase(const std::string& s1, const std::string& s2) {
 
 	return lower_s1 == lower_s2;
 }
+
