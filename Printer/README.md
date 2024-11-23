@@ -29,8 +29,9 @@ output:
 
 
 ## Implementation for nested containers:
-
-- 
+  The output function is recursively calling itself to print the elements of a container so in the case of containers it will recursively call nested containers.
+![alt text](imgs/nested_containers.png)
+![alt text](imgs/nested_containers_result.png)
 
 ## Implementation for custom objects:
 
