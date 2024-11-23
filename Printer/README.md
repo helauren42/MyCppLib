@@ -21,5 +21,6 @@
 ![alt text](imgs/custom_object.png)
 
 OUTPUT:
+
 ![alt text](imgs/custom_object_result.png)
 
