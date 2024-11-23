@@ -1,5 +1,5 @@
 
 
-![alt text](imgs/image.png)
+![alt text](image.png)
 
 ![alt text](imgs/image.png)
