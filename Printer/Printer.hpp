@@ -596,7 +596,7 @@ class Out {
 		Out::printContainerDelimiters(SET, 1, newLine);
 	}
 	template <class T>
-	static void print(const T& object, const std::string& sep = ", ", const bool& newLine = true) {
+	static void print(const T& object, const std::string& sep = "", const bool& newLine = false) {
 		std::cout << object;
 	}
 };
