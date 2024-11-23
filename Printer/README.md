@@ -19,6 +19,5 @@
 - To output custom objects it is required that the user has implemented an operator << overload to std::ostream for his object's type.
 
 ![alt text](imgs/custom_object.png)
-OUTPUT:
-![alt text](imgs/custom_object_result.png)
+OUTPUT: ![alt text](imgs/custom_object_result.png)
 
