@@ -14,9 +14,21 @@
 
   These function are calling write from unistd to output data, be mindful when redirecting STDOUT_FILENO.
   For custom objects std::cout is used and requires operator << overload.
+  By default a newline is printed after every element except for c strings (char *), allowing the user to display a debug message specific to a variable on the same line as the variable for better readability, ex:
+
+![alt text](imgs/newLine.png)
+
+OUTPUT: 
+
+![alt text](imgs/newLine_result.png)
+
 
   - Printer::print()
   For more output customization Printer::print() can be called, various types are handled by print() but it can only take one element at a time to print. It has two params sep and newLine, sep is a string used to define the separator used to separate elements when printing containers of size > 1, by default teh separator is ", ". The param newLine can be set to true or false, true will output a newLine after printing the entire container, false will not, newLine defaults to true. The functions out and fout take an arbitrary amount of arguments and then call Printer::print() on each one of those arguments.
+
+## Implementation for nested containers:
+
+- 
 
 ## Implementation for custom objects:
 
