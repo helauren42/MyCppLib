@@ -25,12 +25,12 @@ output:
 
 
 ### - Printer::print()
-  For more output customization Printer::print() can be called, various types are handled by print() but it can only take one element at a time to print. It has two params sep and newLine, sep is a string used to define the separator used to separate elements when printing containers of size > 1, by default teh separator is ", ". The param newLine can be set to true or false, true will output a newLine after printing the entire container, false will not, newLine defaults to true. The functions out and fout take an arbitrary amount of arguments and then call Printer::print() on each one of those arguments.
+  For more output customization Printer::print() can be called, various types are handled by print() but it can only take one element at a time to print. It has two params sep and newLine, sep is a string used to define the separator used to separate elements when printing containers of size > 1, by default the separator is ", ". The param newLine can be set to true or false, true will output a newLine after printing the entire container, false will not, newLine defaults to true. The functions out and fout take an arbitrary amount of arguments and then call Printer::print() on each one of those arguments.
 
 
 ## Implementation for nested containers:
   The output function is recursively calling itself to print the elements of a container so in the case of containers it will recursively call nested containers.
-  
+
 ![alt text](imgs/nested_containers.png)
 ![alt text](imgs/nested_containers_result.png)
 
