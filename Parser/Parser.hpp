@@ -34,7 +34,10 @@ class Boolean : public Argument {
 			return arg;
 		}
 		std::string getStrValue() const override {
-			std::any_cast<bool>(getRawValue());
+			bool raw = std::any_cast<bool>(getRawValue());
+			if(raw == true)
+				return "true";
+			return "false";
 		}
 		
 };
@@ -54,7 +57,8 @@ class Int : public Argument {
 			return arg;
 		}
 		std::string getStrValue() const override {
-			std::any_cast<Int>(getRawValue());
+			int raw = std::any_cast<int>(getRawValue());
+			return std::to_string(raw);
 		}
 };
 
@@ -74,7 +78,7 @@ class String : public Argument {
 			return arg;
 		}
 		std::string getStrValue() const override {
-			std::any_cast<String>(getRawValue());
+			return std::any_cast<std::string>(getRawValue());
 		}
 };
 
@@ -161,7 +165,7 @@ std::ostream& operator<<(std::ostream& os, Parser parser) {
 	os << "{";
 	auto last = --args.end();
 	for(auto it = args.begin(); it != args.end(); it++) {
-		os << it->first << ": " << it->second->getRawValue();
+		os << it->first << ": " << it->second->getStrValue();
 		if(it != last) {
 			os << ",";
 		}
