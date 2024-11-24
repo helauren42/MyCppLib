@@ -104,7 +104,9 @@ class Parser {
 			return args;
 		}
 		bool	isOption(std::string elem) const {
-			if(elem.starts_with("-") || elem.starts_with("--"))
+			if(elem.find("--") != std::string::npos)
+				return true;
+			if(elem.find("-") != std::string::npos)
 				return true;
 			return false;
 		}
@@ -129,13 +131,13 @@ class Parser {
 			}
 			return option;
 		}
-		template<typename T>
-		std::string	parseOption(std::string name, T value) {
+		std::string	parseOption(std::string name, std::string value) {
 			// this function should not be called in case option is boolean
-			if(to_parse[option] == INT)
-				args[option] = new Int(value);
-			else(to_parse[option] == STRING)
-				args[option] = new String(value);
+			if(to_parse[name] == INT)
+				args[name] = new Int(std::stoi(value));
+			else if(to_parse[name] == STRING)
+				args[name] = new String(value);
+			return "";
 		}
 		void	parseArguments(char **av) {
 			std::string temp_option;
@@ -149,26 +151,29 @@ class Parser {
 				}
 				if(temp_option != "") {
 					updateItOption(it, temp_option);
-					parseOption(elem);
+					temp_option = parseOption(temp_option, elem);
 				}
 				else {
 					parseArg(it->first, elem);
 					it++;
 				}
-				temp_option = "";
 			}
 		};
 };
 
 std::ostream& operator<<(std::ostream& os, Parser parser) {
 	auto args = parser.getArgs();
+	os << "Parser: ";
 	os << "{";
-	auto last = --args.end();
-	for(auto it = args.begin(); it != args.end(); it++) {
-		os << it->first << ": " << it->second->getStrValue();
-		if(it != last) {
-			os << ",";
+	if(!args.empty()) {	
+		auto last = --args.end();
+		for(auto it = args.begin(); it != args.end(); it++) {
+			os << it->first << ": " << it->second->getStrValue();
+			if(it != last) {
+				os << ",";
+			}
 		}
 	}
 	os << "}" << std::endl;
+	return os;
 }
