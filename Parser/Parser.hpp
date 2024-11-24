@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Printer/Printer.hpp"
 #include <iostream>
 #include <string>
 #include <map>
@@ -90,13 +91,21 @@ class Parser {
 		static const int BOOLEAN = 0;
 		static const int INT = 1;
 		static const int STRING = 2;
-		Parser() {
+ 		Parser() {
+			out("constructor called");
 			args = {};
 		};
 		~Parser() {
-			for (auto it = args.begin(); it != args.end(); it++)
+			for (auto it = args.begin(); it != args.end(); it++) {
 				delete it->second;
+			}
 		};
+		void	printArgs() {
+			for (auto it = args.begin(); it != args.end(); it++) {
+				std::cout << "deleting " << it->first << std::endl;
+				std::cout << "second: " << it->second->getStrValue() << std::endl;
+			}
+		}
 		std::map <std::string, int> getToParse() const {
 			return to_parse;
 		}
@@ -120,6 +129,7 @@ class Parser {
 				it++;
 			if(it == to_parse.end())
 				throw std::out_of_range(key + " is not a valid argument, verify the order of arguments");
+			out("updateItOption: ", it->first);
 		}
 		void	parseArg(std::string name, std::string value) {
 			args[name]->setValue(value);
@@ -142,8 +152,10 @@ class Parser {
 		void	parseArguments(char **av) {
 			std::string temp_option;
 			auto it = to_parse.begin();
+			out("to_parse: ", to_parse);
 			for (int i = 1; av[i]; i++) {
 				std::string elem(av[i]);
+				out("elem: ",elem);
 				if(isOption(elem)) {
 					updateItOption(it, elem);
 					temp_option = parseOption(elem);
@@ -161,14 +173,14 @@ class Parser {
 		};
 };
 
-std::ostream& operator<<(std::ostream& os, Parser parser) {
+std::ostream& operator<<(std::ostream& os, const Parser& parser) {
 	auto args = parser.getArgs();
 	os << "Parser: ";
 	os << "{";
 	if(!args.empty()) {	
 		auto last = --args.end();
 		for(auto it = args.begin(); it != args.end(); it++) {
-			os << it->first << ": " << it->second->getStrValue();
+			os << "\"" << it->first << "\"" << ": " << it->second->getStrValue();
 			if(it != last) {
 				os << ",";
 			}
