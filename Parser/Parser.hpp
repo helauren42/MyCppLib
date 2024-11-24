@@ -86,22 +86,32 @@ class String : public Argument {
 class Parser {
 	private:
 		std::map <std::string, int> to_parse;
-		std::map <std::string, Argument*> args;
+		std::map <std::string, Argument*> option_args;
+		std::map <std::string, Argument*> positional_args;
+		std::map <std::string, Argument*>::iterator positional_args_it;
 	public:
 		static const int BOOLEAN = 0;
 		static const int INT = 1;
 		static const int STRING = 2;
  		Parser() {
-			out("constructor called");
-			args = {};
+			to_parse = {};
+			option_args = {};
+			positional_args = {};
 		};
 		~Parser() {
-			for (auto it = args.begin(); it != args.end(); it++) {
+			for (auto it = option_args.begin(); it != option_args.end(); it++) {
+				delete it->second;
+			}
+			for (auto it = positional_args.begin(); it != positional_args.end(); it++) {
 				delete it->second;
 			}
 		};
 		void	printArgs() {
-			for (auto it = args.begin(); it != args.end(); it++) {
+			for (auto it = option_args.begin(); it != option_args.end(); it++) {
+				std::cout << "deleting " << it->first << std::endl;
+				std::cout << "second: " << it->second->getStrValue() << std::endl;
+			}
+			for (auto it = positional_args.begin(); it != positional_args.end(); it++) {
 				std::cout << "deleting " << it->first << std::endl;
 				std::cout << "second: " << it->second->getStrValue() << std::endl;
 			}
@@ -110,7 +120,10 @@ class Parser {
 			return to_parse;
 		}
 		std::map <std::string, Argument*> getArgs() const {
-			return args;
+			std::map<std::string, Argument*> merged;
+			merged.insert(option_args.begin(), option_args.end());
+			merged.insert(positional_args.begin(), positional_args.end());
+			return merged;
 		}
 		bool	isOption(std::string elem) const {
 			if(elem.find("--") != std::string::npos)
@@ -124,50 +137,47 @@ class Parser {
 				throw (std::invalid_argument("Use the class's inherent static attributes such as Parser::BOOLEAN, Parser::INT, Parser::STRING"));
 			to_parse[name] = type;
 		};
-		void updateItOption(std::map<std::string, int>::iterator& it, std::string key) {
-			while(it != to_parse.end() && it->first != key)
-				it++;
-			if(it == to_parse.end())
-				throw std::out_of_range(key + " is not a valid argument, verify the order of arguments");
-			out("updateItOption: ", it->first);
-		}
-		void	parseArg(std::string name, std::string value) {
-			args[name]->setValue(value);
+		void	parseArg(std::string value) {
+			if(positional_args_it == positional_args.end())
+				throw (std::invalid_argument("Positional argument not added to parse " + value));
+			positional_args[positional_args_it->first] = new String(value);
+			positional_args_it++;
 		};
 		std::string	parseOption(std::string option) {
+			if(option_args.find(option) != option_args.end())
+				throw (std::invalid_argument("Duplicate option: " + option));
 			if(to_parse[option] == BOOLEAN) {
-				args[option] = new Boolean(true);
+				option_args[option] = new Boolean(true);
 				return "";
 			}
 			return option;
 		}
 		std::string	parseOption(std::string name, std::string value) {
+			if(option_args.find(name) != option_args.end())
+				throw (std::invalid_argument("Duplicate option: " + name));
 			// this function should not be called in case option is boolean
 			if(to_parse[name] == INT)
-				args[name] = new Int(std::stoi(value));
+				option_args[name] = new Int(std::stoi(value));
 			else if(to_parse[name] == STRING)
-				args[name] = new String(value);
+				option_args[name] = new String(value);
 			return "";
 		}
 		void	parseArguments(char **av) {
 			std::string temp_option;
-			auto it = to_parse.begin();
+			positional_args_it = positional_args.begin();
 			out("to_parse: ", to_parse);
 			for (int i = 1; av[i]; i++) {
 				std::string elem(av[i]);
 				out("elem: ",elem);
 				if(isOption(elem)) {
-					updateItOption(it, elem);
 					temp_option = parseOption(elem);
 					continue;
 				}
 				if(temp_option != "") {
-					updateItOption(it, temp_option);
 					temp_option = parseOption(temp_option, elem);
 				}
 				else {
-					parseArg(it->first, elem);
-					it++;
+					parseArg(elem);
 				}
 			}
 		};
