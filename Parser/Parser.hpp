@@ -11,13 +11,9 @@ class Argument {
 	public:
 		Argument() {};
 		virtual ~Argument() {};
-		virtual void setValue(std::string) = 0;
+		virtual void setValue(const std::string& value) = 0;
 		virtual std::any getRawValue() const = 0;
-
-		template<typename T>
-		T getValue(){
-			return std::any_cast<T>(getRawValue());
-		};
+		virtual std::string getStrValue() const = 0;
 };
 
 class Boolean : public Argument {
@@ -31,12 +27,16 @@ class Boolean : public Argument {
 			arg = value;
 		};
 		~Boolean(){};
-		void setValue(std::string value) override {
+		void setValue(const std::string& value) override {
 			arg = true;
 		}
 		std::any getRawValue() const override {
 			return arg;
 		}
+		std::string getStrValue() const override {
+			std::any_cast<bool>(getRawValue());
+		}
+		
 };
 
 class Int : public Argument {
@@ -47,11 +47,14 @@ class Int : public Argument {
 		Int(const int& value)
 		{arg = value;};
 		~Int(){};
-		void setValue(std::string value) override {
+		void setValue(const std::string& value) override {
 			arg = std::stoi(value);
 		}
 		std::any getRawValue() const override {
 			return arg;
+		}
+		std::string getStrValue() const override {
+			std::any_cast<Int>(getRawValue());
 		}
 };
 
@@ -64,11 +67,14 @@ class String : public Argument {
 			arg = value;
 		};
 		~String(){};
-		void setValue(std::string value) override {
+		void setValue(const std::string& value) override {
 			arg = value;
 		}
 		std::any getRawValue() const override {
 			return arg;
+		}
+		std::string getStrValue() const override {
+			std::any_cast<String>(getRawValue());
 		}
 };
 
@@ -155,7 +161,7 @@ std::ostream& operator<<(std::ostream& os, Parser parser) {
 	os << "{";
 	auto last = --args.end();
 	for(auto it = args.begin(); it != args.end(); it++) {
-		os << it->first << ": " << it->second;
+		os << it->first << ": " << it->second->getRawValue();
 		if(it != last) {
 			os << ",";
 		}
