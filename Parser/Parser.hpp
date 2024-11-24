@@ -7,13 +7,6 @@
 #include <variant>
 #include <any>
 
-// enum {
-// 	BOOLEAN,
-// 	// CHAR,
-// 	INT,
-// 	STRING
-// };
-
 class Argument {
 	public:
 		Argument() {};
@@ -100,7 +93,7 @@ class Parser {
 		std::map <std::string, Argument*> getArgs() const {
 			return args;
 		}
-		bool	isOption(std::string elem) {
+		bool	isOption(std::string elem) const {
 			if(elem.starts_with("-") || elem.starts_with("--"))
 				return true;
 			return false;
@@ -110,21 +103,20 @@ class Parser {
 				throw (std::invalid_argument("Use the class's inherent static attributes such as Parser::BOOLEAN, Parser::INT, Parser::STRING"));
 			to_parse[name] = type;
 		};
-		auto updateItOption(std::map<std::string, int>::iterator& it, std::string key) {
+		void updateItOption(std::map<std::string, int>::iterator& it, std::string key) {
 			while(it != to_parse.end() && it->first != key)
 				it++;
 			if(it == to_parse.end())
 				throw std::out_of_range(key + " is not a valid argument, verify the order of arguments");
 		}
 		void	parseArg(std::string name, std::string value) {
-			if(args.find(name) == args.end())
-				throw (std::invalid_argument("Argument not found"));
 			args[name]->setValue(value);
 		};
-
 		std::string	parseOption(std::string option) {
-			if(to_parse[option] == BOOLEAN)
+			if(to_parse[option] == BOOLEAN) {
 				args[option] = new Boolean(true);
+				return "";
+			}
 			return option;
 		}
 		template<typename T>
@@ -151,6 +143,7 @@ class Parser {
 				}
 				else {
 					parseArg(it->first, elem);
+					it++;
 				}
 				temp_option = "";
 			}
