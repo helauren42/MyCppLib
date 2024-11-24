@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <exception>
+#include <variant>
 
 // enum {
 // 	BOOLEAN,
@@ -15,21 +17,19 @@ class Argument {
 	public:
 		Argument() {};
 		virtual ~Argument() {};
-		virtual void setArg() = 0;
+		virtual void setArg(std::string) = 0;
 };
 
 class Boolean : public Argument {
 	private:
 		bool arg;
 	public:
-		Boolean(){};
-		Boolean(bool value) 
-		{
-			arg = value;
+		Boolean(){
+			arg = false;
 		};
 		~Boolean(){};
-		void setArg(bool value) {
-			arg = value;
+		void setArg(std::string value) override {
+			arg = true;
 		}
 };
 
@@ -37,14 +37,10 @@ class Int : public Argument {
 	private:
 		int arg;
 	public:
-		Int(){};
-		Int(int num)
-		{
-			arg = num;
-		};
+		Int(){arg = 0;};
 		~Int(){};
-		void setArg(int num) {
-			arg = num;
+		void setArg(std::string value) override {
+			arg = std::stoi(value);
 		}
 };
 
@@ -53,11 +49,9 @@ class String : public Argument {
 		std::string arg;
 	public:
 		String(){};
-		String(std::string str)
-		{};
 		~String(){};
-		void setArg(std::string str) {
-			arg = str;
+		void setArg(std::string value) override {
+			arg = value;
 		}
 };
 
@@ -65,15 +59,39 @@ class Parser {
 	private:
 		// first string is the name of the option / argument, the int is its type
 		std::map <std::string, int> to_parse;
+		// first element is the name, second is the value 
 		std::map <std::string, Argument*> args;
 	public:
-		static int BOOLEAN;
-		static int INT;
-		static int STRING;
+		static const int BOOLEAN = 0;
+		static const int INT = 1;
+		static const int STRING = 2;
 		Parser() {
 			args = {};
 		};
 		~Parser() {};
-		void	makeArgument(std::string name, int type);
-		std::string parseArgument(std::string arg);
+		void	addArgument(std::string name, int type) {
+			if(type < BOOLEAN || type > STRING)
+				throw (std::invalid_argument("Use the class's inherent static attributes such as Parser::BOOLEAN, Parser::INT, Parser::STRING"));
+
+			std::pair<std::string, Argument*> pair;
+			pair.first = name;
+			switch (type)
+			{
+				case BOOLEAN:
+					pair.second = new Boolean;
+					break;
+				case INT:
+					pair.second = new Int;
+					break;
+				case STRING:
+					pair.second = new String;
+				default:
+					break;
+			}
+		};
+		void	parseArgument(std::string arg) {
+			if(args.find(arg) == args.end())
+				throw (std::invalid_argument("Argument not found"));
+			args[arg]->setArg(arg);
+		};
 };
