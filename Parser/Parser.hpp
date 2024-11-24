@@ -5,6 +5,7 @@
 #include <map>
 #include <exception>
 #include <variant>
+#include <any>
 
 // enum {
 // 	BOOLEAN,
@@ -17,7 +18,13 @@ class Argument {
 	public:
 		Argument() {};
 		virtual ~Argument() {};
-		virtual void setArg(std::string) = 0;
+		virtual void setValue(std::string) = 0;
+		virtual std::any getRawValue() const = 0;
+
+		template<typename T>
+		T getValue(){
+			return std::any_cast<T>(getRawValue());
+		};
 };
 
 class Boolean : public Argument {
@@ -27,9 +34,15 @@ class Boolean : public Argument {
 		Boolean(){
 			arg = false;
 		};
+		Boolean(const bool& value){
+			arg = value;
+		};
 		~Boolean(){};
-		void setArg(std::string value) override {
+		void setValue(std::string value) override {
 			arg = true;
+		}
+		std::any getRawValue() const override {
+			return arg;
 		}
 };
 
@@ -38,9 +51,14 @@ class Int : public Argument {
 		int arg;
 	public:
 		Int(){arg = 0;};
+		Int(const int& value)
+		{arg = value;};
 		~Int(){};
-		void setArg(std::string value) override {
+		void setValue(std::string value) override {
 			arg = std::stoi(value);
+		}
+		std::any getRawValue() const override {
+			return arg;
 		}
 };
 
@@ -49,9 +67,15 @@ class String : public Argument {
 		std::string arg;
 	public:
 		String(){};
-		~String(){};
-		void setArg(std::string value) override {
+		String(const std::string& value) {
 			arg = value;
+		};
+		~String(){};
+		void setValue(std::string value) override {
+			arg = value;
+		}
+		std::any getRawValue() const override {
+			return arg;
 		}
 };
 
@@ -68,30 +92,56 @@ class Parser {
 		Parser() {
 			args = {};
 		};
-		~Parser() {};
+		~Parser() {
+			for (auto it = args.begin(); it != args.end(); it++)
+				delete it->second;
+		};
+		bool	isOption(std::string elem) {
+			if(elem.starts_with("-") || elem.starts_with("--"))
+				return true;
+			return false;
+		}
 		void	addArgument(std::string name, int type) {
 			if(type < BOOLEAN || type > STRING)
 				throw (std::invalid_argument("Use the class's inherent static attributes such as Parser::BOOLEAN, Parser::INT, Parser::STRING"));
-
-			std::pair<std::string, Argument*> pair;
-			pair.first = name;
-			switch (type)
-			{
-				case BOOLEAN:
-					pair.second = new Boolean;
-					break;
-				case INT:
-					pair.second = new Int;
-					break;
-				case STRING:
-					pair.second = new String;
-				default:
-					break;
-			}
+			to_parse[name] = type;
 		};
-		void	parseArgument(std::string arg) {
-			if(args.find(arg) == args.end())
+		auto updateIt(std::map<std::string, int>::iterator it, std::string key) {
+			while(it != to_parse.end() && it->first != key)
+				it++;
+			if(it == to_parse.end())
+				throw std::out_of_range(key + " is not a valid argument");
+		}
+		void	parseArgument(std::string name, std::string value) {
+			if(args.find(name) == args.end())
 				throw (std::invalid_argument("Argument not found"));
-			args[arg]->setArg(arg);
+			args[name]->setValue(value);
+		};
+		std::string	parseOption(std::string option) {
+			if(to_parse[option] == BOOLEAN) {
+				args[option] = new Boolean;
+				args[option]->setValue("true");
+			}
+			return option;
+		}
+		template<typename T>
+		std::string	parseOption(std::string name, T value) {
+			// this function should not be called in case option is boolean
+			if(to_parse[option] == INT)
+				args[option] = new Int(value);
+			else(to_parse[option] == STRING)
+				args[option] = new String(value);
+		}
+		void	parseArguments(char **av) {
+			std::string temp_option;
+			auto it = to_parse.begin();
+			for (int i = 1; av[i]; i++) {
+				std::string elem(av[i]);
+				if(isOption(elem))
+					updateIt(it, elem); temp_option = parseOption(elem);	continue;
+				if(temp_option != "")
+					parseOption(elem);
+				temp_option = "";
+			}
 		};
 };
