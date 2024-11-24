@@ -81,9 +81,7 @@ class String : public Argument {
 
 class Parser {
 	private:
-		// first string is the name of the option / argument, the int is its type
 		std::map <std::string, int> to_parse;
-		// first element is the name, second is the value 
 		std::map <std::string, Argument*> args;
 	public:
 		static const int BOOLEAN = 0;
@@ -96,6 +94,12 @@ class Parser {
 			for (auto it = args.begin(); it != args.end(); it++)
 				delete it->second;
 		};
+		std::map <std::string, int> getToParse() const {
+			return to_parse;
+		}
+		std::map <std::string, Argument*> getArgs() const {
+			return args;
+		}
 		bool	isOption(std::string elem) {
 			if(elem.starts_with("-") || elem.starts_with("--"))
 				return true;
@@ -106,22 +110,21 @@ class Parser {
 				throw (std::invalid_argument("Use the class's inherent static attributes such as Parser::BOOLEAN, Parser::INT, Parser::STRING"));
 			to_parse[name] = type;
 		};
-		auto updateIt(std::map<std::string, int>::iterator it, std::string key) {
+		auto updateItOption(std::map<std::string, int>::iterator& it, std::string key) {
 			while(it != to_parse.end() && it->first != key)
 				it++;
 			if(it == to_parse.end())
-				throw std::out_of_range(key + " is not a valid argument");
+				throw std::out_of_range(key + " is not a valid argument, verify the order of arguments");
 		}
-		void	parseArgument(std::string name, std::string value) {
+		void	parseArg(std::string name, std::string value) {
 			if(args.find(name) == args.end())
 				throw (std::invalid_argument("Argument not found"));
 			args[name]->setValue(value);
 		};
+
 		std::string	parseOption(std::string option) {
-			if(to_parse[option] == BOOLEAN) {
-				args[option] = new Boolean;
-				args[option]->setValue("true");
-			}
+			if(to_parse[option] == BOOLEAN)
+				args[option] = new Boolean(true);
 			return option;
 		}
 		template<typename T>
@@ -137,11 +140,32 @@ class Parser {
 			auto it = to_parse.begin();
 			for (int i = 1; av[i]; i++) {
 				std::string elem(av[i]);
-				if(isOption(elem))
-					updateIt(it, elem); temp_option = parseOption(elem);	continue;
-				if(temp_option != "")
+				if(isOption(elem)) {
+					updateItOption(it, elem);
+					temp_option = parseOption(elem);
+					continue;
+				}
+				if(temp_option != "") {
+					updateItOption(it, temp_option);
 					parseOption(elem);
+				}
+				else {
+					parseArg(it->first, elem);
+				}
 				temp_option = "";
 			}
 		};
 };
+
+std::ostream& operator<<(std::ostream& os, Parser parser) {
+	auto args = parser.getArgs();
+	os << "{";
+	auto last = --args.end();
+	for(auto it = args.begin(); it != args.end(); it++) {
+		os << it->first << ": " << it->second;
+		if(it != last) {
+			os << ",";
+		}
+	}
+	os << "}" << std::endl;
+}
