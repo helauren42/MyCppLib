@@ -639,9 +639,14 @@ public:
 	 * @param newLine changing this parameter has no effect
 	 */
 	template <class T>
-	static void print(const T &object, const std::string &sep = "", const bool &newLine = false)
+	static void print(const T& object, const std::string& sep = "", const bool& newLine = false,
+					typename std::enable_if<std::is_class<T>::value>::type* = nullptr)
 	{
 		std::cout << object;
+		if (!sep.empty())
+			std::cout << sep;
+		if (newLine)
+			std::cout << std::endl;
 	}
 };
 
