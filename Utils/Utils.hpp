@@ -14,6 +14,28 @@
 
 #include <iostream>
 
+class TypeChecker
+{
+	public:
+		template <typename T>
+		static constexpr bool isHandledContainer(const T &value) {
+			return is_specialization<T, std::vector>::value || is_specialization<T, std::list>::value 
+				|| is_specialization<T, std::forward_list>::value || is_specialization<T, std::set>::value 
+				|| is_specialization<T, std::map>::value || is_specialization<T, std::deque>::value 
+				|| is_specialization<T, std::stack>::value || is_specialization<T, std::queue>::value;
+		}
+
+	private:
+		template <typename T, template <typename...> class Template>
+		struct is_specialization : std::false_type
+		{};
+
+		template <template <typename...> class Template, typename... Args>
+		struct is_specialization<Template<Args...>, Template> : std::true_type
+		{};
+};
+
+
 std::string executeCommand(const std::string& command) {
 	std::string result;
 	int status = system(command.c_str());

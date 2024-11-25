@@ -8,6 +8,8 @@
 #include <variant>
 #include <any>
 
+
+
 class Argument {
 	public:
 		Argument() {};
@@ -15,33 +17,6 @@ class Argument {
 		virtual void setValue(const std::string& value) = 0;
 		virtual std::any getRawValue() const = 0;
 		virtual std::string getStrValue() const = 0;
-};
-
-class Types {
-	template<typename T>
-	bool isInt(T) {
-		return isType<T, int>();
-	}
-
-	template<typename T>
-	bool isBool(T) {
-		return isType<T, bool>();
-	}
-
-	template<typename T>
-	bool isString(T) {
-		return isType<T, std::string>();
-	}
-
-	template<typename T>
-	bool isType() {
-		return false;
-	}
-
-	template<typename T, typename S>
-	bool isType() {
-		return false;
-	}
 };
 
 class Boolean : public Argument {
