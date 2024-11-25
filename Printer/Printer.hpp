@@ -39,6 +39,12 @@ enum ContainerType
 
 int fout_fd = 1;
 
+template <typename... Args>
+void out(const Args&... args);
+
+template <typename... Args>
+void fout(const Args&... args);
+
 class Out
 {
 
@@ -68,10 +74,12 @@ private:
 
 		for (auto it = container.begin(); it != container.end(); it++)
 		{
-			if (std::next(it) == end && !TypeChecker::isHandledContainer(*it))
+			if (std::next(it) == end && !TypeChecker::isHandledContainer(*it)) {
 				Out::print(*it, "", newLine);
-			else
+			}
+			else {
 				Out::print(*it, sep, newLine);
+			}
 
 			// to output the separator in case of nested containers
 			if (TypeChecker::isHandledContainer(*it) && std::next(it) != end)
@@ -198,6 +206,7 @@ public:
 		write(Out::fd, "\"", 1);
 		write(Out::fd, a.c_str(), a.length());
 		write(Out::fd, "\"", 1);
+		write(Out::fd, sep.c_str(), sep.length());
 		if (newLine == true)
 			write(Out::fd, "\n", 1);
 	}
@@ -344,7 +353,6 @@ public:
 			write(Out::fd, "\n", 1);
 	}
 
-	/*************  ✨ Codeium Command 🌟  *************/
 	/**
 	 * @brief Prints a short integer to the output stream.
 	 * @param a The unsigned short integer to print.
@@ -384,7 +392,6 @@ public:
 			write(Out::fd, "\n", 1);
 	}
 
-	/*************  ✨ Codeium Command 🌟  *************/
 	/**
 	 * @brief Prints an unsigned long integer to the output stream.
 	 * @param a The unsigned long integer to print.
