@@ -17,6 +17,33 @@ class Argument {
 		virtual std::string getStrValue() const = 0;
 };
 
+class Types {
+	template<typename T>
+	bool isInt(T) {
+		return isType<T, int>();
+	}
+
+	template<typename T>
+	bool isBool(T) {
+		return isType<T, bool>();
+	}
+
+	template<typename T>
+	bool isString(T) {
+		return isType<T, std::string>();
+	}
+
+	template<typename T>
+	bool isType() {
+		return false;
+	}
+
+	template<typename T, typename S>
+	bool isType() {
+		return false;
+	}
+};
+
 class Boolean : public Argument {
 	private:
 		bool arg;
@@ -105,11 +132,15 @@ class Parser {
 				return true;
 			return false;
 		}
+
+		void	checkType(int type) const {
+			if(type < BOOLEAN || type > STRING)
+				throw (std::invalid_argument("Use the class's inherent static attributes such as Parser::BOOLEAN, Parser::INT, Parser::STRING"));
+		}
 		void	parseArg(std::string value) {
 			if(to_parse_positional_it == to_parse_positional.end())
 				throw (std::invalid_argument("Too many positional arguments"));
 			positional_args[to_parse_positional_it->first] = new String(value);
-			std::cout << positional_args[to_parse_positional_it->first] << std::endl;
 			to_parse_positional_it++;
 		};
 		std::string	parseOption(std::string option) {
@@ -117,7 +148,6 @@ class Parser {
 				throw (std::invalid_argument("Duplicate option: " + option));
 			if(to_parse[option] == BOOLEAN) {
 				option_args[option] = new Boolean(true);
-				std::cout << option_args[option] << std::endl;
 				return "";
 			}
 			return option;
@@ -128,14 +158,13 @@ class Parser {
 			// this function should not be called in case option is boolean
 			if(to_parse[name] == INT) {
 				option_args[name] = new Int(std::stoi(value));
-				std::cout << option_args[name] << std::endl;
 			}
 			else if(to_parse[name] == STRING) {
 				option_args[name] = new String(value);
-				std::cout << option_args[name] << std::endl;	
 			}
 			return "";
 		}
+
 	public:
 		static const int BOOLEAN = 0;
 		static const int INT = 1;
@@ -153,14 +182,48 @@ class Parser {
 				delete it->second;
 			}
 		};
-		auto	getArg(const std::string& name) const {
+
+
+		template <typename T>
+		T getArg(const std::string& name) const {
 			auto args = isOption(name) ? option_args : positional_args;
-			for(auto it : args) {
-				if(it.first == name)
-					return it.second->getRawValue();
+			for (const auto& it : args) {
+				if (it.first == name) {
+					if constexpr (std::is_same_v<T, bool>) {
+						return std::any_cast<bool>(it.second->getRawValue());
+					} else if constexpr (std::is_same_v<T, int>) {
+						return std::any_cast<int>(it.second->getRawValue());
+					} else if constexpr (std::is_same_v<T, std::string>) {
+						return std::any_cast<std::string>(it.second->getRawValue());
+					} else {
+						throw std::runtime_error("Unsupported type for getArg");
+					}
+				}
 			}
-			throw ("Argument not found: " + name);
+			throw std::runtime_error("Argument not found: " + name);
 		}
+
+		template <typename T>
+		T getArg(const char* _name) const {
+			std::string name = _name;
+			auto args = isOption(name) ? option_args : positional_args;
+			for (const auto& it : args) {
+				if (it.first == name) {
+					if constexpr (std::is_same_v<T, bool>) {
+						return std::any_cast<bool>(it.second->getRawValue());
+					} else if constexpr (std::is_same_v<T, int>) {
+						return std::any_cast<int>(it.second->getRawValue());
+					} else if constexpr (std::is_same_v<T, std::string>) {
+						return std::any_cast<std::string>(it.second->getRawValue());
+					} else {
+						throw std::runtime_error("Unsupported type for getArg");
+					}
+				}
+			}
+			throw std::runtime_error("Argument not found: " + name);
+		}
+
+
 		std::map <std::string, std::variant<int, bool, std::string>> getArgs() const {
 			std::map<std::string, Argument*> merged;
 			merged.insert(option_args.begin(), option_args.end());
@@ -180,18 +243,14 @@ class Parser {
 			std::map<std::string, Argument*> merged;
 			merged.insert(option_args.begin(), option_args.end());
 			merged.insert(positional_args.begin(), positional_args.end());
-			out("merged: ", merged);
-			out("positional args: ", positional_args);
 			std::map<std::string, std::string> ret;
 			for(auto it = merged.begin(); it != merged.end(); it++) {
 				ret[it->first] = it->second->getStrValue();
 			}
 			return ret;
 		}
-
 		void	addArgument(std::string name, int type) {
-			if(type < BOOLEAN || type > STRING)
-				throw (std::invalid_argument("Use the class's inherent static attributes such as Parser::BOOLEAN, Parser::INT, Parser::STRING"));
+			checkType(type);
 			to_parse[name] = type;
 			if(!isOption(name))
 				to_parse_positional[name] = type;
@@ -205,7 +264,6 @@ class Parser {
 			out("to_parse: ", to_parse);
 			for (int i = 1; av[i]; i++) {
 				std::string elem(av[i]);
-				out("elem: ", elem);
 				if(isOption(elem)) {
 					temp_option = parseOption(elem);
 					continue;
