@@ -8,8 +8,6 @@
 #include <variant>
 #include <any>
 
-
-
 class Argument {
 	public:
 		Argument() {};
@@ -29,6 +27,9 @@ class Boolean : public Argument {
 		Boolean(const bool& value){
 			arg = value;
 		};
+		Boolean(const bool&& value){
+			arg = value;
+		};
 		~Boolean(){};
 		void setValue(const std::string& value) override {
 			arg = true;
@@ -43,6 +44,11 @@ class Boolean : public Argument {
 			return "false";
 		}
 };
+
+std::ostream& operator<<(std::ostream& os, Argument* arg) {
+	os << arg->getStrValue();
+	return os;
+}
 
 class Int : public Argument {
 	private:
@@ -91,13 +97,14 @@ std::ostream& operator<<(std::ostream& os, const Argument& arg) {
 
 class Parser {
 	private:
-		std::map <std::string, int> to_parse;
-		std::map <std::string, int> to_parse_positional;
-		std::map <std::string, int>::iterator to_parse_positional_it;
-		std::map <std::string, Argument*> option_args;
-		std::map <std::string, Argument*> positional_args;
+		std::map<std::string, Argument*> default_values;
+		std::map<std::string, int> to_parse;
+		std::map<std::string, int> to_parse_positional;
+		std::map<std::string, int>::iterator to_parse_positional_it;
+		std::map<std::string, Argument*> option_args;
+		std::map<std::string, Argument*> positional_args;
 
-		std::map <std::string, int> getToParse() const {
+		std::map<std::string, int> getToParse() const {
 			return to_parse;
 		}
 		bool	isOption(std::string elem) const {
@@ -157,7 +164,6 @@ class Parser {
 				delete it->second;
 			}
 		};
-
 
 		template <typename T>
 		T getArg(const std::string& name) const {
@@ -227,12 +233,42 @@ class Parser {
 		void	addArgument(std::string name, int type) {
 			checkType(type);
 			to_parse[name] = type;
+			if(isOption(name) && type == BOOLEAN) {
+				default_values[name] = new Boolean(false);
+			}
 			if(!isOption(name))
 				to_parse_positional[name] = type;
 			
 			// if it has default value add here
 		};
+		template <typename T>
+		void	addArgument(std::string name, int type, T default_value) {
+			checkType(type);
+			to_parse[name] = type;
+			if(!isOption(name))
+				to_parse_positional[name] = type;
+			if(type == BOOLEAN) {
+				default_values[name] = new Boolean(default_value);
+			}
+			else if(type == INT) {
+				default_values[name] = new Int(default_value);
+			}
+			else if(type == STRING) {
+				default_values[name] = new String(default_value);
+			}
+		};
 
+		void	addDefaultValues() {
+			std::map<std::string, Argument*> merged;
+			merged.insert(option_args.begin(), option_args.end());
+			merged.insert(positional_args.begin(), positional_args.end());
+			for(auto it = default_values.begin(); it != default_values.end(); it++) {
+				if(merged.find(it->first) == merged.end()) {
+					auto& arg = isOption(it->first) ? option_args : positional_args;
+					arg[it->first] = it->second;
+				}
+			}
+		}
 		void	parseArguments(char **av) {
 			std::string temp_option;
 			to_parse_positional_it = to_parse_positional.begin();
@@ -250,6 +286,7 @@ class Parser {
 					parseArg(elem);
 				}
 			}
+			addDefaultValues();
 		};
 };
 
