@@ -40,7 +40,6 @@ class Boolean : public Argument {
 				return "true";
 			return "false";
 		}
-		
 };
 
 class Int : public Argument {
@@ -82,6 +81,11 @@ class String : public Argument {
 			return std::any_cast<std::string>(getRawValue());
 		}
 };
+
+std::ostream& operator<<(std::ostream& os, const Argument& arg) {
+	os << arg.getStrValue();
+	return os;
+}
 
 class Parser {
 	private:
@@ -152,12 +156,32 @@ class Parser {
 				delete it->second;
 			}
 		};
-		std::map <std::string, Argument*> getArgs() const {
+		std::map <std::string, std::variant<int, bool, std::string>> getArgs() const {
 			std::map<std::string, Argument*> merged;
 			merged.insert(option_args.begin(), option_args.end());
 			merged.insert(positional_args.begin(), positional_args.end());
-			return merged;
+			std::map<std::string, std::variant<int, bool, std::string>> ret;
+			for(auto it = merged.begin(); it != merged.end(); it++) {
+				if(dynamic_cast<Boolean*>(it->second))
+					ret[it->first] =  std::any_cast<bool>(it->second->getRawValue());
+				else if(dynamic_cast<Int*>(it->second))
+					ret[it->first] =  std::any_cast<int>(it->second->getRawValue());
+				else if(dynamic_cast<String*>(it->second))
+					ret[it->first] = it->second->getStrValue();
+			}
+			return ret;
 		}
+		std::map <std::string, std::string> getArgsStr() const {
+			std::map<std::string, Argument*> merged;
+			merged.insert(option_args.begin(), option_args.end());
+			merged.insert(positional_args.begin(), positional_args.end());
+			std::map<std::string, std::string> ret;
+			for(auto it = merged.begin(); it != merged.end(); it++) {
+				ret[it->first] = it->second->getStrValue();
+			}
+			return ret;
+		}
+
 		void	addArgument(std::string name, int type) {
 			if(type < BOOLEAN || type > STRING)
 				throw (std::invalid_argument("Use the class's inherent static attributes such as Parser::BOOLEAN, Parser::INT, Parser::STRING"));

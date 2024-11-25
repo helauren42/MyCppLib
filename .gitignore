@@ -1,5 +1,5 @@
 a.out
-test.cpp
-tester.cpp
+test.*
+tester.*
 .vscode
 todo.txt
