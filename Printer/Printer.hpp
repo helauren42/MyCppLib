@@ -188,14 +188,13 @@ public:
 		}
 	}
 
-	/*************  ✨ Codeium Command 🌟  *************/
 	/**
 	 * @brief Prints multiple elements to the output stream with the given separator and newline control.
 	 * @param first The first element to print.
 	 * @param args The remaining elements to print.
 	 */
 	template <typename T, typename... Args>
-	static void printAll(T first, Args... args)
+	static void printAll(const T& first, const Args&... args)
 	{
 		Out::print(first);
 		if constexpr (sizeof...(args) > 0)
@@ -206,7 +205,6 @@ public:
 		}
 	}
 
-	/*************  ✨ Codeium Command 🌟  *************/
 	/**
 	 * @brief Prints a string to the output stream.
 	 * @param a The string to print.
@@ -237,6 +235,12 @@ public:
 			write(Out::fd, "\n", 1);
 	}
 
+	/**
+	 * @brief Prints a c-string to the output stream.
+	 * @param s The string to print.
+	 * @param sep The separator string to print after the string.
+	 * @param newLine Whether to print a newline after the string.
+	 */
 	static void print(const char *s, const std::string &sep = "", const bool &newLine = false)
 	{
 		// strings are enclosed in double quotes
@@ -652,15 +656,33 @@ public:
 
 int Out::fd = 1;
 
+/**
+ * @brief Outputs the given arguments to the standard output.
+ * 
+ * This function sets the file descriptor to standard output (stdout) 
+ * and calls the Out::printAll function to output the provided arguments.
+ * 
+ * @tparam Args Variadic template parameter pack representing the types of the arguments.
+ * @param args The arguments to be printed.
+ */
 template <typename... Args>
-void out(Args... args)
+void out(const Args&... args)
 {
 	Out::fd = 1;
 	Out::printAll(args...);
 }
 
+/**
+ * @brief Outputs the given arguments to the file descriptor specified by fout_fd.
+ * 
+ * This function sets the file descriptor to fout_fd and calls the Out::printAll 
+ * function to output the provided arguments.
+ * 
+ * @tparam Args Variadic template parameter pack representing the types of the arguments.
+ * @param args The arguments to be printed.
+ */
 template <typename... Args>
-void fout(Args... args)
+void fout(const Args&... args)
 {
 	Out::fd = fout_fd;
 
