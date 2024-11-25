@@ -1,0 +1,12 @@
+add default value functionality
+
+add throwing if after parsing positional arguments were not attributed a value
+
+
+not currently accepting positional args that aren't strings
+
+
+-- read me --
+
+make list of thrown errors
+

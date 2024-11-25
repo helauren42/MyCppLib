@@ -90,20 +90,11 @@ std::ostream& operator<<(std::ostream& os, const Argument& arg) {
 class Parser {
 	private:
 		std::map <std::string, int> to_parse;
+		std::map <std::string, int> to_parse_positional;
+		std::map <std::string, int>::iterator to_parse_positional_it;
 		std::map <std::string, Argument*> option_args;
 		std::map <std::string, Argument*> positional_args;
-		std::map <std::string, Argument*>::iterator positional_args_it;
 
-		void	printArgs() {
-			for (auto it = option_args.begin(); it != option_args.end(); it++) {
-				std::cout << "deleting " << it->first << std::endl;
-				std::cout << "second: " << it->second->getStrValue() << std::endl;
-			}
-			for (auto it = positional_args.begin(); it != positional_args.end(); it++) {
-				std::cout << "deleting " << it->first << std::endl;
-				std::cout << "second: " << it->second->getStrValue() << std::endl;
-			}
-		}
 		std::map <std::string, int> getToParse() const {
 			return to_parse;
 		}
@@ -115,16 +106,18 @@ class Parser {
 			return false;
 		}
 		void	parseArg(std::string value) {
-			if(positional_args_it == positional_args.end())
-				throw (std::invalid_argument("Positional argument not added to parse " + value));
-			positional_args[positional_args_it->first] = new String(value);
-			positional_args_it++;
+			if(to_parse_positional_it == to_parse_positional.end())
+				throw (std::invalid_argument("Too many positional arguments"));
+			positional_args[to_parse_positional_it->first] = new String(value);
+			std::cout << positional_args[to_parse_positional_it->first] << std::endl;
+			to_parse_positional_it++;
 		};
 		std::string	parseOption(std::string option) {
 			if(option_args.find(option) != option_args.end())
 				throw (std::invalid_argument("Duplicate option: " + option));
 			if(to_parse[option] == BOOLEAN) {
 				option_args[option] = new Boolean(true);
+				std::cout << option_args[option] << std::endl;
 				return "";
 			}
 			return option;
@@ -133,10 +126,14 @@ class Parser {
 			if(option_args.find(name) != option_args.end())
 				throw (std::invalid_argument("Duplicate option: " + name));
 			// this function should not be called in case option is boolean
-			if(to_parse[name] == INT)
+			if(to_parse[name] == INT) {
 				option_args[name] = new Int(std::stoi(value));
-			else if(to_parse[name] == STRING)
+				std::cout << option_args[name] << std::endl;
+			}
+			else if(to_parse[name] == STRING) {
 				option_args[name] = new String(value);
+				std::cout << option_args[name] << std::endl;	
+			}
 			return "";
 		}
 	public:
@@ -156,6 +153,14 @@ class Parser {
 				delete it->second;
 			}
 		};
+		auto	getArg(const std::string& name) const {
+			auto args = isOption(name) ? option_args : positional_args;
+			for(auto it : args) {
+				if(it.first == name)
+					return it.second->getRawValue();
+			}
+			throw ("Argument not found: " + name);
+		}
 		std::map <std::string, std::variant<int, bool, std::string>> getArgs() const {
 			std::map<std::string, Argument*> merged;
 			merged.insert(option_args.begin(), option_args.end());
@@ -175,6 +180,8 @@ class Parser {
 			std::map<std::string, Argument*> merged;
 			merged.insert(option_args.begin(), option_args.end());
 			merged.insert(positional_args.begin(), positional_args.end());
+			out("merged: ", merged);
+			out("positional args: ", positional_args);
 			std::map<std::string, std::string> ret;
 			for(auto it = merged.begin(); it != merged.end(); it++) {
 				ret[it->first] = it->second->getStrValue();
@@ -187,11 +194,14 @@ class Parser {
 				throw (std::invalid_argument("Use the class's inherent static attributes such as Parser::BOOLEAN, Parser::INT, Parser::STRING"));
 			to_parse[name] = type;
 			if(!isOption(name))
-				positional_args[name] = nullptr;
+				to_parse_positional[name] = type;
+			
+			// if it has default value add here
 		};
+
 		void	parseArguments(char **av) {
 			std::string temp_option;
-			positional_args_it = positional_args.begin();
+			to_parse_positional_it = to_parse_positional.begin();
 			out("to_parse: ", to_parse);
 			for (int i = 1; av[i]; i++) {
 				std::string elem(av[i]);
@@ -211,13 +221,13 @@ class Parser {
 };
 
 std::ostream& operator<<(std::ostream& os, const Parser& parser) {
-	auto args = parser.getArgs();
+	auto args = parser.getArgsStr();
 	os << "Parser: ";
 	os << "{";
 	if(!args.empty()) {	
 		auto last = --args.end();
 		for(auto it = args.begin(); it != args.end(); it++) {
-			os << "\"" << it->first << "\"" << ": " << it->second->getStrValue();
+			os << "\"" << it->first << "\"" << ": " << it->second;
 			if(it != last) {
 				os << ",";
 			}
