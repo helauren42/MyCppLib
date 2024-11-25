@@ -7,6 +7,7 @@
 #include <exception>
 #include <variant>
 #include <any>
+#include <cstring>
 
 class Argument {
 	public:
@@ -126,6 +127,8 @@ class Parser {
 			to_parse_positional_it++;
 		};
 		std::string	parseOption(std::string option) {
+			std::vector<std::string> options;
+
 			if(option_args.find(option) != option_args.end())
 				throw (std::invalid_argument("Duplicate option: " + option));
 			if(to_parse[option] == BOOLEAN) {
@@ -170,15 +173,7 @@ class Parser {
 			auto args = isOption(name) ? option_args : positional_args;
 			for (const auto& it : args) {
 				if (it.first == name) {
-					if constexpr (std::is_same_v<T, bool>) {
-						return std::any_cast<bool>(it.second->getRawValue());
-					} else if constexpr (std::is_same_v<T, int>) {
-						return std::any_cast<int>(it.second->getRawValue());
-					} else if constexpr (std::is_same_v<T, std::string>) {
-						return std::any_cast<std::string>(it.second->getRawValue());
-					} else {
-						throw std::runtime_error("Unsupported type for getArg");
-					}
+					return std::any_cast<T>(it.second->getRawValue());
 				}
 			}
 			throw std::runtime_error("Argument not found: " + name);
@@ -187,23 +182,14 @@ class Parser {
 		template <typename T>
 		T getArg(const char* _name) const {
 			std::string name = _name;
-			auto args = isOption(name) ? option_args : positional_args;
+			std::map<std::string, Argument*> args = isOption(name) ? option_args : positional_args;
 			for (const auto& it : args) {
 				if (it.first == name) {
-					if constexpr (std::is_same_v<T, bool>) {
-						return std::any_cast<bool>(it.second->getRawValue());
-					} else if constexpr (std::is_same_v<T, int>) {
-						return std::any_cast<int>(it.second->getRawValue());
-					} else if constexpr (std::is_same_v<T, std::string>) {
-						return std::any_cast<std::string>(it.second->getRawValue());
-					} else {
-						throw std::runtime_error("Unsupported type for getArg");
-					}
+					return std::any_cast<T>(it.second->getRawValue());
 				}
 			}
 			throw std::runtime_error("Argument not found: " + name);
 		}
-
 
 		std::map <std::string, std::variant<int, bool, std::string>> getArgs() const {
 			std::map<std::string, Argument*> merged;
@@ -269,18 +255,35 @@ class Parser {
 				}
 			}
 		}
-		void	parseArguments(char **av) {
-			std::string temp_option;
-			to_parse_positional_it = to_parse_positional.begin();
-			out("to_parse: ", to_parse);
+		std::vector<std::string> splitArguments(char **av) {
+			std::vector<std::string> ret;
+			std::string dash = "-";
 			for (int i = 1; av[i]; i++) {
-				std::string elem(av[i]);
-				if(isOption(elem)) {
-					temp_option = parseOption(elem);
-					continue;
+				if (strlen(av[i]) > 2 && av[i][0] == '-' && av[i][1] != '-') {
+					for(int j = 1; av[i][j]; j++) {
+						char temp = av[i][j];
+						ret.push_back(dash + temp);
+					}
 				}
+				else
+					ret.push_back(av[i]);
+			}
+			return ret;
+		}
+		void	parseArguments(char **av) {
+			std::string temp_option = "";
+			to_parse_positional_it = to_parse_positional.begin();
+			std::vector<std::string> args = splitArguments(av);
+			out("to_parse: ", to_parse);
+			out("args: ", args);
+			for (auto& elem : args) {;
+				out("elem: ", elem);
 				if(temp_option != "") {
 					temp_option = parseOption(temp_option, elem);
+				}
+				else if(isOption(elem)) {
+					temp_option = parseOption(elem);
+					continue;
 				}
 				else {
 					parseArg(elem);
@@ -299,7 +302,7 @@ std::ostream& operator<<(std::ostream& os, const Parser& parser) {
 		for(auto it = args.begin(); it != args.end(); it++) {
 			os << "\"" << it->first << "\"" << ": " << it->second;
 			if(it != last) {
-				os << ",";
+				os << ", ";
 			}
 		}
 	}
