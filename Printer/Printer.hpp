@@ -1,7 +1,5 @@
-#ifndef Out_HPP
-#define Out_HPP
-
-#include "../Utils/Utils.hpp"
+#ifndef OUT_HPP
+#define OUT_HPP
 
 #include <sstream>
 #include <exception>
@@ -22,6 +20,32 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <cstring>
+
+
+#ifndef UTILS_HPP
+# define UTILS_HPP
+class TypeChecker
+{
+	public:
+		template <typename T>
+		static constexpr bool isHandledContainer(const T &value) {
+			return is_specialization<T, std::vector>::value || is_specialization<T, std::list>::value 
+				|| is_specialization<T, std::forward_list>::value || is_specialization<T, std::set>::value 
+				|| is_specialization<T, std::map>::value || is_specialization<T, std::deque>::value 
+				|| is_specialization<T, std::stack>::value || is_specialization<T, std::queue>::value;
+		}
+
+	private:
+		template <typename T, template <typename...> class Template>
+		struct is_specialization : std::false_type
+		{};
+
+		template <template <typename...> class Template, typename... Args>
+		struct is_specialization<Template<Args...>, Template> : std::true_type
+		{};
+};
+
+#endif
 
 enum ContainerType
 {
@@ -540,7 +564,6 @@ public:
 	template <class K, class V>
 	static void print(const std::map<K, V> &my_map, const std::string &sep = ", ", const bool &newLine = true)
 	{
-
 		Out::printContainerDelimiters(MAP, 0, newLine); // Print opening delimiter
 
 		bool first = true;
@@ -552,10 +575,12 @@ public:
 			}
 			Out::print(pair.first, "", false);
 			Out::print(": ", "", false);
-			if (TypeChecker::isHandledContainer(pair.second))
+			if (TypeChecker::isHandledContainer(pair.second)) {
 				Out::print(pair.second, sep, false);
-			else
+			}
+			else {
 				Out::print(pair.second, "", false);
+			}
 			first = false;
 		}
 
@@ -576,7 +601,6 @@ public:
 	template <class T, class V>
 	static void print(const std::unordered_map<T, V> &my_map, const std::string &sep = ", ", const bool &newLine = true)
 	{
-
 		Out::printContainerDelimiters(UNORDERED_MAP, 0, newLine);
 
 		bool first = true;
@@ -634,7 +658,10 @@ public:
 	static void print(const T& object, const std::string& sep = "", const bool& newLine = false,
 					typename std::enable_if<std::is_class<T>::value>::type* = nullptr)
 	{
-		std::cout << object;
+		std::stringstream ss;
+		ss << object;
+		std::string s(ss.str());
+		write(Out::fd, s.c_str(), s.length());
 		if (!sep.empty())
 			std::cout << sep;
 		if (newLine)
