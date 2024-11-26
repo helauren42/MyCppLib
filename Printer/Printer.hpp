@@ -618,7 +618,6 @@ public:
 				Out::print(pair.second, "", false);
 			first = false;
 		}
-
 		Out::printContainerDelimiters(UNORDERED_MAP, 1, newLine);
 	}
 
@@ -632,8 +631,7 @@ public:
 	 *             - set to true as default.
 	 */
 	template <class T>
-	static void print(const std::set<T> &my_set, const std::string &sep = ", ", const bool &newLine = true)
-	{
+	static void print(const std::set<T> &my_set, const std::string &sep = ", ", const bool &newLine = true) {
 		Out::printContainerDelimiters(SET, 0, newLine);
 		const auto end = my_set.end();
 		for (auto it = my_set.begin(); it != my_set.end(); it++)
@@ -656,6 +654,20 @@ public:
 	 */
 	template <class T>
 	static void print(const T& object, const std::string& sep = "", const bool& newLine = false,
+					typename std::enable_if<std::is_class<T>::value>::type* = nullptr)
+	{
+		std::stringstream ss;
+		ss << object;
+		std::string s(ss.str());
+		write(Out::fd, s.c_str(), s.length());
+		if (!sep.empty())
+			std::cout << sep;
+		if (newLine)
+			std::cout << std::endl;
+	}
+
+	template <class T>
+	static void print(const T* object, const std::string& sep = "", const bool& newLine = false,
 					typename std::enable_if<std::is_class<T>::value>::type* = nullptr)
 	{
 		std::stringstream ss;

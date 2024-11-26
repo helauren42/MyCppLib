@@ -44,3 +44,11 @@ OUTPUT:
 
 ![alt text](imgs/custom_object_result.png)
 
+- A template pointer print function has been imnplemented to work with pointer to custom objects as long as the correct std::ostream operator<< overload is implemented, so that the out function can be used for polymorphism:
+
+![alt text](imgs/nested_pointer_object.png)
+
+OUTPUT:
+
+![alt text](imgs/nested_pointer_object_result.png)
+
