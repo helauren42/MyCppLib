@@ -31,6 +31,9 @@ class Boolean : public Argument {
 		Boolean(const bool&& value){
 			arg = value;
 		};
+		Boolean(const std::string& value){
+			setValue(value);
+		};
 		~Boolean(){};
 		void setValue(const std::string& value) override {
 			arg = true;
@@ -58,6 +61,9 @@ class Int : public Argument {
 		Int(){arg = 0;};
 		Int(const int& value)
 		{arg = value;};
+		Int(const std::string& value){
+			setValue(value);
+		};
 		~Int(){};
 		void setValue(const std::string& value) override {
 			arg = std::stoi(value);
@@ -154,9 +160,13 @@ class Parser {
 			merged.insert(option_args.begin(), option_args.end());
 			merged.insert(positional_args.begin(), positional_args.end());
 			for(auto it = default_values.begin(); it != default_values.end(); it++) {
+				// out("search: ", merged.find(it->first));
 				if(merged.find(it->first) == merged.end()) {
 					auto& arg = isOption(it->first) ? option_args : positional_args;
 					arg[it->first] = it->second;
+					// out("arg: ", arg);
+					// out("option arg: ", option_args);
+					// out("positional arg: ", positional_args);
 				}
 			}
 		}
@@ -250,12 +260,11 @@ class Parser {
 			}
 			if(!isOption(name))
 				to_parse_positional[name] = type;
-			
-			// if it has default value add here
 		};
 		template <typename T>
-		void	addArgument(std::string name, int type, T default_value) {
+		void	addArgument(std::string name, int type, T _default_value) {
 			checkType(type);
+			std::string default_value(_default_value);
 			to_parse[name] = type;
 			if(!isOption(name))
 				to_parse_positional[name] = type;
