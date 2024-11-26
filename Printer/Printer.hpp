@@ -170,8 +170,8 @@ public:
 	}
 
 	/**
-	 * @brief Sets the file descriptor to redirect `fout` stream.
-	 * @param file The name of the file to open.
+	 * @brief Sets the file descriptor to redirect the `fout` stream to the specified file.
+	 * @param file The name of the file to open. Creates the file if it does not exist and opens it in append mode (does not truncate).
 	 * @throws std::runtime_error if the file could not be opened.
 	 */
 	static void setFoutFd(const char *file)
@@ -187,8 +187,8 @@ public:
 	}
 
 	/**
-	 * @brief Sets the file descriptor to redirect `fout` stream.
-	 * @param file The name of the file to open.
+	 * @brief Sets the file descriptor to redirect the `fout` stream to the specified file.
+	 * @param file The name of the file to open. Creates the file if it does not exist and opens it in append mode (does not truncate).
 	 * @throws std::runtime_error if the file could not be opened.
 	 */
 	static void setFoutFd(const std::string &file)
