@@ -122,7 +122,7 @@ class Parser {
 		}
 		void	parseArg(std::string value) {
 			if(to_parse_positional_it == to_parse_positional.end())
-				throw (std::invalid_argument("Too many positional arguments"));
+				throw (std::invalid_argument("Invalid argument: " + value));
 			positional_args[to_parse_positional_it->first] = new String(value);
 			to_parse_positional_it++;
 		};
@@ -148,6 +148,32 @@ class Parser {
 				option_args[name] = new String(value);
 			}
 			return "";
+		}
+		void	addDefaultValues() {
+			std::map<std::string, Argument*> merged;
+			merged.insert(option_args.begin(), option_args.end());
+			merged.insert(positional_args.begin(), positional_args.end());
+			for(auto it = default_values.begin(); it != default_values.end(); it++) {
+				if(merged.find(it->first) == merged.end()) {
+					auto& arg = isOption(it->first) ? option_args : positional_args;
+					arg[it->first] = it->second;
+				}
+			}
+		}
+		std::vector<std::string> splitArguments(char **av) {
+			std::vector<std::string> ret;
+			std::string dash = "-";
+			for (int i = 1; av[i]; i++) {
+				if (strlen(av[i]) > 2 && av[i][0] == '-' && av[i][1] != '-') {
+					for(int j = 1; av[i][j]; j++) {
+						char temp = av[i][j];
+						ret.push_back(dash + temp);
+					}
+				}
+				else
+					ret.push_back(av[i]);
+			}
+			return ret;
 		}
 
 	public:
@@ -244,40 +270,11 @@ class Parser {
 			}
 		};
 
-		void	addDefaultValues() {
-			std::map<std::string, Argument*> merged;
-			merged.insert(option_args.begin(), option_args.end());
-			merged.insert(positional_args.begin(), positional_args.end());
-			for(auto it = default_values.begin(); it != default_values.end(); it++) {
-				if(merged.find(it->first) == merged.end()) {
-					auto& arg = isOption(it->first) ? option_args : positional_args;
-					arg[it->first] = it->second;
-				}
-			}
-		}
-		std::vector<std::string> splitArguments(char **av) {
-			std::vector<std::string> ret;
-			std::string dash = "-";
-			for (int i = 1; av[i]; i++) {
-				if (strlen(av[i]) > 2 && av[i][0] == '-' && av[i][1] != '-') {
-					for(int j = 1; av[i][j]; j++) {
-						char temp = av[i][j];
-						ret.push_back(dash + temp);
-					}
-				}
-				else
-					ret.push_back(av[i]);
-			}
-			return ret;
-		}
 		void	parseArguments(char **av) {
 			std::string temp_option = "";
 			to_parse_positional_it = to_parse_positional.begin();
 			std::vector<std::string> args = splitArguments(av);
-			out("to_parse: ", to_parse);
-			out("args: ", args);
 			for (auto& elem : args) {;
-				out("elem: ", elem);
 				if(temp_option != "") {
 					temp_option = parseOption(temp_option, elem);
 				}
