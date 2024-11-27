@@ -48,8 +48,7 @@ auto args = parser.getArgs(); // Returns std::map<std::string, std::string>
 
 ![alt text](imgs/simple.png)
 
-by running ./program --b hello -a 5 -c https://www.amazon.de
-we obtain:
+by running "./program --b hello -a 5 -c https://www.amazon.de" we obtain:
 
 ![alt text](imgs/simple_result.png)
 
