@@ -52,7 +52,7 @@ by running "./program --b hello -a 5 -c https://www.amazon.de" we obtain:
 
 ![alt text](imgs/simple_result.png)
 
-To use this out function refer to the printer in MyCppLib/Printer/
+To use this out function refer to the README.md file in MyCppLib/Printer/
 
 ## Notes:
 
