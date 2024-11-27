@@ -44,9 +44,12 @@ auto args = parser.getArgs(); // Returns std::map<std::string, std::variant<int,
 
 auto args = parser.getArgs(); // Returns std::map<std::string, std::string>
 
-## Example: 
+## Example:
 
 ![alt text](imgs/simple.png)
+
+by running ./program --b hello -a 5 -c https://www.amazon.de
+we obtain:
 
 ![alt text](imgs/simple_result.png)
 
