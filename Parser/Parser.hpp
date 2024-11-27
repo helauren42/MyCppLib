@@ -178,6 +178,13 @@ class Parser {
 			return ret;
 		}
 
+		void	checkPositional() {
+			for(auto it = to_parse_positional.begin(); it != to_parse_positional.end(); it++) {
+				if(positional_args.find(it->first) == positional_args.end())
+					throw std::runtime_error("Positional argument not found: " + it->first);
+			}
+		}
+
 	public:
 		static const int BOOLEAN = 0;
 		static const int INT = 1;

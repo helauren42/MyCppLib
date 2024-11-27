@@ -41,10 +41,13 @@ int timeout = parser.getArg<int>("--timeout");
 Get a map of all parsed arguments:
 
 auto args = parser.getArgs(); // Returns std::map<std::string, std::variant<int, bool, std::string>>
-for (const auto& [key, value] : args) {
-    std::cout << key << ": " << std::visit([](auto&& arg) { return arg; }, value) << std::endl;
-}
+
+auto args = parser.getArgs(); // Returns std::map<std::string, std::string>
 
 ## Notes:
 
-if a positional argument is registered to the parser with addArgument without any default value, not providing any value for it to the parser will throw an error.
+- getArg throws a runtime error exception if the element is not found
+
+- if a positional argument is registered to the parser with addArgument without any default value, not providing any value for it to the parser will throw an error.
+
+- for a boolean argument getArgs will always work as it's value is false if not provided and it becomes true when it is provided.
