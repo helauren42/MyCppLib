@@ -50,6 +50,7 @@ auto args = parser.getArgs(); // Returns std::map<std::string, std::string>
 
 ![alt text](imgs/simple_result.png)
 
+To use this out function refer to the printer in MyCppLib/Printer/
 
 ## Notes:
 
