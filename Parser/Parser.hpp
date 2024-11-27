@@ -18,6 +18,11 @@ class Argument {
 		virtual std::string getStrValue() const = 0;
 };
 
+std::ostream& operator<<(std::ostream& os, const Argument* arg) {
+	os << arg->getStrValue();
+	return os;
+}
+
 class Boolean : public Argument {
 	private:
 		bool arg;
@@ -48,11 +53,6 @@ class Boolean : public Argument {
 			return "false";
 		}
 };
-
-std::ostream& operator<<(std::ostream& os, Argument* arg) {
-	os << arg->getStrValue();
-	return os;
-}
 
 class Int : public Argument {
 	private:
@@ -96,11 +96,6 @@ class String : public Argument {
 			return std::any_cast<std::string>(getRawValue());
 		}
 };
-
-std::ostream& operator<<(std::ostream& os, const Argument& arg) {
-	os << arg.getStrValue();
-	return os;
-}
 
 class Parser {
 	private:
@@ -164,9 +159,6 @@ class Parser {
 				if(merged.find(it->first) == merged.end()) {
 					auto& arg = isOption(it->first) ? option_args : positional_args;
 					arg[it->first] = it->second;
-					// out("arg: ", arg);
-					// out("option arg: ", option_args);
-					// out("positional arg: ", positional_args);
 				}
 			}
 		}
@@ -205,7 +197,7 @@ class Parser {
 		};
 
 		template <typename T>
-		T getArg(const std::string& name) const {
+		auto getArg(const std::string& name) const {
 			auto args = isOption(name) ? option_args : positional_args;
 			for (const auto& it : args) {
 				if (it.first == name) {
@@ -216,7 +208,7 @@ class Parser {
 		}
 
 		template <typename T>
-		T getArg(const char* _name) const {
+		auto getArg(const char* _name) const {
 			std::string name = _name;
 			std::map<std::string, Argument*> args = isOption(name) ? option_args : positional_args;
 			for (const auto& it : args) {
@@ -296,6 +288,7 @@ class Parser {
 				}
 			}
 			addDefaultValues();
+			// check all positional arguments have been provided
 		};
 };
 

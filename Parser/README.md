@@ -15,10 +15,9 @@ The Parser library provides a simple yet extensible framework for parsing comman
 
 - Output Formatting: Easily retrieve arguments in both raw and string formats.
 
-
 ## How to Use
 
-- 1. Add Arguments
+### 1. Add Arguments
 Use addArgument to register arguments with their name, type, and optional default value.
 
 Parser parser;
@@ -26,27 +25,26 @@ parser.addArgument("--verbose", Parser::BOOLEAN); // Boolean flag
 parser.addArgument("input", Parser::STRING);      // Positional argument
 parser.addArgument("--timeout", Parser::INT, 30); // Integer option with default value
 
-2. Parse Command-Line Arguments
+### 2. Parse Command-Line Arguments
 Call parseArguments with the command-line arguments (argv):
 
-cpp
-Copy code
 char* argv[] = {"program", "--verbose", "file.txt", "--timeout", "60"};
 parser.parseArguments(argv);
-3. Access Parsed Values
+
+### 3. Access Parsed Values
 Retrieve parsed arguments using getArg:
 
-cpp
-Copy code
 bool verbose = parser.getArg<bool>("--verbose");
 std::string input = parser.getArg<std::string>("input");
 int timeout = parser.getArg<int>("--timeout");
-4. Retrieve All Arguments
+
 Get a map of all parsed arguments:
 
-cpp
-Copy code
 auto args = parser.getArgs(); // Returns std::map<std::string, std::variant<int, bool, std::string>>
 for (const auto& [key, value] : args) {
     std::cout << key << ": " << std::visit([](auto&& arg) { return arg; }, value) << std::endl;
 }
+
+## Notes:
+
+if a positional argument is registered to the parser with addArgument without any default value, not providing any value for it to the parser will throw an error.
