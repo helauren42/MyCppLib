@@ -3,11 +3,17 @@
 This project was started recently and is still far from complete.
 
 This is a custom cpp library to improve my workflow on personal and professional projects.
-Namespace and using keyword have been omitted to facilitate integration to projects.
+Every hpp file can be seen as a library of its own and is designed to work as a standalone, so that you just need to import the hpp file in order to use it.
+Namespace and the using keywords have been omitted to facilitate integration to projects.
 
 Here are the different sections of the library
-- Printer.hpp: A more convenient way of printing than using cout as containers can be passed directly as argument
+- Parser.hpp: A class making parsing CLI arguments more convenient.
+- Printer.hpp: A more convenient way of printing than using cout as containers can be passed directly as argumentm inspired from python's print()
 - Strings.hpp: String manipulation library
+
+### Parser/Parser.hpp
+
+- Please refer to the README.md file inside of the Parser directory to understand the parser's usage.
 
 ### Printer/Printer.hpp
 

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UTILS_HPP
+# define UTILS_HPP
 
 #include "../Printer/Printer.hpp"
 #include <type_traits>
@@ -16,14 +17,16 @@
 
 class TypeChecker
 {
+	
 	public:
 		template <typename T>
 		static constexpr bool isHandledContainer(const T &value) {
 			return is_specialization<T, std::vector>::value || is_specialization<T, std::list>::value 
-				|| is_specialization<T, std::forward_list>::value || is_specialization<T, std::set>::value 
+				|| is_specialization<T, std::forward_list>::value || is_specialization<T, std::set>::value
 				|| is_specialization<T, std::map>::value || is_specialization<T, std::deque>::value 
 				|| is_specialization<T, std::stack>::value || is_specialization<T, std::queue>::value;
 		}
+		// template<teypename T>
 
 	private:
 		template <typename T, template <typename...> class Template>
@@ -34,7 +37,6 @@ class TypeChecker
 		struct is_specialization<Template<Args...>, Template> : std::true_type
 		{};
 };
-
 
 std::string executeCommand(const std::string& command) {
 	std::string result;
@@ -53,3 +55,5 @@ std::istream& operator>>(std::istream& is, std::vector<T>& vec) {
 
     return is;
 }
+
+#endif

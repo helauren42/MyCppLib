@@ -44,10 +44,16 @@ auto args = parser.getArgs(); // Returns std::map<std::string, std::variant<int,
 
 auto args = parser.getArgs(); // Returns std::map<std::string, std::string>
 
+## Example: 
+
+
+
 ## Notes:
 
 - getArg throws a runtime error exception if the element is not found
 
 - if a positional argument is registered to the parser with addArgument without any default value, not providing any value for it to the parser will throw an error.
 
-- for a boolean argument getArgs will always work as it's value is false if not provided and it becomes true when it is provided.
+- a boolean argument has a default value of false, and when the boolean is passed as argument its value becomes true.
+
+- setting a default value to every argument can be practical when repetitively testing code with the same input, as it alleviates the need to pass arguments to the program.

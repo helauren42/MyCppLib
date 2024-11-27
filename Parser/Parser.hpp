@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Printer/Printer.hpp"
 #include <iostream>
 #include <string>
 #include <map>
@@ -117,6 +116,10 @@ class Parser {
 			return false;
 		}
 
+	/// @brief Check if the given type is valid
+	///
+	/// @details Throw a std::invalid_argument if the type is not valid.
+	/// The type must be one of Parser::BOOLEAN, Parser::INT, Parser::STRING.
 		void	checkType(int type) const {
 			if(type < BOOLEAN || type > STRING)
 				throw (std::invalid_argument("Use the class's inherent static attributes such as Parser::BOOLEAN, Parser::INT, Parser::STRING"));
@@ -155,7 +158,6 @@ class Parser {
 			merged.insert(option_args.begin(), option_args.end());
 			merged.insert(positional_args.begin(), positional_args.end());
 			for(auto it = default_values.begin(); it != default_values.end(); it++) {
-				// out("search: ", merged.find(it->first));
 				if(merged.find(it->first) == merged.end()) {
 					auto& arg = isOption(it->first) ? option_args : positional_args;
 					arg[it->first] = it->second;
@@ -260,10 +262,16 @@ class Parser {
 			if(!isOption(name))
 				to_parse_positional[name] = type;
 		};
+
 		template <typename T>
 		void	addArgument(std::string name, int type, T _default_value) {
 			checkType(type);
-			std::string default_value(_default_value);
+			std::string default_value;
+			if constexpr (std::is_same<T, std::string>::value || std::is_same<T, const char *>::value
+			|| std::is_same<T, char *>::value || std::is_same<T, const std::string>::value)
+				default_value = _default_value;
+			else
+				default_value = std::to_string(_default_value);
 			to_parse[name] = type;
 			if(!isOption(name))
 				to_parse_positional[name] = type;
@@ -295,7 +303,7 @@ class Parser {
 				}
 			}
 			addDefaultValues();
-			// check all positional arguments have been provided
+			checkPositional();
 		};
 };
 
