@@ -46,6 +46,9 @@ auto args = parser.getArgs(); // Returns std::map<std::string, std::string>
 
 ## Example: 
 
+![alt text](imgs/simple.png)
+
+![alt text](imgs/simple_result.png)
 
 
 ## Notes:
