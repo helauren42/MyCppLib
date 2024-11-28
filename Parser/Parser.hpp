@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../Printer/Printer.hpp"
+#include <vector>
 #include <iostream>
 #include <string>
 #include <map>
@@ -76,6 +78,31 @@ class Int : public Argument {
 		}
 };
 
+class Double : public Argument {
+	private:
+		double arg;
+	public:
+		Double(){arg = 0;};
+		Double(const double& value)
+		{
+			arg = value;
+		};
+		Double(const std::string& value){
+			setValue(value);
+		};
+		~Double(){};
+		void setValue(const std::string& value) override {
+			arg = std::stod(value);
+		}
+		std::any getRawValue() const override {
+			return arg;
+		}
+		std::string getStrValue() const override {
+			double raw = std::any_cast<double>(getRawValue());
+			return std::to_string(raw);
+		}
+};
+
 class String : public Argument {
 	private:
 		std::string arg;
@@ -148,6 +175,9 @@ class Parser {
 			if(to_parse[name] == INT) {
 				option_args[name] = new Int(std::stoi(value));
 			}
+			if(to_parse[name] == DOUBLE) {
+				option_args[name] = new Double(std::stod(value));
+			}
 			else if(to_parse[name] == STRING) {
 				option_args[name] = new String(value);
 			}
@@ -190,7 +220,8 @@ class Parser {
 	public:
 		static const int BOOLEAN = 0;
 		static const int INT = 1;
-		static const int STRING = 2;
+		static const int DOUBLE = 2;
+		static const int STRING = 3;
  		Parser() {
 			to_parse = {};
 			option_args = {};
@@ -228,16 +259,18 @@ class Parser {
 			throw std::runtime_error("Argument not found: " + name);
 		}
 
-		std::map <std::string, std::variant<int, bool, std::string>> getArgs() const {
+		std::map <std::string, std::variant<bool, int, double, std::string>> getArgs() const {
 			std::map<std::string, Argument*> merged;
 			merged.insert(option_args.begin(), option_args.end());
 			merged.insert(positional_args.begin(), positional_args.end());
-			std::map<std::string, std::variant<int, bool, std::string>> ret;
+			std::map<std::string, std::variant<bool, int, double, std::string>> ret;
 			for(auto it = merged.begin(); it != merged.end(); it++) {
 				if(dynamic_cast<Boolean*>(it->second))
 					ret[it->first] =  std::any_cast<bool>(it->second->getRawValue());
 				else if(dynamic_cast<Int*>(it->second))
 					ret[it->first] =  std::any_cast<int>(it->second->getRawValue());
+				else if(dynamic_cast<Int*>(it->second))
+					ret[it->first] =  std::any_cast<double>(it->second->getRawValue());
 				else if(dynamic_cast<String*>(it->second))
 					ret[it->first] = it->second->getStrValue();
 			}
@@ -280,6 +313,9 @@ class Parser {
 			}
 			else if(type == INT) {
 				default_values[name] = new Int(default_value);
+			}
+			else if(type == DOUBLE) {
+				default_values[name] = new Double(default_value);
 			}
 			else if(type == STRING) {
 				default_values[name] = new String(default_value);
