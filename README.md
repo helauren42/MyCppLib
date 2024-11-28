@@ -30,6 +30,7 @@ Here are the different sections of the library
 
 ### Strings/Strings.hpp
 
+- a long list of string manipulation functions
   
 #
 PS: Feel free to provide suggestions
