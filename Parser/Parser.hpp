@@ -154,6 +154,8 @@ class Parser {
 		void	parseArg(std::string value) {
 			if(to_parse_positional_it == to_parse_positional.end())
 				throw (std::invalid_argument("Invalid argument: " + value));
+			if(default_values.find(to_parse_positional_it->first) != default_values.end())
+					delete default_values[to_parse_positional_it->first];
 			positional_args[to_parse_positional_it->first] = new String(value);
 			to_parse_positional_it++;
 		};
@@ -163,15 +165,21 @@ class Parser {
 			if(option_args.find(option) != option_args.end())
 				throw (std::invalid_argument("Duplicate option: " + option));
 			if(to_parse[option] == BOOLEAN) {
+				if(option_args.find(option) != option_args.end())
+					delete option_args[option];
 				option_args[option] = new Boolean(true);
 				return "";
 			}
 			return option;
 		}
+		// this function should not be called in case option is boolean
 		std::string	parseOption(std::string name, std::string value) {
 			if(option_args.find(name) != option_args.end())
 				throw (std::invalid_argument("Duplicate option: " + name));
-			// this function should not be called in case option is boolean
+		
+			if(option_args.find(name) != option_args.end())
+					delete option_args[name];
+			
 			if(to_parse[name] == INT) {
 				option_args[name] = new Int(std::stoi(value));
 			}
@@ -181,6 +189,7 @@ class Parser {
 			else if(to_parse[name] == STRING) {
 				option_args[name] = new String(value);
 			}
+			
 			return "";
 		}
 		void	addDefaultValues() {
@@ -237,8 +246,11 @@ class Parser {
 		};
 
 		template <typename T>
-		auto getArg(const std::string& name) const {
-			auto args = isOption(name) ? option_args : positional_args;
+		auto getArg(const std::string& _name) {
+			std::string name = _name;
+			std::map<std::string, Argument*> args = isOption(name) ? option_args : positional_args;
+			if(args.find(name) == args.end())
+				args = default_values;
 			for (const auto& it : args) {
 				if (it.first == name) {
 					return std::any_cast<T>(it.second->getRawValue());
@@ -248,9 +260,11 @@ class Parser {
 		}
 
 		template <typename T>
-		auto getArg(const char* _name) const {
+		auto getArg(const char* _name) {
 			std::string name = _name;
 			std::map<std::string, Argument*> args = isOption(name) ? option_args : positional_args;
+			if(args.find(name) == args.end())
+				args = default_values;
 			for (const auto& it : args) {
 				if (it.first == name) {
 					return std::any_cast<T>(it.second->getRawValue());
@@ -276,6 +290,7 @@ class Parser {
 			}
 			return ret;
 		}
+
 		std::map <std::string, std::string> getArgsStr() const {
 			std::map<std::string, Argument*> merged;
 			merged.insert(option_args.begin(), option_args.end());
@@ -286,9 +301,12 @@ class Parser {
 			}
 			return ret;
 		}
+
 		void	addArgument(std::string name, int type) {
 			checkType(type);
 			to_parse[name] = type;
+			if(default_values.find(name) != default_values.end())
+				delete default_values[name];
 			if(isOption(name) && type == BOOLEAN) {
 				default_values[name] = new Boolean(false);
 			}
@@ -308,6 +326,8 @@ class Parser {
 			to_parse[name] = type;
 			if(!isOption(name))
 				to_parse_positional[name] = type;
+			if(default_values.find(name) != default_values.end())
+				delete default_values[name];
 			if(type == BOOLEAN) {
 				default_values[name] = new Boolean(default_value);
 			}
