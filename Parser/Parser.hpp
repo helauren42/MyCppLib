@@ -42,7 +42,10 @@ class Boolean : public Argument {
 		};
 		~Boolean(){};
 		void setValue(const std::string& value) override {
-			arg = true;
+			if(value == "false" || value == "0")
+				arg = false;
+			else
+				arg = true;
 		}
 		std::any getRawValue() const override {
 			return arg;
@@ -263,8 +266,6 @@ class Parser {
 		auto getArg(const char* _name) {
 			std::string name = _name;
 			std::map<std::string, Argument*> args = isOption(name) ? option_args : positional_args;
-			if(args.find(name) == args.end())
-				args = default_values;
 			for (const auto& it : args) {
 				if (it.first == name) {
 					return std::any_cast<T>(it.second->getRawValue());
@@ -324,21 +325,24 @@ class Parser {
 			else
 				default_value = std::to_string(_default_value);
 			to_parse[name] = type;
+			
+			auto& args =  isOption(name) ? option_args : positional_args;
 			if(!isOption(name))
 				to_parse_positional[name] = type;
-			if(default_values.find(name) != default_values.end())
-				delete default_values[name];
+
+			if(args.find(name) != args.end())
+				delete args[name];
 			if(type == BOOLEAN) {
-				default_values[name] = new Boolean(default_value);
+				args[name] = new Boolean(default_value);
 			}
 			else if(type == INT) {
-				default_values[name] = new Int(default_value);
+				args[name] = new Int(default_value);
 			}
 			else if(type == DOUBLE) {
-				default_values[name] = new Double(default_value);
+				args[name] = new Double(default_value);
 			}
 			else if(type == STRING) {
-				default_values[name] = new String(default_value);
+				args[name] = new String(default_value);
 			}
 		};
 
@@ -358,7 +362,7 @@ class Parser {
 					parseArg(elem);
 				}
 			}
-			addDefaultValues();
+			// addDefaultValues();
 			checkPositional();
 		};
 };
