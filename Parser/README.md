@@ -62,12 +62,19 @@ Executing "./program -abc" :
 
 ![alt text](imgs/combined_options_result.png)
 
+
+Ultimately why not use the parser and its ability to set default value arguments too improve your workflow so that you can execute your program mindlessly without passing arguments each time, or passing the few ones where you want to overwrite the default parser's values instead of the entire set of arguments.
+
+![alt text](imgs/the_best.png)
+
+With the above code, no need to pass arguments to your program or overwrite as needed.
+
 ## Notes:
 
 - getArg throws a runtime error exception if the element is not found
 
-- if a positional argument is registered to the parser with addArgument without any default value, not providing any value for it to the parser will throw an error.
+- if a positional argument is registered to the parser with addArgument without any default value, not providing any value for it to the parser will throw an error, giving a default value to a positional argument effectively makes it work like an option.
 
-- a boolean argument has a default value of false, and when the boolean is passed as argument its value becomes true.
+- a boolean argument has a default value of false, and when the boolean is passed as argument its value becomes true. A default boolean value of true can not be overwritten by calling parseArguments();
 
 - setting a default value to every argument can be practical when repetitively testing code with the same input, as it alleviates the need to pass arguments to the program.
