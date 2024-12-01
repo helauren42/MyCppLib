@@ -54,6 +54,14 @@ by running "./program --b hello -a 5 -c https://www.amazon.de" we obtain:
 
 To use this out function refer to the README.md file in MyCppLib/Printer/
 
+When you have multiple boolean single dash options, you can combine them into a single arguments like "./program -abc":
+
+![alt text](imgs/combined_options.png)
+
+Executing "./program -abc" :
+
+![alt text](imgs/combined_options_result.png)
+
 ## Notes:
 
 - getArg throws a runtime error exception if the element is not found
