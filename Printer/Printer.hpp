@@ -57,6 +57,7 @@ enum ContainerType
 	QUEUE,
 	MAP,
 	UNORDERED_MAP,
+	UNORDERED_SET,
 	SET,
 	CUSTOM
 };
@@ -135,6 +136,7 @@ private:
 			break;
 		case MAP:
 		case UNORDERED_MAP:
+		case UNORDERED_SET:
 		case SET:
 			delimiter[0] = '{';
 			delimiter[1] = '}';
