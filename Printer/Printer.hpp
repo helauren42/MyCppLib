@@ -82,6 +82,9 @@ struct XFileDes
 	{
 		dup2(fout_fd, STDOUT_FILENO);
 	}
+	int	getFout() {
+		return fout_fd;
+	}
 };
 
 XFileDes xxfileDes;
@@ -103,7 +106,7 @@ private:
 	static void printSep(const std::string &sep)
 	{
 		// Print the separator string to the output stream
-		write(STDIN_FILENO, sep.c_str(), sep.length());
+		write(STDOUT_FILENO, sep.c_str(), sep.length());
 	}
 
 	/**
@@ -133,7 +136,7 @@ private:
 			// to output the separator in case of nested containers
 			if (TypeChecker::isHandledContainer(*it) && std::next(it) != end)
 			{
-				write(STDIN_FILENO, ", ", 1);
+				write(STDOUT_FILENO, ", ", 1);
 			}
 		}
 	}
@@ -173,13 +176,13 @@ private:
 
 		if (side == 0)
 		{
-			write(STDIN_FILENO, &delimiter[0], 1);
+			write(STDOUT_FILENO, &delimiter[0], 1);
 		}
 		else
 		{
-			write(STDIN_FILENO, &delimiter[1], 1);
+			write(STDOUT_FILENO, &delimiter[1], 1);
 			if (newLine)
-				write(STDIN_FILENO, "\n", 1);
+				write(STDOUT_FILENO, "\n", 1);
 		}
 	}
 
@@ -210,12 +213,12 @@ public:
 	static void print(const std::string &a, const std::string &sep = "", const bool &newLine = true)
 	{
 		// strings are enclosed in double quotes
-		write(STDIN_FILENO, "\"", 1);
-		write(STDIN_FILENO, a.c_str(), a.length());
-		write(STDIN_FILENO, "\"", 1);
-		write(STDIN_FILENO, sep.c_str(), sep.length());
+		write(STDOUT_FILENO, "\"", 1);
+		write(STDOUT_FILENO, a.c_str(), a.length());
+		write(STDOUT_FILENO, "\"", 1);
+		write(STDOUT_FILENO, sep.c_str(), sep.length());
 		if (newLine == true)
-			write(STDIN_FILENO, "\n", 1);
+			write(STDOUT_FILENO, "\n", 1);
 	}
 
 	/**
@@ -226,10 +229,10 @@ public:
 	 */
 	static void print(const char &a, const std::string &sep = "", const bool &newLine = true)
 	{
-		write(STDIN_FILENO, &a, 1);
-		write(STDIN_FILENO, sep.c_str(), sep.length());
+		write(STDOUT_FILENO, &a, 1);
+		write(STDOUT_FILENO, sep.c_str(), sep.length());
 		if (newLine == true)
-			write(STDIN_FILENO, "\n", 1);
+			write(STDOUT_FILENO, "\n", 1);
 	}
 
 	/**
@@ -241,10 +244,10 @@ public:
 	static void print(const char *s, const std::string &sep = "", const bool &newLine = false)
 	{
 		// strings are enclosed in double quotes
-		write(STDIN_FILENO, s, strlen(s));
-		write(STDIN_FILENO, sep.c_str(), sep.length());
+		write(STDOUT_FILENO, s, strlen(s));
+		write(STDOUT_FILENO, sep.c_str(), sep.length());
 		if (newLine == true)
-			write(STDIN_FILENO, "\n", 1);
+			write(STDOUT_FILENO, "\n", 1);
 	}
 
 	/**
@@ -260,10 +263,10 @@ public:
 		ss << a;
 		std::string s = ss.str();
 
-		write(STDIN_FILENO, s.c_str(), s.length());
-		write(STDIN_FILENO, sep.c_str(), sep.length());
+		write(STDOUT_FILENO, s.c_str(), s.length());
+		write(STDOUT_FILENO, sep.c_str(), sep.length());
 		if (newLine == true)
-			write(STDIN_FILENO, "\n", 1);
+			write(STDOUT_FILENO, "\n", 1);
 	}
 	/**
 	 * @brief Prints a double to the output stream.
@@ -279,14 +282,14 @@ public:
 		ss << a;
 		std::string s = ss.str();
 
-		write(STDIN_FILENO, s.c_str(), s.length());
+		write(STDOUT_FILENO, s.c_str(), s.length());
 
 		if (!sep.empty())
-			write(STDIN_FILENO, sep.c_str(), sep.length());
+			write(STDOUT_FILENO, sep.c_str(), sep.length());
 
-		write(STDIN_FILENO, sep.c_str(), sep.length());
+		write(STDOUT_FILENO, sep.c_str(), sep.length());
 		if (newLine == true)
-			write(STDIN_FILENO, "\n", 1);
+			write(STDOUT_FILENO, "\n", 1);
 	}
 	/**
 	 * @brief Prints a boolean value to the output stream.
@@ -297,12 +300,12 @@ public:
 	static void print(const bool &a, const std::string &sep = "", const bool &newLine = true)
 	{
 		if (a == true)
-			write(STDIN_FILENO, "true", 4);
+			write(STDOUT_FILENO, "true", 4);
 		else
-			write(STDIN_FILENO, "false", 5);
-		write(STDIN_FILENO, sep.c_str(), sep.length());
+			write(STDOUT_FILENO, "false", 5);
+		write(STDOUT_FILENO, sep.c_str(), sep.length());
 		if (newLine == true)
-			write(STDIN_FILENO, "\n", 1);
+			write(STDOUT_FILENO, "\n", 1);
 	}
 
 	/**
@@ -316,10 +319,10 @@ public:
 		std::stringstream ss;
 		ss << a;
 		std::string s = ss.str();
-		write(STDIN_FILENO, s.c_str(), s.length());
-		write(STDIN_FILENO, sep.c_str(), sep.length());
+		write(STDOUT_FILENO, s.c_str(), s.length());
+		write(STDOUT_FILENO, sep.c_str(), sep.length());
 		if (newLine == true)
-			write(STDIN_FILENO, "\n", 1);
+			write(STDOUT_FILENO, "\n", 1);
 	}
 	/**
 	 * @brief Prints a long integer to the output stream.
@@ -334,11 +337,11 @@ public:
 		ss << a;
 		std::string s = ss.str();
 
-		write(STDIN_FILENO, s.c_str(), s.length());
-		write(STDIN_FILENO, sep.c_str(), sep.length());
+		write(STDOUT_FILENO, s.c_str(), s.length());
+		write(STDOUT_FILENO, sep.c_str(), sep.length());
 
 		if (newLine == true)
-			write(STDIN_FILENO, "\n", 1);
+			write(STDOUT_FILENO, "\n", 1);
 	}
 	/**
 	 * @brief Prints a long long integer to the output stream.
@@ -353,11 +356,11 @@ public:
 		ss << a;
 		std::string s = ss.str();
 
-		write(STDIN_FILENO, s.c_str(), s.length());
-		write(STDIN_FILENO, sep.c_str(), sep.length());
+		write(STDOUT_FILENO, s.c_str(), s.length());
+		write(STDOUT_FILENO, sep.c_str(), sep.length());
 
 		if (newLine == true)
-			write(STDIN_FILENO, "\n", 1);
+			write(STDOUT_FILENO, "\n", 1);
 	}
 
 	/**
@@ -373,10 +376,10 @@ public:
 		ss << a;
 		std::string s = ss.str();
 
-		write(STDIN_FILENO, sep.c_str(), sep.length());
-		write(STDIN_FILENO, s.c_str(), s.length());
+		write(STDOUT_FILENO, sep.c_str(), sep.length());
+		write(STDOUT_FILENO, s.c_str(), s.length());
 		if (newLine == true)
-			write(STDIN_FILENO, "\n", 1);
+			write(STDOUT_FILENO, "\n", 1);
 	}
 
 	/**
@@ -393,10 +396,10 @@ public:
 		std::string s = ss.str();
 
 		// Write the separator string, the unsigned integer, and a newline to the output stream
-		write(STDIN_FILENO, sep.c_str(), sep.length());
-		write(STDIN_FILENO, s.c_str(), s.length());
+		write(STDOUT_FILENO, sep.c_str(), sep.length());
+		write(STDOUT_FILENO, s.c_str(), s.length());
 		if (newLine == true)
-			write(STDIN_FILENO, "\n", 1);
+			write(STDOUT_FILENO, "\n", 1);
 	}
 
 	/**
@@ -412,11 +415,11 @@ public:
 		ss << a;
 		std::string s = ss.str();
 
-		write(STDIN_FILENO, s.c_str(), s.length());
-		write(STDIN_FILENO, sep.c_str(), sep.length());
+		write(STDOUT_FILENO, s.c_str(), s.length());
+		write(STDOUT_FILENO, sep.c_str(), sep.length());
 
 		if (newLine == true)
-			write(STDIN_FILENO, "\n", 1);
+			write(STDOUT_FILENO, "\n", 1);
 	}
 
 	/**
@@ -645,7 +648,7 @@ public:
 		std::stringstream ss;
 		ss << object;
 		std::string s(ss.str());
-		write(STDIN_FILENO, s.c_str(), s.length());
+		write(STDOUT_FILENO, s.c_str(), s.length());
 		if (!sep.empty())
 			std::cout << sep;
 		if (newLine)
@@ -659,7 +662,7 @@ public:
 		std::stringstream ss;
 		ss << object;
 		std::string s(ss.str());
-		write(STDIN_FILENO, s.c_str(), s.length());
+		write(STDOUT_FILENO, s.c_str(), s.length());
 		if (!sep.empty())
 			std::cout << sep;
 		if (newLine)
