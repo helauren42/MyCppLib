@@ -1,5 +1,8 @@
 # Printer.hpp
 
+This guide may not be up to date with the latest version. 
+Now use setFoutFd() directly not from class Out::setFoutFd().
+
 ## Usage
 
   - requires c++17 or later
