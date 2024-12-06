@@ -681,12 +681,17 @@ static void setFoutFd(const int file_descriptor)
 
 /**
  * @brief Sets the file descriptor to redirect the `fout` stream to the specified file.
- * @param file The name of the file to open. Creates the file if it does not exist and opens it in append mode (does not truncate).
+ * @param file The name of the file to open. Creates the file if it does not exist and opens it.
+ * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
  * @throws std::runtime_error if the file could not be opened.
  */
-static void setFoutFd(const char *file)
+static void setFoutFd(const char *file, bool trunc=true)
 {
-	int fd = open(file, O_CREAT | O_WRONLY, 0644);
+	int fd;
+	if(trunc)
+		fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	else
+		fd = open(file, O_CREAT | O_WRONLY, 0644);
 	if (fd < 0)
 	{
 		std::string s("could not open file: ");
@@ -698,12 +703,17 @@ static void setFoutFd(const char *file)
 
 /**
  * @brief Sets the file descriptor to redirect the `fout` stream to the specified file.
- * @param file The name of the file to open. Creates the file if it does not exist and opens it in append mode (does not truncate).
+ * @param file The name of the file to open. Creates the file if it does not exist and opens it.
+ * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
  * @throws std::runtime_error if the file could not be opened.
  */
-static void setFoutFd(const std::string &file)
+static void setFoutFd(const std::string &file, bool trunc=true)
 {
-	int fd = open(file.c_str(), O_CREAT, O_WRONLY, 0644);
+	int fd;
+	if(trunc)
+		fd = open(file.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	else
+		fd = open(file.c_str(), O_CREAT | O_WRONLY, 0644);
 	if (fd < 0)
 	{
 		std::string s("could not open file: " + file);
