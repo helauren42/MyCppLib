@@ -674,9 +674,10 @@ public:
  * @brief Sets the file descriptor to redirect `fout` stream.
  * @param file_descriptor The file descriptor to set.
  */
-static void setFoutFd(const int file_descriptor)
+static int setFoutFd(const int file_descriptor)
 {
 	xxfileDes.setFout(file_descriptor);
+	return (file_descriptor);
 }
 
 /**
@@ -685,7 +686,7 @@ static void setFoutFd(const int file_descriptor)
  * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
  * @throws std::runtime_error if the file could not be opened.
  */
-static void setFoutFd(const char *file, bool trunc=true)
+static int setFoutFd(const char *file, bool trunc=true)
 {
 	int fd;
 	if(trunc)
@@ -699,6 +700,7 @@ static void setFoutFd(const char *file, bool trunc=true)
 		throw(std::runtime_error(s));
 	}
 	xxfileDes.setFout(fd);
+	return (fd);
 }
 
 /**
@@ -707,7 +709,7 @@ static void setFoutFd(const char *file, bool trunc=true)
  * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
  * @throws std::runtime_error if the file could not be opened.
  */
-static void setFoutFd(const std::string &file, bool trunc=true)
+static int setFoutFd(const std::string &file, bool trunc=true)
 {
 	int fd;
 	if(trunc)
@@ -720,6 +722,7 @@ static void setFoutFd(const std::string &file, bool trunc=true)
 		throw(std::runtime_error(s));
 	}
 	xxfileDes.setFout(fd);
+	return (fd);
 }
 
 /**
