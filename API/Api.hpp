@@ -26,6 +26,7 @@ private:
 
 		void parse(const std::string& input);
 		void parseHeader(const std::string& input);
+		void parseBody(const std::string& body);
 
 		void setVersion(const std::string& version) { this->version = version; };
 		void setStatusCode(const std::string& status_code) { this->status_code = status_code; };
@@ -34,6 +35,61 @@ private:
 		void addHeader(const std::string& key, const std::string& value) { this->headers[key] = value; };
 
 };
+
+void HttpResponse::addHeaders(const std::vector<std::string>::const_iterator begin, const std::vector<std::string>::const_iterator end) {
+	while (begin != end)
+	{
+		std::string line = *begin;
+		std::vector<std::string> elements = split<std::vector<std::string>>(*begin, " ");
+		if(elements.size() != 2)
+			throw (std::invalid_argument("Invalid HTTP response: " + line));
+		addHeader(elements[0], elements[1]);
+	}
+}
+
+struct ElemPos
+{
+	size_t start = 0;
+	size_t end = 0;
+};
+
+enum ElemType {
+	KEY,
+	VALUE
+};
+
+ElemPos nextElement(const std::string& s, size_t start) {
+
+}
+
+void HttpResponse::parseBody(const std::string& body) {
+	if(body[0] != '{' || body.back() != '}')
+		throw (std::invalid_argument("Invalid HTTP response: " + body));
+	content_string = body;
+
+	std::vector<std::string> elems = split<std::vector<std::string>>(body, "{");
+	if(elems.size() <= 1) // empty response
+	{
+		content_string = "";
+		return;
+	}
+	ElemPos pos;
+	ElemType type = KEY;
+	std::string key;
+	std::string value;
+	while(pos.start != std::string::npos && pos.end != std::string::npos) {
+		pos = nextElement(body, pos.start);
+		const std::string& word = body.substr(pos.start, pos.end - pos.start);
+		if(type == KEY)
+			key = word;
+		else {
+			value = word;
+			content_json[key] = value;
+		}
+		type = type == KEY ? VALUE : KEY;
+	}
+
+}
 
 void HttpResponse::parseHeader(const std::string& input) {
 	std::vector<std::string> elements = split<std::vector<std::string>>(input, " ");
@@ -50,21 +106,9 @@ void HttpResponse::parse(const std::string& input) {
 		throw (std::invalid_argument("Invalid HTTP response: " + input));
 	parseHeader(lines[0]);
 	addHeaders(lines.cbegin(), lines.cend() - 1);
+	(*(lines.cend() -1));
 
 }
-
-void HttpResponse::addHeaders(const std::vector<std::string>::const_iterator begin, const std::vector<std::string>::const_iterator end) {
-	while (begin != end)
-	{
-		std::string line = *begin;
-		std::vector<std::string> elements = split<std::vector<std::string>>(*begin, " ");
-		if(elements.size() != 2)
-			throw (std::invalid_argument("Invalid HTTP response: " + line));
-		addHeader(elements[0], elements[1]);	
-	}
-	
-}
-
 
 // class Api {
 // 	private:
