@@ -21,7 +21,7 @@ private:
 
 	public:
 		HttpResponse() {};
-		HttpResponse(const std::string& input) {};
+		HttpResponse(const std::string& input) {parse(input);};
 		~HttpResponse() {};
 
 		void parse(const std::string& input);
@@ -34,16 +34,24 @@ private:
 		void addHeaders(const std::vector<std::string>::const_iterator begin, const std::vector<std::string>::const_iterator end);
 		void addHeader(const std::string& key, const std::string& value) { this->headers[key] = value; };
 
+		std::string getVersion() const { return this->version; };
+		std::string getStatusCode() const { return this->status_code; };
+		std::string getStatusMessage() const { return this->status_message; };
+		std::map<std::string, std::string> getHeaders() const { return this->headers; };
+		// std::string getHeader(const std::string key) const { return this->headers[key]; };
+		std::string getBody() const { return this->content_string; };
+		std::map<std::string, std::string> getBodyJson() const { return this->content_json; };
 };
 
-void HttpResponse::addHeaders(const std::vector<std::string>::const_iterator begin, const std::vector<std::string>::const_iterator end) {
+void HttpResponse::addHeaders(std::vector<std::string>::const_iterator begin, const std::vector<std::string>::const_iterator end) {
 	while (begin != end)
 	{
 		std::string line = *begin;
-		std::vector<std::string> elements = split<std::vector<std::string>>(*begin, " ");
-		if(elements.size() != 2)
-			throw (std::invalid_argument("Invalid HTTP response: " + line));
-		addHeader(elements[0], elements[1]);
+		size_t sep = line.find_first_of(":");
+		std::string key = line.substr(0, sep);
+		std::string value = line.substr(sep + 1);
+		addHeader(key, value);
+		begin++;
 	}
 }
 
@@ -59,7 +67,10 @@ enum ElemType {
 };
 
 ElemPos nextElement(const std::string& s, size_t start) {
-
+	ElemPos pos;
+	pos.start = s.find('"', start);
+	pos.end = s.find('"', pos.start + 1);
+	return pos;
 }
 
 void HttpResponse::parseBody(const std::string& body) {
@@ -87,6 +98,7 @@ void HttpResponse::parseBody(const std::string& body) {
 			content_json[key] = value;
 		}
 		type = type == KEY ? VALUE : KEY;
+		pos.start = pos.end + 1;
 	}
 
 }
@@ -105,9 +117,26 @@ void HttpResponse::parse(const std::string& input) {
 	if(lines.size() < 4)
 		throw (std::invalid_argument("Invalid HTTP response: " + input));
 	parseHeader(lines[0]);
-	addHeaders(lines.cbegin(), lines.cend() - 1);
+	addHeaders(lines.cbegin() +1, lines.cend() - 1);
 	(*(lines.cend() -1));
 
+}
+
+std::ostream& operator<<(std::ostream& os, const HttpResponse& response) {
+	os << "Version: " << response.getVersion() << std::endl;
+	os << "Status Code: " << response.getStatusCode() << std::endl;
+	os << "Status Message: " << response.getStatusMessage() << std::endl;
+	os << "Headers: " << std::endl;
+	auto headers = response.getHeaders();
+	for(auto it = headers.begin(); it != headers.end(); it++) {
+		os << it->first << ": " << it->second << std::endl;
+	}
+	os << "Body: " << response.getBody() << std::endl;
+	auto json = response.getBodyJson();
+	for (auto it = json.begin(); it != json.end(); it++) {
+		os << it->first << ": " << it->second << std::endl;
+	}
+	return os;
 }
 
 // class Api {
@@ -128,8 +157,8 @@ void HttpResponse::parse(const std::string& input) {
 // 		void setContentJson(std::string content_json);
 // 		std::string getUrl();
 // 		std::string getMethod();
-// 		std::string getContentType();
-// 		std::string getContentLength();
-// 		std::string getContentText();
-// 		std::string getContentJson();
+// 		std::string getBodyType();
+// 		std::string getBodyLength();
+// 		std::string getBodyText();
+// 		std::string getBodyJson();
 // };

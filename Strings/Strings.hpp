@@ -125,28 +125,9 @@ std::string joinStrings(std::stack<std::string>& container, const std::string& s
  * @param delimiter The delimiter string used to split the input string. Defaults to newline character ("\n").
  * @return Container<std::string> A container holding the resulting substrings.
  */
-template <typename Container = std::vector<std::string>> 
+template <typename Container> 
 Container split(const std::string& str, const std::string& delimiter = "\n") {
-	Container<std::string> container;
-
-	size_t start = 0;
-	size_t end = 0;
-
-	while(true) {
-		if((start = str.find_first_not_of(delimiter, start)) == std::string::npos)
-			break;
-		end = str.find_first_of(delimiter, start);
-		if(end == std::string::npos)
-			end = str.length();
-		container.push_back(str.substr(start, end - start));
-		start = end+1;
-	}
-	return(container);
-}
-
-template <typename Container = std::list<std::string>> 
-Container split(const std::string& str, const std::string& delimiter = "\n") {
-	Container<std::string> container;
+	std::vector<std::string> container;
 
 	size_t start = 0;
 	size_t end = 0;
@@ -177,7 +158,7 @@ Container split(const std::string& str, const std::string& delimiter = "\n") {
  */
 template<typename Container>
 Container splitKeep(const std::string& str, const std::string& delimiter = "\n") {
-	Container<std::string> container;
+	std::vector<std::string> container;
 
 	size_t	start = 0;
 	size_t	end = 0;
@@ -203,7 +184,7 @@ Container splitKeep(const std::string& str, const std::string& delimiter = "\n")
 			break;
 	}
 
-	Container<std::string> cont2;
+	std::vector<std::string> cont2;
 	std::string temp;
 	for(auto it = container.begin(); it != container.end(); it++) {
 		if(hasDelim(*it, delimiter)) {
