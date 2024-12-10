@@ -92,6 +92,7 @@ void HttpResponse::parseBody(const std::string& body) {
 	std::string value;
 	while(pos.start != std::string::npos && pos.end != std::string::npos) {
 		pos = nextElement(body, pos.start);
+		std::cout << "start: " << pos.start << " end: " << pos.end << std::endl;
 		const std::string& word = body.substr(pos.start, pos.end - pos.start);
 
 		if(type == KEY)
