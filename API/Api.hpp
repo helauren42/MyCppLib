@@ -78,10 +78,10 @@ ElemPos nextElement(const std::string& s, size_t start) {
 void HttpResponse::parseBody(const std::string& body) {
 	if(body[0] != '{' || body.back() != '}')
 		throw (std::invalid_argument("Invalid HTTP response: " + body));
-	content_string = body;
+	content_string = strip(body);
 
-	std::vector<std::string> elems = split<std::vector<std::string>>(body, "{");
-	if(elems.size() <= 1) // empty response
+	std::cout << "should be like body: " << content_string << std::endl;
+	if(content_string == "{}") // empty response
 	{
 		content_string = "";
 		return;
@@ -93,6 +93,7 @@ void HttpResponse::parseBody(const std::string& body) {
 	while(pos.start != std::string::npos && pos.end != std::string::npos) {
 		pos = nextElement(body, pos.start);
 		const std::string& word = body.substr(pos.start, pos.end - pos.start);
+
 		if(type == KEY)
 			key = word;
 		else {
@@ -100,9 +101,10 @@ void HttpResponse::parseBody(const std::string& body) {
 			content_json[key] = value;
 		}
 		type = type == KEY ? VALUE : KEY;
-		pos.start = pos.end + 1;
+		if(pos.start != std::string::npos)
+			pos.start = pos.end + 1;
 	}
-
+	std::cout << "so are you like body: " << content_string << std::endl;
 }
 
 void HttpResponse::parseHeader(const std::string& input) {
@@ -120,8 +122,8 @@ void HttpResponse::parse(const std::string& input) {
 		throw (std::invalid_argument("Invalid HTTP response: " + input));
 	parseHeader(lines[0]);
 	addHeaders(lines.cbegin() +1, lines.cend() - 1);
-	(*(lines.cend() -1));
-
+	std::cout << "should be body: " << *(lines.end() -1) << std::endl;
+	parseBody(*(lines.end() -1));
 }
 
 std::ostream& operator<<(std::ostream& os, const HttpResponse& response) {
