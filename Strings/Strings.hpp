@@ -1,7 +1,12 @@
 #pragma once
 
 #include <iostream>
-#include "../Conversions/Conversions.hpp"
+#include <string>
+#include <vector>
+#include <list>
+#include <algorithm>
+#include <stack>
+#include <queue>
 
 // using namespace std;
 
@@ -34,94 +39,12 @@ bool	isWhiteSpace(const char& c) {
 	return false;
 }
 
-/** 
- * @brief Checks if a string contains only alphabetic characters.
- * 
- * This function iterates over each character in the input string `str` 
- * and checks if each character is an alphabetic letter (a-z, A-Z).
- * 
- * @param str The input string to check.
- * @return true if all characters in `str` are alphabetic, false otherwise.
- */
-bool	isAlpha(const std::string& str) {
-	for (auto& elem : str) {
-		if(!std::isalpha(elem))
-			return false;
-	}
-	return true;
-}
-
-/**
- * @brief Checks if a string contains only numeric digits.
- * 
- * This function iterates over each character in the input string `str`
- * and checks if each character is a numeric digit (0-9).
- * 
- * @param str The input string to check.
- * @return true if all characters in `str` are numeric, false otherwise.
- */
-bool	isNumeric(const std::string& str) {
-	for (auto& elem : str) {
-		if(!std::isdigit(elem))
-			return false;
-	}
-	return true;
-}
-
-/**
- * @brief Checks if a string contains only alphanumeric characters.
- * 
- * This function iterates over each character in the input string `str`
- * and checks if each character is either a numeric digit (0-9) or an 
- * alphabetic letter (a-z, A-Z).
- * 
- * @param str The input string to check.
- * @return true if all characters in `str` are alphanumeric, false otherwise.
- */
-bool	isAlphaNumeric(const std::string& str) {
-	for (auto& elem : str) {
-		if(!std::isdigit(elem) && !std::isalpha(elem))
-			return false;
-	}
-	return true;
-}
-
 bool hasDelim(const std::string& str, const char& delimiter) {
     return str.find(delimiter) != std::string::npos;
 }
 
 bool hasDelim(const std::string& str, const std::string& delimiter) {
     return str.find_first_of(delimiter) != std::string::npos;
-}
-
-bool isOnlyDelim(const std::string& str, const char& delimiter) {
-    for (char ch : str) {
-        if (ch != delimiter) {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool isOnlyDelim(const std::string& str, const std::string& delimiter) {
-    return str.find_first_not_of(delimiter) == std::string::npos;
-}
-
-// bool isEmail(const std::string& str) {
-	
-// }
-
-// bool isURL(const std::string& str) {
-
-// }
-
-int countChar(const std::string& str, const char& c) {
-	int count = 0;
-	for(int i = 0; str[i]; i++) {
-		if(str[i] == c)
-			count++;
-	}
-	return count;
 }
 
 /**
@@ -136,8 +59,8 @@ int countChar(const std::string& str, const char& c) {
  * @param sep The separator string to insert between each string. Defaults to an empty string.
  * @return std::string The concatenated string.
  */
-template<template<typename T> class Container>
-std::string joinStrings(const Container<std::string>& container, const std::string& sep = " ") {
+template<typename Container>
+std::string joinStrings(const Container& container, const std::string& sep = " ") {
 	std::string ret;
 	for (auto it : container) {
 		ret += it;
@@ -202,8 +125,27 @@ std::string joinStrings(std::stack<std::string>& container, const std::string& s
  * @param delimiter The delimiter string used to split the input string. Defaults to newline character ("\n").
  * @return Container<std::string> A container holding the resulting substrings.
  */
-template<template<typename T> class Container>
-Container<std::string> split(const std::string& str, const std::string& delimiter = "\n") {
+template <typename Container = std::vector<std::string>> 
+Container split(const std::string& str, const std::string& delimiter = "\n") {
+	Container<std::string> container;
+
+	size_t start = 0;
+	size_t end = 0;
+
+	while(true) {
+		if((start = str.find_first_not_of(delimiter, start)) == std::string::npos)
+			break;
+		end = str.find_first_of(delimiter, start);
+		if(end == std::string::npos)
+			end = str.length();
+		container.push_back(str.substr(start, end - start));
+		start = end+1;
+	}
+	return(container);
+}
+
+template <typename Container = std::list<std::string>> 
+Container split(const std::string& str, const std::string& delimiter = "\n") {
 	Container<std::string> container;
 
 	size_t start = 0;
@@ -233,8 +175,8 @@ Container<std::string> split(const std::string& str, const std::string& delimite
  * @param delimiter The delimiter string used to split the input string. Defaults to newline character ("\n").
  * @return Container<std::string> A container holding the resulting substrings, including the delimiters.
  */
-template<template<typename T> class Container>
-Container<std::string> splitKeep(const std::string& str, const std::string& delimiter = "\n") {
+template<typename Container>
+Container splitKeep(const std::string& str, const std::string& delimiter = "\n") {
 	Container<std::string> container;
 
 	size_t	start = 0;
@@ -330,13 +272,13 @@ std::string	toCamelCase(const std::string& str, const int& mode = spaceSeparated
 		return WHITE_SPACES;
 	}();
 
-	std::vector<std::string> vec = split<std::vector>(ret, delimiter);
+	std::vector<std::string> vec = split<std::vector<std::string>>(ret, delimiter);
 
 	for(auto it = vec.begin(); it != vec.end(); it++) {
 		if((*it)[0])
 			(*it)[0] = std::toupper((*it)[0]);
 	}
-	ret = joinStrings<std::vector>(vec, "");
+	ret = joinStrings(vec, "");
 	ret[0] = std::tolower(ret[0]);
 	return ret;
 }
@@ -355,11 +297,11 @@ std::string	toSnakeCase(const std::string& str, const int& mode = spaceSeparated
 
 	std::vector<std::string> vec;
 	if(mode == camelCase)
-		vec = splitKeep<std::vector>(ret, delimiter);
+		vec = splitKeep<std::vector<std::string>>(ret, delimiter);
 	else
-		vec = split<std::vector>(ret, delimiter);
+		vec = split<std::vector<std::string>>(ret, delimiter);
 
-	ret = joinStrings<std::vector>(vec, "_");
+	ret = joinStrings(vec, "_");
 	ret = toLowerCase(ret);
 	return ret;
 }
@@ -378,11 +320,11 @@ std::string	toKebabCase(const std::string& str, const int& mode = spaceSeparated
 
 	std::vector<std::string> vec;
 	if(mode == camelCase)
-		vec = splitKeep<std::vector>(ret, delimiter);
+		vec = splitKeep<std::vector<std::string>>(ret, delimiter);
 	else
-		vec = split<std::vector>(ret, delimiter);
+		vec = split<std::vector<std::string>>(ret, delimiter);
 
-	ret = joinStrings<std::vector>(vec, "-");
+	ret = joinStrings(vec, "-");
 	ret = toLowerCase(ret);
 	return ret;
 }
@@ -488,50 +430,6 @@ void	replaceAll(std::string& str, const std::string& from, const std::string& to
  */
 void	removeAll(std::string& str, const std::string& remove) {
 	replaceAll(str, remove, "");
-}
-
-/**
- * @brief Removes all occurrences of white spaces from a string in place.
- * 
- * This function removes all occurrences of whitespaces from the input string `str`.
- * The modifications are made directly to the input string.
- * 
- * @param str The input string to modify.
- */
-void	removeWhiteSpaces(std::string& str) {
-	removeAll(str, WHITE_SPACES);
-}
-
-/**
- * @brief Removes characters from a string that are not in a set of valid characters.
- * 
- * This function iterates through the input string `str` and removes any characters
- * that are not found in the `valid_characters` string. The modifications are made
- * directly to the input string.
- * 
- * @param str The input string to modify.
- * @param valid_characters The string containing valid characters to keep.
- */
-void	removeIntruder(std::string& str, const std::string& valid_characters) {
-	for (auto it = str.begin(); it != str.end(); it++) {
-		if(valid_characters.find(*it) == std::string::npos) {
-			str.erase(it);
-			it--;
-		}
-	}
-}
-
-/**
- * @brief Removes non-alphanumeric characters from a string.
- * 
- * This function removes all characters from the input string `str` that are not
- * alphanumeric (i.e., not in the set of valid alphanumeric characters). The
- * modifications are made directly to the input string.
- * 
- * @param str The input string to modify.
- */
-void	removeNonAlphaNumeric(std::string& str) {
-	removeIntruder(str, ALPHA_NUMERIC);
 }
 
 bool	stringCompareIgnoreCase(const std::string& s1, const std::string& s2) {
