@@ -46,11 +46,13 @@ private:
 void HttpResponse::addHeaders(std::vector<std::string>::const_iterator begin, const std::vector<std::string>::const_iterator end) {
 	while (begin != end)
 	{
-		std::string line = *begin;
+		std::string line = strip(*begin);
 		size_t sep = line.find_first_of(":");
-		std::string key = line.substr(0, sep);
-		std::string value = line.substr(sep + 1);
-		addHeader(key, value);
+		if(line != "") {
+			std::string key = line.substr(0, sep);
+			std::string value = line.substr(sep + 1);
+			addHeader(key, value);
+		}
 		begin++;
 	}
 }
