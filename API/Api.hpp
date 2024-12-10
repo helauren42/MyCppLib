@@ -71,6 +71,8 @@ enum ElemType {
 ElemPos nextElement(const std::string& s, size_t start) {
 	ElemPos pos;
 	pos.start = s.find('"', start);
+	if(pos.start == std::string::npos)
+		return pos;
 	pos.end = s.find('"', pos.start + 1);
 	return pos;
 }
@@ -90,8 +92,10 @@ void HttpResponse::parseBody(const std::string& body) {
 	ElemType type = KEY;
 	std::string key;
 	std::string value;
-	while(pos.start != std::string::npos && pos.end != std::string::npos) {
+	while(true) {
 		pos = nextElement(body, pos.start);
+		if(pos.start == std::string::npos || pos.end == std::string::npos)
+			break;
 		std::cout << "start: " << pos.start << " end: " << pos.end << std::endl;
 		const std::string& word = body.substr(pos.start, pos.end - pos.start);
 
@@ -102,8 +106,7 @@ void HttpResponse::parseBody(const std::string& body) {
 			content_json[key] = value;
 		}
 		type = type == KEY ? VALUE : KEY;
-		if(pos.start != std::string::npos)
-			pos.start = pos.end + 1;
+		pos.start = pos.end + 1;
 	}
 	std::cout << "so are you like body: " << content_string << std::endl;
 }
@@ -138,8 +141,9 @@ std::ostream& operator<<(std::ostream& os, const HttpResponse& response) {
 	}
 	os << "Body: " << response.getBody() << std::endl;
 	auto json = response.getBodyJson();
+	os << "Body Json: " << std::endl;
 	for (auto it = json.begin(); it != json.end(); it++) {
-		os << it->first << ": " << it->second << std::endl;
+		os << "{" << it->first << ": " << it->second << "}" << std::endl;
 	}
 	return os;
 }
