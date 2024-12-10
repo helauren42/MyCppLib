@@ -31,21 +31,11 @@ enum {
  * @param c The character to check.
  * @return true if the character is a whitespace character, false otherwise.
  */
-bool	isWhiteSpace(const char& c) {
-	const std::string white_spaces = WHITE_SPACES;
+bool	isWhiteSpace(const char& c);
 
-	if(white_spaces.find(c) != std::string::npos)
-		return true;
-	return false;
-}
+bool hasDelim(const std::string& str, const char& delimiter);
 
-bool hasDelim(const std::string& str, const char& delimiter) {
-    return str.find(delimiter) != std::string::npos;
-}
-
-bool hasDelim(const std::string& str, const std::string& delimiter) {
-    return str.find_first_of(delimiter) != std::string::npos;
-}
+bool hasDelim(const std::string& str, const std::string& delimiter);
 
 /**
  * @brief Joins a container of strings into a single string with an optional separator.
@@ -60,15 +50,7 @@ bool hasDelim(const std::string& str, const std::string& delimiter) {
  * @return std::string The concatenated string.
  */
 template<typename Container>
-std::string joinStrings(const Container& container, const std::string& sep = " ") {
-	std::string ret;
-	for (auto it : container) {
-		ret += it;
-		ret += sep;
-	}
-	ret = ret.substr(0, ret.length() - sep.length());
-	return ret;
-}
+std::string joinStrings(const Container& container, const std::string& sep = " ");
 
 /**
  * @brief Joins a queue of strings into a single string with an optional separator.
@@ -82,15 +64,7 @@ std::string joinStrings(const Container& container, const std::string& sep = " "
  * @param sep The separator string to insert between each string. Defaults to an empty string.
  * @return std::string The concatenated string.
  */
-std::string joinStrings(std::queue<std::string>& container, const std::string& sep = " ") {
-	std::string ret;
-	while (!container.empty()) {
-		ret += container.front();
-		container.pop();
-	}
-	ret = ret.substr(0, ret.length() - sep.length());
-	return ret;
-}
+std::string joinStrings(std::queue<std::string>& container, const std::string& sep = " ");
 
 /**
  * @brief Joins a stack of strings into a single string with an optional separator.
@@ -104,16 +78,7 @@ std::string joinStrings(std::queue<std::string>& container, const std::string& s
  * @param sep The separator string to insert between each string. Defaults to an empty string.
  * @return std::string The concatenated string.
  */
-std::string joinStrings(std::stack<std::string>& container, const std::string& sep = " ") {
-	std::string ret;
-	while (!container.empty()) {
-		ret += container.top();
-		container.pop();
-	}
-	ret = ret.substr(0, ret.length() - sep.length());
-	return ret;
-}
-
+std::string joinStrings(std::stack<std::string>& container, const std::string& sep = " ");
 /**
  * @brief Splits a string into substrings based on a delimiter and stores the results in a container.
  * 
@@ -126,23 +91,7 @@ std::string joinStrings(std::stack<std::string>& container, const std::string& s
  * @return Container<std::string> A container holding the resulting substrings.
  */
 template <typename Container> 
-Container split(const std::string& str, const std::string& delimiter = "\n") {
-	std::vector<std::string> container;
-
-	size_t start = 0;
-	size_t end = 0;
-
-	while(true) {
-		if((start = str.find_first_not_of(delimiter, start)) == std::string::npos)
-			break;
-		end = str.find_first_of(delimiter, start);
-		if(end == std::string::npos)
-			end = str.length();
-		container.push_back(str.substr(start, end - start));
-		start = end+1;
-	}
-	return(container);
-}
+Container split(const std::string& str, const std::string& delimiter = "\n");
 
 /**
  * @brief Splits a string into substrings based on a delimiter and keeps the delimiters in the result.
@@ -157,48 +106,7 @@ Container split(const std::string& str, const std::string& delimiter = "\n") {
  * @return Container<std::string> A container holding the resulting substrings, including the delimiters.
  */
 template<typename Container>
-Container splitKeep(const std::string& str, const std::string& delimiter = "\n") {
-	std::vector<std::string> container;
-
-	size_t	start = 0;
-	size_t	end = 0;
-	bool	isDelimiter = delimiter.find(str[0]) != std::string::npos;
-
-	while(true) {
-		
-		if(isDelimiter) {
-			end = str.find_first_not_of(delimiter, start);
-		}
-		else if (!isDelimiter) {
-			end = str.find_first_of(delimiter, start);
-		}
-		if(end == std::string::npos)
-			end = str.length();
-
-		container.push_back(str.substr(start, end - start));
-		if(!str[end+1])
-			break;
-		isDelimiter = delimiter.find(str[end]) != std::string::npos;
-		start = end;
-		if(start >= str.length())
-			break;
-	}
-
-	std::vector<std::string> cont2;
-	std::string temp;
-	for(auto it = container.begin(); it != container.end(); it++) {
-		if(hasDelim(*it, delimiter)) {
-			temp += *it;
-		}
-		else {
-			cont2.push_back(temp + *it);
-			temp = "";
-		}
-	}
-	if(temp != "")
-		cont2.push_back(temp);
-	return cont2;
-}
+Container splitKeep(const std::string& str, const std::string& delimiter = "\n");
 
 /**
  * @brief Converts all characters in a string to lowercase.
@@ -210,15 +118,7 @@ Container splitKeep(const std::string& str, const std::string& delimiter = "\n")
  * @param mode The mode of conversion (default is space-separated).
  * @return std::string The input string with all characters converted to lowercase.
  */
-std::string toLowerCase(const std::string& str) {
-	std::string result = str;
-	std::string upper_case = UPPER_CASE;
-	for (char& c : result) {
-		if(upper_case.find(c) != std::string::npos)
-			c = std::tolower(c);
-	}
-	return result;
-}
+std::string toLowerCase(const std::string& str);
 
 /**
  * @brief Converts all characters in a string to uppercase.
@@ -230,17 +130,7 @@ std::string toLowerCase(const std::string& str) {
  * @param mode The mode of conversion (default is space-separated).
  * @return std::string The input string with all characters converted to uppercase.
  */
-std::string toUpperCase(const std::string& str) {
-	std::string result = str;
-	std::string lower_case = LOWER_CASE;
-	
-	for (char& c : result) {
-		if(lower_case.find(c) != std::string::npos)
-			c = std::toupper(c);
-	}
-	return result;
-}
-
+std::string toUpperCase(const std::string& str);
 std::string	toCamelCase(const std::string& str, const int& mode = spaceSeparated) {
 	std::string ret;
 	if(mode == camelCase)
@@ -321,22 +211,7 @@ std::string	toKebabCase(const std::string& str, const int& mode = spaceSeparated
  * @param remove The string containing characters to remove. Defaults to whitespace characters.
  * @return std::string The input string with leading characters removed.
  */
-std::string lstrip(const std::string& str, const std::string& remove = WHITE_SPACES) {
-	int i = 0;
-
-	while(i < str.length()) {
-
-		size_t found = remove.find(str[i]);
-		if(found ==  std::string::npos) {
-			break;
-		}
-		i++;
-	}
-
-	std::string ret = str.substr(i, str.length() - i);
-	return ret;
-}
-
+std::string lstrip(const std::string& str, const std::string& remove = WHITE_SPACES);
 /**
  * @brief Removes trailing whitespace characters from a string.
  * 
@@ -348,18 +223,7 @@ std::string lstrip(const std::string& str, const std::string& remove = WHITE_SPA
  * @param remove The string containing characters to remove. Defaults to whitespace characters.
  * @return std::string The input string with trailing characters removed.
  */
-std::string rstrip(const std::string& str, const std::string& remove = WHITE_SPACES) {
-	int i = str.length() - 1;
-
-	while(i >= 0) {
-		if(remove.find(str[i]) == std::string::npos)
-			break;
-		i--;
-	}
-
-	std::string ret = str.substr(0, i +1);
-	return ret;
-}
+std::string rstrip(const std::string& str, const std::string& remove = WHITE_SPACES);
 
 /**
  * @brief Removes leading and trailing whitespace characters from a string.
@@ -372,11 +236,7 @@ std::string rstrip(const std::string& str, const std::string& remove = WHITE_SPA
  * @param remove The string containing characters to remove. Defaults to whitespace characters.
  * @return std::string The input string with leading and trailing characters removed.
  */
-std::string strip(const std::string& str, const std::string& remove = WHITE_SPACES) {
-	std::string ret = lstrip(str, remove);
-	ret = rstrip(ret, remove);
-	return ret;
-}
+std::string strip(const std::string& str, const std::string& remove = WHITE_SPACES);
 
 /**
  * @brief Replaces all occurrences of a substring with another substring in place.
@@ -388,17 +248,7 @@ std::string strip(const std::string& str, const std::string& remove = WHITE_SPAC
  * @param from The substring to be replaced.
  * @param to The substring to replace `from` with.
  */
-void	replaceAll(std::string& str, const std::string& from, const std::string& to) {
-	size_t start_pos = 0;
-
-	while (true) {
-		start_pos = str.find(from, start_pos);
-		if (start_pos == std::string::npos)
-			break;
-		str.replace(start_pos, from.length(), to);
-		start_pos += to.length();
-	}
-}
+void	replaceAll(std::string& str, const std::string& from, const std::string& to);
 
 /**
  * @brief Removes all occurrences of a substring from a string in place.
@@ -409,14 +259,6 @@ void	replaceAll(std::string& str, const std::string& from, const std::string& to
  * @param str The input string to modify.
  * @param remove The substring of characters to be removed.
  */
-void	removeAll(std::string& str, const std::string& remove) {
-	replaceAll(str, remove, "");
-}
+void	removeAll(std::string& str, const std::string& remove);
 
-bool	stringCompareIgnoreCase(const std::string& s1, const std::string& s2) {
-	std::string lower_s1 = toLowerCase(s1);
-	std::string lower_s2 = toLowerCase(s2);
-
-	return lower_s1 == lower_s2;
-}
-
+bool	stringCompareIgnoreCase(const std::string& s1, const std::string& s2);
