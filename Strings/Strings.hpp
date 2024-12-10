@@ -131,74 +131,12 @@ std::string toLowerCase(const std::string& str);
  * @return std::string The input string with all characters converted to uppercase.
  */
 std::string toUpperCase(const std::string& str);
-std::string	toCamelCase(const std::string& str, const int& mode = spaceSeparated) {
-	std::string ret;
-	if(mode == camelCase)
-		return(ret = str, ret);
 
-	ret = toLowerCase(str);
-	std::string delimiter = [mode]() -> std::string {
-		if (mode == kebabCase) return "-";
-		if (mode == snakeCase) return "_";
-		return WHITE_SPACES;
-	}();
+std::string	toCamelCase(const std::string& str, const int& mode = spaceSeparated);
 
-	std::vector<std::string> vec = split<std::vector<std::string>>(ret, delimiter);
+std::string	toSnakeCase(const std::string& str, const int& mode = spaceSeparated);
 
-	for(auto it = vec.begin(); it != vec.end(); it++) {
-		if((*it)[0])
-			(*it)[0] = std::toupper((*it)[0]);
-	}
-	ret = joinStrings(vec, "");
-	ret[0] = std::tolower(ret[0]);
-	return ret;
-}
-
-std::string	toSnakeCase(const std::string& str, const int& mode = spaceSeparated) {
-	std::string ret;
-	if(mode == snakeCase)
-		return(ret = str, ret);
-
-	ret = str;
-	std::string delimiter = [mode]() -> std::string {
-		if (mode == camelCase) return UPPER_CASE;
-		if (mode == kebabCase) return "-";
-		return WHITE_SPACES;
-	}();
-
-	std::vector<std::string> vec;
-	if(mode == camelCase)
-		vec = splitKeep<std::vector<std::string>>(ret, delimiter);
-	else
-		vec = split<std::vector<std::string>>(ret, delimiter);
-
-	ret = joinStrings(vec, "_");
-	ret = toLowerCase(ret);
-	return ret;
-}
-
-std::string	toKebabCase(const std::string& str, const int& mode = spaceSeparated) {
-	std::string ret;
-	if(mode == kebabCase)
-		return(ret = str, ret);
-
-	ret = str;
-	std::string delimiter = [mode]() -> std::string {
-		if (mode == camelCase) return UPPER_CASE;
-		if (mode == snakeCase) return "_";
-		return WHITE_SPACES;
-	}();
-
-	std::vector<std::string> vec;
-	if(mode == camelCase)
-		vec = splitKeep<std::vector<std::string>>(ret, delimiter);
-	else
-		vec = split<std::vector<std::string>>(ret, delimiter);
-
-	ret = joinStrings(vec, "-");
-	ret = toLowerCase(ret);
-	return ret;
-}
+std::string	toKebabCase(const std::string& str, const int& mode = spaceSeparated);
 
 /**
  * @brief Removes leading whitespace characters from a string.
