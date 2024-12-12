@@ -61,52 +61,24 @@ enum ContainerType
 	CUSTOM
 };
 
-struct XFileDes
-{
-	int stdout_source = 1;
-	int fout_fd = 1;
-	XFileDes()
-	{
-		stdout_source = dup(STDOUT_FILENO);
-	};
-	~XFileDes() {};
-	void resetStdout()
-	{
-		dup2(stdout_source, STDOUT_FILENO);
-	}
-	void setFout(int temp)
-	{
-		fout_fd = temp;
-	}
-	void setToFout()
-	{
-		dup2(fout_fd, STDOUT_FILENO);
-	}
-	int	getFout() {
-		return fout_fd;
-	}
-};
-
-XFileDes xxfileDes;
-
 template <typename... Args>
 void out(const Args &...args);
 
 template <typename... Args>
 void fout(const Args &...args);
 
-class Out
+class Printer
 {
 
 private:
+
 	/**
 	 * @brief Prints the given separator string to the output stream.
 	 * @param sep The separator string to print.
 	 */
 	static void printSep(const std::string &sep)
 	{
-		// Print the separator string to the output stream
-		write(STDOUT_FILENO, sep.c_str(), sep.length());
+		buffer << sep;
 	}
 
 	/**
@@ -126,17 +98,17 @@ private:
 		{
 			if (std::next(it) == end && !TypeChecker::isHandledContainer(*it))
 			{
-				Out::print(*it, "", newLine);
+				Printer::print(*it, "", newLine);
 			}
 			else
 			{
-				Out::print(*it, sep, newLine);
+				Printer::print(*it, sep, newLine);
 			}
 
 			// to output the separator in case of nested containers
 			if (TypeChecker::isHandledContainer(*it) && std::next(it) != end)
 			{
-				write(STDOUT_FILENO, ", ", 1);
+				buffer << ", ";
 			}
 		}
 	}
@@ -176,17 +148,23 @@ private:
 
 		if (side == 0)
 		{
-			write(STDOUT_FILENO, &delimiter[0], 1);
+			buffer << delimiter[0];
 		}
 		else
 		{
-			write(STDOUT_FILENO, &delimiter[1], 1);
+			buffer << &delimiter[1];
 			if (newLine)
-				write(STDOUT_FILENO, "\n", 1);
+				buffer << "\n";
 		}
 	}
 
 public:
+
+	static std::stringstream buffer;
+	// static void freeBuffer() {
+	// 	std::cout << buffer << std::endl;
+	// }
+
 	/**
 	 * @brief Prints multiple elements to the output stream with the given separator and newline control.
 	 * @param first The first element to print.
@@ -195,7 +173,7 @@ public:
 	template <typename T, typename... Args>
 	static void printAll(const T &first, const Args &...args)
 	{
-		Out::print(first);
+		Printer::print(first);
 		if constexpr (sizeof...(args) > 0)
 		{
 			// Recursively call printAll with the remaining arguments.
@@ -212,13 +190,12 @@ public:
 	 */
 	static void print(const std::string &a, const std::string &sep = "", const bool &newLine = true)
 	{
-		// strings are enclosed in double quotes
-		write(STDOUT_FILENO, "\"", 1);
-		write(STDOUT_FILENO, a.c_str(), a.length());
-		write(STDOUT_FILENO, "\"", 1);
-		write(STDOUT_FILENO, sep.c_str(), sep.length());
+		buffer << "\"";
+		buffer << a;
+		buffer << "\"";
+		buffer << sep;
 		if (newLine == true)
-			write(STDOUT_FILENO, "\n", 1);
+			buffer << "\n";
 	}
 
 	/**
@@ -229,10 +206,10 @@ public:
 	 */
 	static void print(const char &a, const std::string &sep = "", const bool &newLine = true)
 	{
-		write(STDOUT_FILENO, &a, 1);
-		write(STDOUT_FILENO, sep.c_str(), sep.length());
+		buffer << &a;
+		buffer << sep;
 		if (newLine == true)
-			write(STDOUT_FILENO, "\n", 1);
+			buffer << "\n";;
 	}
 
 	/**
@@ -244,10 +221,10 @@ public:
 	static void print(const char *s, const std::string &sep = "", const bool &newLine = false)
 	{
 		// strings are enclosed in double quotes
-		write(STDOUT_FILENO, s, strlen(s));
-		write(STDOUT_FILENO, sep.c_str(), sep.length());
+		buffer << s;
+		buffer << sep;
 		if (newLine == true)
-			write(STDOUT_FILENO, "\n", 1);
+			buffer << "\n";
 	}
 
 	/**
@@ -263,10 +240,10 @@ public:
 		ss << a;
 		std::string s = ss.str();
 
-		write(STDOUT_FILENO, s.c_str(), s.length());
-		write(STDOUT_FILENO, sep.c_str(), sep.length());
+		buffer << s;
+		buffer << sep;
 		if (newLine == true)
-			write(STDOUT_FILENO, "\n", 1);
+			buffer << "\n";
 	}
 	/**
 	 * @brief Prints a double to the output stream.
@@ -282,14 +259,14 @@ public:
 		ss << a;
 		std::string s = ss.str();
 
-		write(STDOUT_FILENO, s.c_str(), s.length());
+		buffer << s;
 
 		if (!sep.empty())
-			write(STDOUT_FILENO, sep.c_str(), sep.length());
+			buffer << sep;
 
-		write(STDOUT_FILENO, sep.c_str(), sep.length());
+		buffer << sep;
 		if (newLine == true)
-			write(STDOUT_FILENO, "\n", 1);
+			buffer << "\n";
 	}
 	/**
 	 * @brief Prints a boolean value to the output stream.
@@ -300,12 +277,12 @@ public:
 	static void print(const bool &a, const std::string &sep = "", const bool &newLine = true)
 	{
 		if (a == true)
-			write(STDOUT_FILENO, "true", 4);
+			buffer << "true";
 		else
-			write(STDOUT_FILENO, "false", 5);
-		write(STDOUT_FILENO, sep.c_str(), sep.length());
+			buffer << "false";
+		buffer << sep;
 		if (newLine == true)
-			write(STDOUT_FILENO, "\n", 1);
+			buffer << "\n";
 	}
 
 	/**
@@ -319,10 +296,10 @@ public:
 		std::stringstream ss;
 		ss << a;
 		std::string s = ss.str();
-		write(STDOUT_FILENO, s.c_str(), s.length());
-		write(STDOUT_FILENO, sep.c_str(), sep.length());
+		buffer << s;
+		buffer << sep;
 		if (newLine == true)
-			write(STDOUT_FILENO, "\n", 1);
+			buffer << "\n";
 	}
 	/**
 	 * @brief Prints a long integer to the output stream.
@@ -337,11 +314,11 @@ public:
 		ss << a;
 		std::string s = ss.str();
 
-		write(STDOUT_FILENO, s.c_str(), s.length());
-		write(STDOUT_FILENO, sep.c_str(), sep.length());
+		buffer << s;
+		buffer << sep;
 
 		if (newLine == true)
-			write(STDOUT_FILENO, "\n", 1);
+			buffer << "\n";
 	}
 	/**
 	 * @brief Prints a long long integer to the output stream.
@@ -356,11 +333,11 @@ public:
 		ss << a;
 		std::string s = ss.str();
 
-		write(STDOUT_FILENO, s.c_str(), s.length());
-		write(STDOUT_FILENO, sep.c_str(), sep.length());
+		buffer << s;
+		buffer << sep;
 
 		if (newLine == true)
-			write(STDOUT_FILENO, "\n", 1);
+			buffer << "\n";
 	}
 
 	/**
@@ -376,10 +353,10 @@ public:
 		ss << a;
 		std::string s = ss.str();
 
-		write(STDOUT_FILENO, sep.c_str(), sep.length());
-		write(STDOUT_FILENO, s.c_str(), s.length());
+		buffer << sep;
+		buffer << s;
 		if (newLine == true)
-			write(STDOUT_FILENO, "\n", 1);
+			buffer << "\n";
 	}
 
 	/**
@@ -396,10 +373,10 @@ public:
 		std::string s = ss.str();
 
 		// Write the separator string, the unsigned integer, and a newline to the output stream
-		write(STDOUT_FILENO, sep.c_str(), sep.length());
-		write(STDOUT_FILENO, s.c_str(), s.length());
+		buffer << sep;
+		buffer << s;
 		if (newLine == true)
-			write(STDOUT_FILENO, "\n", 1);
+			buffer << "\n";
 	}
 
 	/**
@@ -415,11 +392,11 @@ public:
 		ss << a;
 		std::string s = ss.str();
 
-		write(STDOUT_FILENO, s.c_str(), s.length());
-		write(STDOUT_FILENO, sep.c_str(), sep.length());
+		buffer << s;
+		buffer << sep;
 
 		if (newLine == true)
-			write(STDOUT_FILENO, "\n", 1);
+			buffer << "\n";
 	}
 
 	/**
@@ -432,9 +409,9 @@ public:
 	template <class T>
 	static void print(const std::vector<T> &vec, const std::string &sep = ", ", const bool &newLine = true)
 	{
-		Out::printContainerDelimiters(VECTOR, 0, newLine);
-		Out::printBeginEnd(vec, sep);
-		Out::printContainerDelimiters(VECTOR, 1, newLine);
+		Printer::printContainerDelimiters(VECTOR, 0, newLine);
+		Printer::printBeginEnd(vec, sep);
+		Printer::printContainerDelimiters(VECTOR, 1, newLine);
 	}
 	/**
 	 * @brief Prints the contents of a std::list.
@@ -446,9 +423,9 @@ public:
 	template <class T>
 	static void print(const std::list<T> &my_list, const std::string &sep = ", ", const bool &newLine = true)
 	{
-		Out::printContainerDelimiters(LIST, 0, newLine);
-		Out::printBeginEnd(my_list, sep);
-		Out::printContainerDelimiters(LIST, 1, newLine);
+		Printer::printContainerDelimiters(LIST, 0, newLine);
+		Printer::printBeginEnd(my_list, sep);
+		Printer::printContainerDelimiters(LIST, 1, newLine);
 	}
 
 	/**
@@ -461,9 +438,9 @@ public:
 	template <class T>
 	static void print(const std::forward_list<T> &my_list, const std::string &sep = ", ", const bool &newLine = true)
 	{
-		Out::printContainerDelimiters(FORWARD_LIST, 0, newLine);
-		Out::printBeginEnd(my_list, sep);
-		Out::printContainerDelimiters(FORWARD_LIST, 1, newLine);
+		Printer::printContainerDelimiters(FORWARD_LIST, 0, newLine);
+		Printer::printBeginEnd(my_list, sep);
+		Printer::printContainerDelimiters(FORWARD_LIST, 1, newLine);
 	}
 	/**
 	 * @brief Prints the contents of a std::deque.
@@ -477,9 +454,9 @@ public:
 	template <class T>
 	static void print(const std::deque<T> &my_deque, const std::string &sep = ", ", const bool &newLine = true)
 	{
-		Out::printContainerDelimiters(DEQUE, 0, newLine);
-		Out::printBeginEnd(my_deque, sep);
-		Out::printContainerDelimiters(DEQUE, 1, newLine);
+		Printer::printContainerDelimiters(DEQUE, 0, newLine);
+		Printer::printBeginEnd(my_deque, sep);
+		Printer::printContainerDelimiters(DEQUE, 1, newLine);
 	}
 
 	/**
@@ -494,19 +471,19 @@ public:
 	template <class T>
 	static void print(std::stack<T> my_stack, const std::string &sep = ", ", const bool &newLine = true)
 	{
-		Out::printContainerDelimiters(STACK, 0, newLine);
+		Printer::printContainerDelimiters(STACK, 0, newLine);
 		while (!my_stack.empty())
 		{
 			auto elem = my_stack.top();
 			if (TypeChecker::isHandledContainer(elem))
-				Out::print(elem, sep, false);
+				Printer::print(elem, sep, false);
 			else
-				Out::print(elem, "", false);
+				Printer::print(elem, "", false);
 			my_stack.pop();
 			if (!my_stack.empty())
-				Out::printSep(sep);
+				Printer::printSep(sep);
 		}
-		Out::printContainerDelimiters(STACK, 1, newLine);
+		Printer::printContainerDelimiters(STACK, 1, newLine);
 	}
 
 	/**
@@ -521,19 +498,19 @@ public:
 	template <class T>
 	static void print(std::queue<T> my_queue, const std::string &sep = ", ", const bool &newLine = true)
 	{
-		Out::printContainerDelimiters(QUEUE, 0, newLine);
+		Printer::printContainerDelimiters(QUEUE, 0, newLine);
 		while (!my_queue.empty())
 		{
 			auto elem = my_queue.front();
 			if (TypeChecker::isHandledContainer(elem))
-				Out::print(elem, sep, false);
+				Printer::print(elem, sep, false);
 			else
-				Out::print(elem, "", false);
+				Printer::print(elem, "", false);
 			my_queue.pop();
 			if (!my_queue.empty())
-				Out::printSep(sep);
+				Printer::printSep(sep);
 		}
-		Out::printContainerDelimiters(QUEUE, 1, newLine);
+		Printer::printContainerDelimiters(QUEUE, 1, newLine);
 	}
 
 	/**
@@ -550,29 +527,29 @@ public:
 	template <class K, class V>
 	static void print(const std::map<K, V> &my_map, const std::string &sep = ", ", const bool &newLine = true)
 	{
-		Out::printContainerDelimiters(MAP, 0, newLine); // Print opening delimiter
+		Printer::printContainerDelimiters(MAP, 0, newLine); // Print opening delimiter
 
 		bool first = true;
 		for (const auto &pair : my_map)
 		{
 			if (!first)
 			{
-				Out::printSep(sep);
+				Printer::printSep(sep);
 			}
-			Out::print(pair.first, "", false);
-			Out::print(": ", "", false);
+			Printer::print(pair.first, "", false);
+			Printer::print(": ", "", false);
 			if (TypeChecker::isHandledContainer(pair.second))
 			{
-				Out::print(pair.second, sep, false);
+				Printer::print(pair.second, sep, false);
 			}
 			else
 			{
-				Out::print(pair.second, "", false);
+				Printer::print(pair.second, "", false);
 			}
 			first = false;
 		}
 
-		Out::printContainerDelimiters(MAP, 1, newLine); // Print closing delimiter
+		Printer::printContainerDelimiters(MAP, 1, newLine); // Print closing delimiter
 	}
 
 	/**
@@ -589,24 +566,24 @@ public:
 	template <class T, class V>
 	static void print(const std::unordered_map<T, V> &my_map, const std::string &sep = ", ", const bool &newLine = true)
 	{
-		Out::printContainerDelimiters(UNORDERED_MAP, 0, newLine);
+		Printer::printContainerDelimiters(UNORDERED_MAP, 0, newLine);
 
 		bool first = true;
 		for (const auto &pair : my_map)
 		{
 			if (!first)
 			{
-				Out::printSep(sep);
+				Printer::printSep(sep);
 			}
-			Out::print(pair.first, "", false);
-			Out::print(": ", "", false);
+			Printer::print(pair.first, "", false);
+			Printer::print(": ", "", false);
 			if (TypeChecker::isHandledContainer(pair.second))
-				Out::print(pair.second, sep, false);
+				Printer::print(pair.second, sep, false);
 			else
-				Out::print(pair.second, "", false);
+				Printer::print(pair.second, "", false);
 			first = false;
 		}
-		Out::printContainerDelimiters(UNORDERED_MAP, 1, newLine);
+		Printer::printContainerDelimiters(UNORDERED_MAP, 1, newLine);
 	}
 
 	/**
@@ -621,18 +598,18 @@ public:
 	template <class T>
 	static void print(const std::set<T> &my_set, const std::string &sep = ", ", const bool &newLine = true)
 	{
-		Out::printContainerDelimiters(SET, 0, newLine);
+		Printer::printContainerDelimiters(SET, 0, newLine);
 		const auto end = my_set.end();
 		for (auto it = my_set.begin(); it != my_set.end(); it++)
 		{
 			if (TypeChecker::isHandledContainer(*it))
-				Out::print(*it, sep, false);
+				Printer::print(*it, sep, false);
 			else
-				Out::print(*it, "", false);
+				Printer::print(*it, "", false);
 			if (std::next(it) != end)
-				Out::printSep(sep);
+				Printer::printSep(sep);
 		}
-		Out::printContainerDelimiters(SET, 1, newLine);
+		Printer::printContainerDelimiters(SET, 1, newLine);
 	}
 	/**
 	 * @brief Prints the contents of a custom object. Implementation of std::ostream operator<< overload is required as cout is called to output the object.
@@ -648,7 +625,7 @@ public:
 		std::stringstream ss;
 		ss << object;
 		std::string s(ss.str());
-		write(STDOUT_FILENO, s.c_str(), s.length());
+		buffer << s;
 		if (!sep.empty())
 			std::cout << sep;
 		if (newLine)
@@ -662,7 +639,7 @@ public:
 		std::stringstream ss;
 		ss << object;
 		std::string s(ss.str());
-		write(STDOUT_FILENO, s.c_str(), s.length());
+		buffer << s;
 		if (!sep.empty())
 			std::cout << sep;
 		if (newLine)
@@ -671,22 +648,12 @@ public:
 };
 
 /**
- * @brief Sets the file descriptor to redirect `fout` stream.
- * @param file_descriptor The file descriptor to set.
- */
-static int setFoutFd(const int file_descriptor)
-{
-	xxfileDes.setFout(file_descriptor);
-	return (file_descriptor);
-}
-
-/**
  * @brief Sets the file descriptor to redirect the `fout` stream to the specified file.
  * @param file The name of the file to open. Creates the file if it does not exist and opens it.
  * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
  * @throws std::runtime_error if the file could not be opened.
  */
-static int setFoutFd(const char *file, bool trunc=true)
+static int setFout(const char *file, bool trunc=true)
 {
 	int fd;
 	if(trunc)
@@ -699,7 +666,7 @@ static int setFoutFd(const char *file, bool trunc=true)
 		s += file;
 		throw(std::runtime_error(s));
 	}
-	xxfileDes.setFout(fd);
+	// xxfileDes.setFout(fd);
 	return (fd);
 }
 
@@ -709,7 +676,7 @@ static int setFoutFd(const char *file, bool trunc=true)
  * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
  * @throws std::runtime_error if the file could not be opened.
  */
-static int setFoutFd(const std::string &file, bool trunc=true)
+static int setFout(const std::string &file, bool trunc=true)
 {
 	int fd;
 	if(trunc)
@@ -721,15 +688,16 @@ static int setFoutFd(const std::string &file, bool trunc=true)
 		std::string s("could not open file: " + file);
 		throw(std::runtime_error(s));
 	}
-	xxfileDes.setFout(fd);
 	return (fd);
 }
+
+std::stringstream Printer::buffer("");
 
 /**
  * @brief Outputs the given arguments to the standard output.
  *
  * This function sets the file descriptor to standard output (stdout)
- * and calls the Out::printAll function to output the provided arguments.
+ * and calls the Printer::printAll function to output the provided arguments.
  *
  * @tparam Args Variadic template parameter pack representing the types of the arguments.
  * @param args The arguments to be printed.
@@ -737,14 +705,15 @@ static int setFoutFd(const std::string &file, bool trunc=true)
 template <typename... Args>
 void out(const Args &...args)
 {
-	xxfileDes.resetStdout();
-	Out::printAll(args...);
+	Printer::printAll(args...);
+	std::cout << Printer::buffer.str() << std::endl;
+	Printer::buffer.str("");
 }
 
 /**
  * @brief Outputs the given arguments to the file descriptor specified by fout_fd.
  *
- * This function sets the file descriptor to fout_fd and calls the Out::printAll
+ * This function sets the file descriptor to fout_fd and calls the Printer::printAll
  * function to output the provided arguments.
  *
  * @tparam Args Variadic template parameter pack representing the types of the arguments.
@@ -753,8 +722,11 @@ void out(const Args &...args)
 template <typename... Args>
 void fout(const Args &...args)
 {
-	xxfileDes.setToFout();
-	Out::printAll(args...);
+	Printer::printAll(args...);
+	std::ofstream of;
+	std::cout << Printer::buffer.str() << std::endl;
 }
+
+
 
 #endif

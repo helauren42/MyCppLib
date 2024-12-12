@@ -1,7 +1,7 @@
 # Printer.hpp
 
 This guide may not be up to date with the latest version. 
-Now use setFoutFd() directly not from class Out::setFoutFd().
+Now use setFoutFd() directly not from class Printer::setFoutFd().
 
 ## Usage
 
@@ -23,7 +23,7 @@ output:
 ![alt text](imgs/newLine_result.png)
 
 ### - fout:
-  fout() works like out(), except that calling Out::setFoutFd() will redirect its output making it easier to store text in debug log files, the method setFoutFd will not redirect the output of out, so that fout() can be used to effortlesly to output into a file while out() is being used to redirect to std out in the same program. The function setFoutFd may take an int file_descriptor corresponding to an open file, or else it may take a file name either as a c_string or as a c++ string object. If it takes a filename than it will create it if it doesn't exist and append to it, not overwriting its current content.
+  fout() works like out(), except that calling Printer::setFoutFd() will redirect its output making it easier to store text in debug log files, the method setFoutFd will not redirect the output of out, so that fout() can be used to effortlesly to output into a file while out() is being used to redirect to std out in the same program. The function setFoutFd may take an int file_descriptor corresponding to an open file, or else it may take a file name either as a c_string or as a c++ string object. If it takes a filename than it will create it if it doesn't exist and append to it, not overwriting its current content.
 
 ![alt text](imgs/setFoutFd.png)
 
