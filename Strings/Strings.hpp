@@ -107,14 +107,6 @@ bool isOnlyDelim(const std::string& str, const std::string& delimiter) {
     return str.find_first_not_of(delimiter) == std::string::npos;
 }
 
-// bool isEmail(const std::string& str) {
-	
-// }
-
-// bool isURL(const std::string& str) {
-
-// }
-
 int countChar(const std::string& str, const char& c) {
 	int count = 0;
 	for(int i = 0; str[i]; i++) {

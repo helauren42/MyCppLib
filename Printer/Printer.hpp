@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include <exception>
+#include <mutex>
 
 #include <vector>
 #include <list>
@@ -619,6 +620,7 @@ namespace
 namespace Out
 {
 	static Printer printer;
+	static std::mutex mtx;
 
 	/**
 	 * @brief Sets the file in which the fout function will output.
@@ -629,6 +631,7 @@ namespace Out
 	 */
 	void setFoutFile(const std::string &file, bool trunc = true)
 	{
+		static std::unique_lock<std::mutex> lock(mtx);
 		printer.setFile(file, trunc);
 	}
 
@@ -641,6 +644,7 @@ namespace Out
 	 */
 	void setFoutFile(const char *file, bool trunc = true)
 	{
+		static std::unique_lock<std::mutex> lock(mtx);
 		printer.setFile(file, trunc);
 	}
 
@@ -653,6 +657,7 @@ namespace Out
 	template <typename... Args>
 	void stdOut(const Args &...args)
 	{
+		static std::unique_lock<std::mutex> lock(mtx);
 		printer.printAll(args...);
 		std::cout << printer.getBufferStr() << std::endl;
 		printer.emptyBuffer();
@@ -667,6 +672,7 @@ namespace Out
 	template <typename... Args>
 	void stdCerr(const Args &...args)
 	{
+		static std::unique_lock<std::mutex> lock(mtx);
 		printer.printAll(args...);
 		std::cerr << printer.getBufferStr() << std::endl;
 		printer.emptyBuffer();
@@ -684,6 +690,7 @@ namespace Out
 	template <typename... Args>
 	void fout(const Args &...args)
 	{
+		static std::unique_lock<std::mutex> lock(mtx);
 		printer.printAll(args...);
 		if (!printer.fileSet())
 			throw std::logic_error("Output file not defined");
