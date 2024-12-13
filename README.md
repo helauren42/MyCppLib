@@ -21,6 +21,7 @@ The latest addition !
 Uses the print function from Printer.hpp to output parameters into a file!
 Call debug(), info(), warning(), error(), fatal() depending on the log level you need.
 Call setLoggerFile() set define your log output file.
+Use setExtraSpacing() to allow or disallow the output of an extra new line, either favoring readability or file size.
 
 Outputs your system time in millieseconds, the log level and then your arguments.
 
