@@ -618,7 +618,6 @@ namespace
 
 namespace Out
 {
-
 	static Printer printer;
 
 	/**
