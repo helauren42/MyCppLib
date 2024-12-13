@@ -33,7 +33,6 @@ Container<std::string> split(const std::string& str, const std::string& delimite
 
 namespace
 {
-	static std::mutex mtx;
 	enum logType
 	{
 		DEBUG,
@@ -94,7 +93,6 @@ namespace
 		template <typename... Args>
 		static void log(const Args &...args)
 		{
-			std::unique_lock<std::mutex> lock(mtx);
 			if (!of.is_open())
 				throw std::logic_error("Output file not defined");
 			outputTime();
@@ -121,6 +119,7 @@ namespace {
 	std::ofstream Logging::of;
 	logType Logging::type;
 	bool Logging::extraSpacing = true;
+	static std::mutex mtx;
 }
 
 namespace Logger
@@ -136,30 +135,35 @@ namespace Logger
 	template <typename... Args>
 	static void debug(const Args &...args)
 	{
+		std::unique_lock<std::mutex> lock(mtx);
 		logging.type = DEBUG;
 		logging.log(args...);
 	}
 	template <typename... Args>
 	static void info(const Args &...args)
 	{
+		std::unique_lock<std::mutex> lock(mtx);
 		logging.type = INFO;
 		logging.log(args...);
 	}
 	template <typename... Args>
 	static void warning(const Args &...args)
 	{
+		std::unique_lock<std::mutex> lock(mtx);
 		logging.type = WARNING;
 		logging.log(args...);
 	}
 	template <typename... Args>
 	static void error(const Args &...args)
 	{
+		std::unique_lock<std::mutex> lock(mtx);
 		logging.type = ERROR;
 		logging.log(args...);
 	}
 	template <typename... Args>
 	static void fatal(const Args &...args)
 	{
+		std::unique_lock<std::mutex> lock(mtx);
 		logging.type = FATAL;
 		logging.log(args...);
 	}
