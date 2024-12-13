@@ -23,7 +23,6 @@
 #include <fcntl.h>
 #include <cstring>
 
-
 #ifndef UTILS_HPP
 #define UTILS_HPP
 class TypeChecker
@@ -68,7 +67,6 @@ class Printer
 {
 
 private:
-
 	/**
 	 * @brief Prints the given separator string to the output stream.
 	 * @param sep The separator string to print.
@@ -148,7 +146,7 @@ private:
 		}
 		else
 		{
-			buffer << &delimiter[1];
+			buffer << delimiter[1];
 		}
 	}
 
@@ -170,10 +168,11 @@ private:
 	 * @param a The character to print.
 	 * @param sep The separator string to print after the character.
 	 */
-	void print(const char &a, const std::string &sep = "")
+	void print(const char a, const std::string &sep = "")
 	{
-		buffer << &a;
-		buffer << sep;;
+		buffer << a;
+		buffer << sep;
+		;
 	}
 
 	/**
@@ -264,7 +263,6 @@ private:
 
 		buffer << s;
 		buffer << sep;
-
 	}
 	/**
 	 * @brief Prints a long long integer to the output stream.
@@ -280,7 +278,6 @@ private:
 
 		buffer << s;
 		buffer << sep;
-
 	}
 
 	/**
@@ -330,7 +327,6 @@ private:
 
 		buffer << s;
 		buffer << sep;
-
 	}
 
 	/**
@@ -538,7 +534,7 @@ private:
 	 */
 	template <class T>
 	void print(const T &object, const std::string &sep = "",
-					  typename std::enable_if<std::is_class<T>::value>::type * = nullptr)
+			   typename std::enable_if<std::is_class<T>::value>::type * = nullptr)
 	{
 		std::stringstream ss;
 		ss << object;
@@ -550,7 +546,7 @@ private:
 
 	template <class T>
 	void print(const T *object, const std::string &sep = "",
-					  typename std::enable_if<std::is_class<T>::value>::type * = nullptr)
+			   typename std::enable_if<std::is_class<T>::value>::type * = nullptr)
 	{
 		std::stringstream ss;
 		ss << object;
@@ -563,12 +559,13 @@ private:
 	std::stringstream buffer;
 
 public:
-
-	static std::ofstream of;
-	std::string getBufferStr() const {
+	std::ofstream of;
+	std::string getBufferStr() const
+	{
 		return buffer.str();
 	}
-	void emptyBuffer() {
+	void emptyBuffer()
+	{
 		buffer.str("");
 	}
 
@@ -578,32 +575,15 @@ public:
 	 * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
 	 * @throws std::runtime_error if the file could not be opened.
 	 */
-	static void setFoutFile(const char *file, bool trunc=true)
+	void setFile(const std::string &file, bool trunc = true)
 	{
-		if(trunc)
+		if (trunc)
 			of.open(file);
 		else
 			of.open(file, std::ios::app);
 
-		if (!of.is_open()) {
-			throw(std::runtime_error("could not open file: " + std::string(file)));
-		}
-	}
-
-	/**
-	 * @brief Sets the file descriptor to redirect the `fout` stream to the specified file.
-	 * @param file The name of the file to open. Creates the file if it does not exist and opens it.
-	 * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
-	 * @throws std::runtime_error if the file could not be opened.
-	 */
-	static void setFoutFile(const std::string &file, bool trunc=true)
-	{
-		if(trunc)
-			of.open(file);
-		else
-			of.open(file, std::ios::app);
-
-		if (!of.is_open()) {
+		if (!of.is_open())
+		{
 			throw(std::runtime_error("could not open file: " + file));
 		}
 	}
@@ -628,40 +608,50 @@ public:
 
 static Printer printer;
 
-	/**
-	 * @brief Outputs the given arguments to the standard output.
-	 *
-	 * This function sets the file descriptor to standard output (stdout)
-	 * and calls the Printer::printAll function to output the provided arguments.
-	 *
-	 * @tparam Args Variadic template parameter pack representing the types of the arguments.
-	 * @param args The arguments to be printed.
-	 */
-	template <typename... Args>
-	void out(const Args &...args)
-	{
-		printer.printAll(args...);
-		std::cout << printer.getBufferStr() << std::endl;
-		printer.emptyBuffer();
-	}
+void setFoutFile(const std::string &file, bool trunc = true)
+{
+	printer.setFile(file, trunc);
+}
 
-	/**
-	 * @brief Outputs the given arguments to the file descriptor specified by fout_fd.
-	 *
-	 * This function sets the file descriptor to fout_fd and calls the Printer::printAll
-	 * function to output the provided arguments.
-	 *
-	 * @tparam Args Variadic template parameter pack representing the types of the arguments.
-	 * @param args The arguments to be printed.
-	 */
-	template <typename... Args>
-	void fout(const Args &...args)
-	{
-		printer.printAll(args...);
-		if(!printer.of.is_open())
-			throw std::logic_error("Output file not set");
-		printer.of << printer.getBufferStr();
-		printer.emptyBuffer();
-	}
+void setFoutFile(const char *file, bool trunc = true)
+{
+	printer.setFile(file, trunc);
+}
+
+/**
+ * @brief Outputs the given arguments to the standard output.
+ *
+ * This function sets the file descriptor to standard output (stdout)
+ * and calls the Printer::printAll function to output the provided arguments.
+ *
+ * @tparam Args Variadic template parameter pack representing the types of the arguments.
+ * @param args The arguments to be printed.
+ */
+template <typename... Args>
+void out(const Args &...args)
+{
+	printer.printAll(args...);
+	std::cout << printer.getBufferStr() << std::endl;
+	printer.emptyBuffer();
+}
+
+/**
+ * @brief Outputs the given arguments to the file descriptor specified by fout_fd.
+ *
+ * This function sets the file descriptor to fout_fd and calls the Printer::printAll
+ * function to output the provided arguments.
+ *
+ * @tparam Args Variadic template parameter pack representing the types of the arguments.
+ * @param args The arguments to be printed.
+ */
+template <typename... Args>
+void fout(const Args &...args)
+{
+	printer.printAll(args...);
+	if (!printer.of.is_open())
+		throw std::logic_error("Output file not set");
+	printer.of << printer.getBufferStr() << std::endl;
+	printer.emptyBuffer();
+}
 
 #endif
