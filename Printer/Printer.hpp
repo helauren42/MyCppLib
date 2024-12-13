@@ -619,11 +619,25 @@ namespace Out {
 
 	static Printer printer;
 	
+	/**
+	 * @brief Sets the file in which the fout function will output.
+	 * 
+	 * @param file The name of the file to open. Creates the file if it does not exist and opens it.
+	 * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
+	 * @throws std::runtime_error if the file could not be opened.
+	 */
 	void setFoutFile(const std::string &file, bool trunc = true)
 	{
 		printer.setFile(file, trunc);
 	}
 
+	/**
+	 * @brief Sets the file in which the fout function will output.
+	 * 
+	 * @param file The name of the file to open. Creates the file if it does not exist and opens it.
+	 * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
+	 * @throws std::runtime_error if the file could not be opened.
+	 */
 	void setFoutFile(const char *file, bool trunc = true)
 	{
 		printer.setFile(file, trunc);
@@ -631,9 +645,6 @@ namespace Out {
 
 	/**
 	 * @brief Outputs the given arguments to the standard output.
-	 *
-	 * This function sets the file descriptor to standard output (stdout)
-	 * and calls the Printer::printAll function to output the provided arguments.
 	 *
 	 * @tparam Args Variadic template parameter pack representing the types of the arguments.
 	 * @param args The arguments to be printed.
@@ -647,10 +658,7 @@ namespace Out {
 	}
 
 	/**
-	 * @brief Outputs the given arguments to the standard output.
-	 *
-	 * This function sets the file descriptor to standard output (stdout)
-	 * and calls the Printer::printAll function to output the provided arguments.
+	 * @brief Outputs the given arguments to standard error.
 	 *
 	 * @tparam Args Variadic template parameter pack representing the types of the arguments.
 	 * @param args The arguments to be printed.
@@ -677,38 +685,67 @@ namespace Out {
 	{
 		printer.printAll(args...);
 		if (!printer.fileSet())
-			throw std::logic_error("Output file not set");
+			throw std::logic_error("Output file not defined");
 		printer.of << printer.getBufferStr() << std::endl;
 		printer.emptyBuffer();
 	}
 }
 
-// class Logger {
-// 	public :
-// 		enum logType {
-// 			DEBUG,
-//         	INFO,
-//         	WARNING,
-//         	ERROR,
-//         	FATAL
-// 		};
-// 	private:
-// 		std::ofstream of;
-// 		logType type;
+class Logger {
+	private:
+		enum logType {
+			DEBUG,
+        	INFO,
+        	WARNING,
+        	ERROR,
+        	FATAL
+		};
+		static Printer printer;
+		static std::ofstream of;
+		static logType type;
 
-// 	public :
-// 		static void setLoggerFile(const std::string file, const bool trunc) {
-// 			if(trunc)
-// 				of.open(file);
-// 			else
-// 				of.open(file, std::ios::app);
-// 		};
-// 		template<typename... Args>
-// 		static void log(const Args &...args) {
-// 			printer.printAll(args...);
-// 		}
+		template<typename... Args>
+		static void log(const Args &...args) {
+			if(!of.is_open())
+				throw std::logic_error("Output file not defined");
+			of << "[" << type << "] ";;
+			printer.printAll(args...);
+			of << printer.getBufferStr() << std::endl;
+		}
+
+	public :
+		static void setLoggerFile(const std::string file, const bool trunc) {
+			if(trunc)
+				of.open(file);
+			else
+				of.open(file, std::ios::app);
+		};
 		
-
-// }
+		template<typename... Args>
+		static void debug(const Args &...args) {
+			type = DEBUG;
+			log(args...);
+		}
+		template<typename... Args>
+		static void info(const Args &...args) {
+			type = INFO;
+			log(args...);
+		}
+		template<typename... Args>
+		static void warning(const Args &...args) {
+			type = WARNING;
+			log(args...);
+		}
+		template<typename... Args>
+		static void error(const Args &...args) {
+			type = ERROR;
+			log(args...);
+		}
+		template<typename... Args>
+		static void fatal(const Args &...args) {
+			type = FATAL;
+			log(args...);
+		}
+};
 
 #endif
