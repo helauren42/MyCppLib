@@ -1,7 +1,7 @@
-#pragma once
+#ifndef STRINGS_HPP
+#define STRINGS_HPP
 
 #include <iostream>
-#include "../Conversions/Conversions.hpp"
 
 // using namespace std;
 
@@ -541,3 +541,4 @@ bool	stringCompareIgnoreCase(const std::string& s1, const std::string& s2) {
 	return lower_s1 == lower_s2;
 }
 
+#endif
