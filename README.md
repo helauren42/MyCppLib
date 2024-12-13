@@ -24,7 +24,7 @@ Here are the different sections of the library
   C++ strings from std::string are displayed within double quotes which is not the case for C char* strings.
   
   - fout:
-  fout() works like out(), except that calling Out::setFoutFd() will redirect its output making it easier to store text in debug log files, the method setFoutFd will not redirect the output of out(). This way fout() can be used to effortlesly output into a file while out() is being used to redirect to std out in the same program.
+  fout() works like out(), except that calling Printer::setFoutFd() will redirect its output making it easier to store text in debug log files, the method setFoutFd will not redirect the output of out(). This way fout() can be used to effortlesly output into a file while out() is being used to redirect to std out in the same program.
 
   These function are calling write from unistd to output data, be mindful when redirecting std out;
 

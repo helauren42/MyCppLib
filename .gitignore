@@ -1,6 +1,4 @@
 a.out
-test.*
-tester
-tester.*
+test*
 .vscode
 *.txt
