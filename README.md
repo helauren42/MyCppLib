@@ -4,7 +4,8 @@ This project was started recently and is still in development.
 
 This is a custom cpp library to improve my workflow on personal and professional projects.
 
-Every hpp file can be seen as a library of its own and is designed to work as a standalone, so that you just need to import the hpp file in order to use it.
+I had the intention of making these libraries standalone but by the looks of it they are somewhat dependent on each other, you could still just clone the repo, get all the .hpp and just include the ones you need.
+
 Using keyword has been omitted in the construction of these libraries to facilitate the integration into your projects.
 Methods intended for use are declared as static and within a namespace to simplify their usage, while auxiliary methods and attributes are kept private or placed in unnamed namespace to restrict their scope.
 
