@@ -1,36 +1,35 @@
 # Overview
 
-This project was started recently and is still far from complete.
+This project was started recently and is still in development.
 
 This is a custom cpp library to improve my workflow on personal and professional projects.
+
 Every hpp file can be seen as a library of its own and is designed to work as a standalone, so that you just need to import the hpp file in order to use it.
-Namespace and the using keywords have been omitted to facilitate integration to projects.
-
-Here are the different sections of the library
-- Parser.hpp: A class making parsing CLI arguments more convenient.
-- Printer.hpp: A more convenient way of printing than using cout as containers can be passed directly as argumentm inspired from python's print()
-- Strings.hpp: String manipulation library
-
-### Parser/Parser.hpp
-
-- Please refer to the README.md file inside of the Parser directory to understand the parser's usage.
+Using keyword has been omitted in the construction of these libraries to facilitate the integration into your projects.
+Methods intended for use are declared as static and within a namespace to simplify their usage, while auxiliary methods and attributes are kept private or placed in unnamed namespace to restrict their scope.
 
 ### Printer/Printer.hpp
 
-  Usage: import Printer.hpp into your project and call out() or fout(), pass variables and objects as parameters to the out function.
-  
-  - out:
-  out() takes an arbitrary amount of arguments that can be scalar types or containers, some of the less common containers have not been included, out() prints a new line after every parameter, except for c strings.
-  C++ strings from std::string are displayed within double quotes which is not the case for C char* strings.
-  
-  - fout:
-  fout() works like out(), except that calling Printer::setFoutFd() will redirect its output making it easier to store text in debug log files, the method setFoutFd will not redirect the output of out(). This way fout() can be used to effortlesly output into a file while out() is being used to redirect to std out in the same program.
+  Three print functions to output to stdout, stderr or to a file, inspired from the python print function. Scalar types and standard containers can be passed as argument directly and will be printed like in python, for custom objects, the print functions can output their values if the appropriate std::ostream& operator<< overload is provided.
 
-  These function are calling write from unistd to output data, be mindful when redirecting std out;
+ - Usage: import Printer.hpp into your project and call stdOut(), stdCerr() or fout(). Call setFoutFile(), pass desired output file and set option to truncate as argument .
+
+### Logger
+
+The latest addition !
+
+Uses the print function from Printer.hpp to output elements into a file!
+Call debug(), info(), warning(), error(), fatal() depending on the log level you need.
+Call setLoggerFile() set define your log output file.
+
+### Parser
+
+- Convenient POSIX cmd line parser.
+- Includes: options, positional arguments, setting default values and conversion of arguments to their desired data types.
 
 ### Strings/Strings.hpp
 
-- a long list of string manipulation functions
+- some string manipulation functions
   
 #
 PS: Feel free to provide suggestions
