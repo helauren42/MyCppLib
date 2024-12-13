@@ -591,6 +591,10 @@ namespace {
 			}
 		}
 
+		bool fileSet() {
+			return of.is_open();
+		}
+
 		/**
 		 * @brief Prints multiple elements to the output stream.
 		 * @param first The first element to print.
@@ -610,56 +614,73 @@ namespace {
 	};
 };
 
-static Printer printer;
 
-// class Out {
+namespace Out {
 
-// }
+	static Printer printer;
+	
+	void setFoutFile(const std::string &file, bool trunc = true)
+	{
+		printer.setFile(file, trunc);
+	}
 
-void setFoutFile(const std::string &file, bool trunc = true)
-{
-	printer.setFile(file, trunc);
-}
+	void setFoutFile(const char *file, bool trunc = true)
+	{
+		printer.setFile(file, trunc);
+	}
 
-void setFoutFile(const char *file, bool trunc = true)
-{
-	printer.setFile(file, trunc);
-}
+	/**
+	 * @brief Outputs the given arguments to the standard output.
+	 *
+	 * This function sets the file descriptor to standard output (stdout)
+	 * and calls the Printer::printAll function to output the provided arguments.
+	 *
+	 * @tparam Args Variadic template parameter pack representing the types of the arguments.
+	 * @param args The arguments to be printed.
+	 */
+	template <typename... Args>
+	void stdOut(const Args &...args)
+	{
+		printer.printAll(args...);
+		std::cout << printer.getBufferStr() << std::endl;
+		printer.emptyBuffer();
+	}
 
-/**
- * @brief Outputs the given arguments to the standard output.
- *
- * This function sets the file descriptor to standard output (stdout)
- * and calls the Printer::printAll function to output the provided arguments.
- *
- * @tparam Args Variadic template parameter pack representing the types of the arguments.
- * @param args The arguments to be printed.
- */
-template <typename... Args>
-void out(const Args &...args)
-{
-	printer.printAll(args...);
-	std::cout << printer.getBufferStr() << std::endl;
-	printer.emptyBuffer();
-}
+	/**
+	 * @brief Outputs the given arguments to the standard output.
+	 *
+	 * This function sets the file descriptor to standard output (stdout)
+	 * and calls the Printer::printAll function to output the provided arguments.
+	 *
+	 * @tparam Args Variadic template parameter pack representing the types of the arguments.
+	 * @param args The arguments to be printed.
+	 */
+	template <typename... Args>
+	void stdCerr(const Args &...args)
+	{
+		printer.printAll(args...);
+		std::cerr << printer.getBufferStr() << std::endl;
+		printer.emptyBuffer();
+	}
 
-/**
- * @brief Outputs the given arguments to the file descriptor specified by fout_fd.
- *
- * This function sets the file descriptor to fout_fd and calls the Printer::printAll
- * function to output the provided arguments.
- *
- * @tparam Args Variadic template parameter pack representing the types of the arguments.
- * @param args The arguments to be printed.
- */
-template <typename... Args>
-void fout(const Args &...args)
-{
-	printer.printAll(args...);
-	if (!printer.of.is_open())
-		throw std::logic_error("Output file not set");
-	printer.of << printer.getBufferStr() << std::endl;
-	printer.emptyBuffer();
+	/**
+	 * @brief Outputs the given arguments to the file descriptor specified by fout_fd.
+	 *
+	 * This function sets the file descriptor to fout_fd and calls the Printer::printAll
+	 * function to output the provided arguments.
+	 *
+	 * @tparam Args Variadic template parameter pack representing the types of the arguments.
+	 * @param args The arguments to be printed.
+	 */
+	template <typename... Args>
+	void fout(const Args &...args)
+	{
+		printer.printAll(args...);
+		if (!printer.fileSet())
+			throw std::logic_error("Output file not set");
+		printer.of << printer.getBufferStr() << std::endl;
+		printer.emptyBuffer();
+	}
 }
 
 // class Logger {
