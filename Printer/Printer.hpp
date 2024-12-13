@@ -691,36 +691,30 @@ namespace Out {
 	}
 }
 
+namespace {
+	enum logType {
+				DEBUG,
+				INFO,
+				WARNING,
+				ERROR,
+				FATAL
+	};
+}
+
 class Logger {
-	private:
-		enum logType {
-			DEBUG,
-        	INFO,
-        	WARNING,
-        	ERROR,
-        	FATAL
-		};
+	public :
+		
 		static Printer printer;
 		static std::ofstream of;
 		static logType type;
 
-		template<typename... Args>
-		static void log(const Args &...args) {
-			if(!of.is_open())
-				throw std::logic_error("Output file not defined");
-			of << "[" << type << "] ";;
-			printer.printAll(args...);
-			of << printer.getBufferStr() << std::endl;
-		}
 
-	public :
 		static void setLoggerFile(const std::string file, const bool trunc) {
 			if(trunc)
 				of.open(file);
 			else
 				of.open(file, std::ios::app);
 		};
-		
 		template<typename... Args>
 		static void debug(const Args &...args) {
 			type = DEBUG;
@@ -746,6 +740,44 @@ class Logger {
 			type = FATAL;
 			log(args...);
 		}
+	
+	private:
+		template<typename... Args>
+		static void log(const Args &...args) {
+			if(!of.is_open())
+				throw std::logic_error("Output file not defined");
+			outputType(type);
+			printer.printAll(args...);
+			of << printer.getBufferStr() << std::endl;
+			printer.emptyBuffer();
+		}
+		static void outputType(logType type) {
+			switch (type)
+			{
+			case DEBUG:
+				of << "[DEBUG] ";
+				break;
+			case INFO:
+				of << "[INFO] ";
+				break;
+			case WARNING:
+				of << "[WARNING] ";
+				break;
+			case ERROR:
+				of << "[ERROR] ";
+				break;
+			case FATAL:
+				of << "[FATAL] ";
+				break;
+			
+			default:
+				break;
+			}
+		}
 };
+
+Printer Logger::printer;
+std::ofstream Logger::of;
+logType Logger::type;
 
 #endif
