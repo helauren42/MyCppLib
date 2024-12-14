@@ -6,7 +6,7 @@ Now use setFoutFd() directly not from class Printer::setFoutFd().
 ## Usage
 
   - requires c++17 or later
-  - import Printer.hpp into your project and call out() or fout(), pass variables and objects as parameters to the out function.
+  - import Printer.hpp into your project and call out() or Fout(), pass variables and objects as parameters to the out function.
   
 ### - out:
   
@@ -22,13 +22,13 @@ output:
 
 ![alt text](imgs/newLine_result.png)
 
-### - fout:
-  fout() works like out(), except that calling Printer::setFoutFd() will redirect its output making it easier to store text in debug log files, the method setFoutFd will not redirect the output of out, so that fout() can be used to effortlesly to output into a file while out() is being used to redirect to std out in the same program. The function setFoutFd may take an int file_descriptor corresponding to an open file, or else it may take a file name either as a c_string or as a c++ string object. If it takes a filename than it will create it if it doesn't exist and append to it, not overwriting its current content.
+### - Fout:
+  Fout() works like out(), except that calling Printer::setFoutFd() will redirect its output making it easier to store text in debug log files, the method setFoutFd will not redirect the output of out, so that Fout() can be used to effortlesly to output into a file while out() is being used to redirect to std out in the same program. The function setFoutFd may take an int file_descriptor corresponding to an open file, or else it may take a file name either as a c_string or as a c++ string object. If it takes a filename than it will create it if it doesn't exist and append to it, not overwriting its current content.
 
 ![alt text](imgs/setFoutFd.png)
 
 ### - Printer::print()
-  For more output customization Printer::print() can be called, various types are handled by print() but it can only take one element at a time to print. It has two params sep and newLine, sep is a string used to define the separator used to separate elements when printing containers of size > 1, by default the separator is ", ". The param newLine can be set to true or false, true will output a newLine after printing the entire container, false will not, newLine defaults to true. The functions out and fout take an arbitrary amount of arguments and then call Printer::print() on each one of those arguments.
+  For more output customization Printer::print() can be called, various types are handled by print() but it can only take one element at a time to print. It has two params sep and newLine, sep is a string used to define the separator used to separate elements when printing containers of size > 1, by default the separator is ", ". The param newLine can be set to true or false, true will output a newLine after printing the entire container, false will not, newLine defaults to true. The functions out and Fout take an arbitrary amount of arguments and then call Printer::print() on each one of those arguments.
 
 
 ## Implementation for nested containers:

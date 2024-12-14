@@ -575,7 +575,7 @@ namespace
 		}
 
 		/**
-		 * @brief Sets the file descriptor to redirect the `fout` stream to the specified file.
+		 * @brief Sets the file descriptor to redirect the `Fout` stream to the specified file.
 		 * @param file The name of the file to open. Creates the file if it does not exist and opens it.
 		 * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
 		 * @throws std::runtime_error if the file could not be opened.
@@ -623,7 +623,7 @@ namespace Out
 	static std::mutex mtx;
 
 	/**
-	 * @brief Sets the file in which the fout function will output.
+	 * @brief Sets the file in which the Fout function will output.
 	 *
 	 * @param file The name of the file to open. Creates the file if it does not exist and opens it.
 	 * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
@@ -637,7 +637,7 @@ namespace Out
 	}
 
 	/**
-	 * @brief Sets the file in which the fout function will output.
+	 * @brief Sets the file in which the Fout function will output.
 	 *
 	 * @param file The name of the file to open. Creates the file if it does not exist and opens it.
 	 * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
@@ -673,7 +673,7 @@ namespace Out
 	 * @param args The arguments to be printed.
 	 */
 	template <typename... Args>
-	inline void stdCerr(const Args &...args)
+	inline void stdErr(const Args &...args)
 	{
 		mtx.lock();
 		printer.printAll(args...);
@@ -683,16 +683,16 @@ namespace Out
 	}
 
 	/**
-	 * @brief Outputs the given arguments to the file descriptor specified by fout_fd.
+	 * @brief Outputs the given arguments to the file descriptor specified by Fout_fd.
 	 *
-	 * This function sets the file descriptor to fout_fd and calls the Printer::printAll
+	 * This function sets the file descriptor to Fout_fd and calls the Printer::printAll
 	 * function to output scalar types and container arguments.
 	 *
 	 * @tparam Args Variadic template parameter pack representing the types of the arguments.
 	 * @param args The arguments to be printed.
 	 */
 	template <typename... Args>
-	inline void fout(const Args &...args)
+	inline void Fout(const Args &...args)
 	{
 		mtx.lock();
 		printer.printAll(args...);
