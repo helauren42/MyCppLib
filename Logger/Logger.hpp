@@ -124,48 +124,47 @@ namespace {
 
 namespace Logger
 {
-	Logging logging;
-	static void setExtraSpacing(const bool _value) {
+	inline void setExtraSpacing(const bool _value) {
 		Logging::extraSpacing = _value;
 	}
 
-	static void setLoggerFile(const std::string file, const bool trunc) {
-		logging.setLoggerFile(file, trunc);
+	inline void setLoggerFile(const std::string file, const bool trunc) {
+		Logging::setLoggerFile(file, trunc);
 	}
 	template <typename... Args>
-	static void debug(const Args &...args)
+	inline void debug(const Args &...args)
 	{
 		std::unique_lock<std::mutex> lock(mtx);
-		logging.type = DEBUG;
-		logging.log(args...);
+		Logging::type = DEBUG;
+		Logging::log(args...);
 	}
 	template <typename... Args>
-	static void info(const Args &...args)
+	inline void info(const Args &...args)
 	{
 		std::unique_lock<std::mutex> lock(mtx);
-		logging.type = INFO;
-		logging.log(args...);
+		Logging::type = INFO;
+		Logging::log(args...);
 	}
 	template <typename... Args>
-	static void warning(const Args &...args)
+	inline void warning(const Args &...args)
 	{
 		std::unique_lock<std::mutex> lock(mtx);
-		logging.type = WARNING;
-		logging.log(args...);
+		Logging::type = WARNING;
+		Logging::log(args...);
 	}
 	template <typename... Args>
-	static void error(const Args &...args)
+	inline void error(const Args &...args)
 	{
 		std::unique_lock<std::mutex> lock(mtx);
-		logging.type = ERROR;
-		logging.log(args...);
+		Logging::type = ERROR;
+		Logging::log(args...);
 	}
 	template <typename... Args>
-	static void fatal(const Args &...args)
+	inline void fatal(const Args &...args)
 	{
 		std::unique_lock<std::mutex> lock(mtx);
-		logging.type = FATAL;
-		logging.log(args...);
+		Logging::type = FATAL;
+		Logging::log(args...);
 	}
 }
 
