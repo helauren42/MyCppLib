@@ -1,7 +1,6 @@
 # Printer.hpp
 
-This guide may not be up to date with the latest version. 
-Now use setFoutFd() directly not from class Printer::setFoutFd().
+This is guide was not updated function names have changed, now use Out::stdOut, Out::stdErr, Out::fout, and Out::setFoutFile. You may use "using namespace Out".
 
 ## Usage
 
