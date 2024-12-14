@@ -629,10 +629,11 @@ namespace Out
 	 * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
 	 * @throws std::runtime_error if the file could not be opened.
 	 */
-	void setFoutFile(const std::string &file, bool trunc = true)
+	inline void setFoutFile(const std::string &file, bool trunc = true)
 	{
-		static std::unique_lock<std::mutex> lock(mtx);
+		mtx.lock();
 		printer.setFile(file, trunc);
+		mtx.unlock();
 	}
 
 	/**
@@ -642,10 +643,11 @@ namespace Out
 	 * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
 	 * @throws std::runtime_error if the file could not be opened.
 	 */
-	void setFoutFile(const char *file, bool trunc = true)
+	inline void setFoutFile(const char *file, bool trunc = true)
 	{
-		static std::unique_lock<std::mutex> lock(mtx);
+		mtx.lock();
 		printer.setFile(file, trunc);
+		mtx.unlock();
 	}
 
 	/**
@@ -655,12 +657,13 @@ namespace Out
 	 * @param args The arguments to be printed.
 	 */
 	template <typename... Args>
-	void stdOut(const Args &...args)
+	inline void stdOut(const Args &...args)
 	{
-		static std::unique_lock<std::mutex> lock(mtx);
+		mtx.lock();
 		printer.printAll(args...);
 		std::cout << printer.getBufferStr() << std::endl;
 		printer.emptyBuffer();
+		mtx.unlock();
 	}
 
 	/**
@@ -670,12 +673,13 @@ namespace Out
 	 * @param args The arguments to be printed.
 	 */
 	template <typename... Args>
-	void stdCerr(const Args &...args)
+	inline void stdCerr(const Args &...args)
 	{
-		static std::unique_lock<std::mutex> lock(mtx);
+		mtx.lock();
 		printer.printAll(args...);
 		std::cerr << printer.getBufferStr() << std::endl;
 		printer.emptyBuffer();
+		mtx.unlock();
 	}
 
 	/**
@@ -688,14 +692,15 @@ namespace Out
 	 * @param args The arguments to be printed.
 	 */
 	template <typename... Args>
-	void fout(const Args &...args)
+	inline void fout(const Args &...args)
 	{
-		static std::unique_lock<std::mutex> lock(mtx);
+		mtx.lock();
 		printer.printAll(args...);
 		if (!printer.fileSet())
 			throw std::logic_error("Output file not defined");
 		printer.of << printer.getBufferStr() << std::endl;
 		printer.emptyBuffer();
+		mtx.unlock();
 	}
 }
 
