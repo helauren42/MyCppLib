@@ -1,6 +1,6 @@
 # Printer.hpp
 
-This is guide was not updated function names have changed, now use Out::stdOut, Out::stdErr, Out::fout, and Out::setFoutFile. You may use "using namespace Out".
+This is guide was not updated function names have changed, now use Out::stdOut, Out::stdErr, Out::Fout, and Out::setFoutFile. You may use "using namespace Out".
 
 ## Usage
 
