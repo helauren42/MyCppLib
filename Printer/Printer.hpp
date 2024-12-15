@@ -27,6 +27,8 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
+inline std::ofstream of;
+
 class TypeChecker
 {
 public:
@@ -532,7 +534,7 @@ namespace
 			Printer::printContainerDelimiters(SET, 1);
 		}
 		/**
-		 * @brief Prints the contents of a custom object. Implementation of std::ostream operator<< overload is required as cout is called to output the object.
+		 * @brief Prints the contents of a custom object. Implementation of std::ostream operator<< overload is required.
 		 *
 		 * @param object The object to print.
 		 * @param sep changing this parameter has no effect
@@ -546,7 +548,7 @@ namespace
 			std::string s(ss.str());
 			buffer << s;
 			if (!sep.empty())
-				std::cout << sep;
+				buffer << sep;
 		}
 
 		template <class T>
@@ -558,13 +560,12 @@ namespace
 			std::string s(ss.str());
 			buffer << s;
 			if (!sep.empty())
-				std::cout << sep;
+				buffer << sep;
 		}
 
 		std::stringstream buffer;
 
 	public:
-		std::ofstream of;
 		std::string getBufferStr() const
 		{
 			return buffer.str();
@@ -582,10 +583,14 @@ namespace
 		 */
 		void setFile(const std::string &file, bool trunc = true)
 		{
-			if (trunc)
-				of.open(file);
-			else
+			if (trunc == true) {
+				std::cout << "truncate" << std::endl;
+				of.open(file, std::ios::trunc);
+			}
+			else {
+				std::cout << "append" << std::endl;
 				of.open(file, std::ios::app);
+			}
 
 			if (!of.is_open())
 			{
@@ -620,8 +625,6 @@ namespace
 namespace Out
 {
 	static Printer printer;
-	static std::mutex mtx;
-
 	/**
 	 * @brief Sets the file in which the Fout function will output.
 	 *
@@ -629,25 +632,9 @@ namespace Out
 	 * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
 	 * @throws std::runtime_error if the file could not be opened.
 	 */
-	inline void setFoutFile(const std::string &file, bool trunc = true)
+	inline void setFoutFile(const std::string file, bool trunc = true)
 	{
-		mtx.lock();
 		printer.setFile(file, trunc);
-		mtx.unlock();
-	}
-
-	/**
-	 * @brief Sets the file in which the Fout function will output.
-	 *
-	 * @param file The name of the file to open. Creates the file if it does not exist and opens it.
-	 * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
-	 * @throws std::runtime_error if the file could not be opened.
-	 */
-	inline void setFoutFile(const char *file, bool trunc = true)
-	{
-		mtx.lock();
-		printer.setFile(file, trunc);
-		mtx.unlock();
 	}
 
 	/**
@@ -659,11 +646,9 @@ namespace Out
 	template <typename... Args>
 	inline void stdOut(const Args &...args)
 	{
-		mtx.lock();
 		printer.printAll(args...);
 		std::cout << printer.getBufferStr() << std::endl;
 		printer.emptyBuffer();
-		mtx.unlock();
 	}
 
 	/**
@@ -675,11 +660,9 @@ namespace Out
 	template <typename... Args>
 	inline void stdErr(const Args &...args)
 	{
-		mtx.lock();
 		printer.printAll(args...);
 		std::cerr << printer.getBufferStr() << std::endl;
 		printer.emptyBuffer();
-		mtx.unlock();
 	}
 
 	/**
@@ -694,13 +677,11 @@ namespace Out
 	template <typename... Args>
 	inline void Fout(const Args &...args)
 	{
-		mtx.lock();
 		printer.printAll(args...);
 		if (!printer.fileSet())
 			throw std::logic_error("Output file not defined");
-		printer.of << printer.getBufferStr() << std::endl;
+		of << printer.getBufferStr() << std::endl;
 		printer.emptyBuffer();
-		mtx.unlock();
 	}
 }
 
