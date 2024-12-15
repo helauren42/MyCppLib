@@ -1,56 +1,61 @@
 # Printer.hpp
 
-This is guide was not updated function names have changed, now use Out::stdOut, Out::stdErr, Out::Fout, and Out::setFoutFile. You may use "using namespace Out".
+This library holds print functions that aim to satisfy all my needs in projects, as I find more requirements in personal and group projects I will continuously add and update this library.
 
 ## Usage
 
   - requires c++17 or later
-  - import Printer.hpp into your project and call out() or Fout(), pass variables and objects as parameters to the out function.
-  
-### - out:
-  
-  out() takes an arbitrary amount of arguments that can be scalar types, containers or custom objects, some of the less common containers have not been included, out() prints a new line after every parameter, except for c strings.
-  
-  These function are calling write from unistd to output data, be mindful when redirecting STDOUT_FILENO.
-  For custom objects std::cout is used and requires operator << overload.
-  By default a newline is printed after every element except for c strings (char *), allowing the user to display a debug message specific to a variable on the same line as the variable for better readability, ex:
+  - import Printer.hpp and call Out::stdOut, Out::stdErr, Out::Fout, and Out::setFoutFile. You may add "using namespace Out" for simpler usage of the library.
 
-![alt text](imgs/newLine.png)
+## Functions
 
-output: 
+### setFoutFile
 
-![alt text](imgs/newLine_result.png)
+Description: This function sets the output file where the Fout function will write. It allows specifying whether to truncate or append to the file.
+Parameters:
+file: The name of the file to open. If the file does not exist, it will be created.
+trunc: A boolean flag that defines the file open mode. If true, the file will be truncated (default behavior). If false, it will append to the file.
+Throws: A std::runtime_error if the file cannot be opened.
 
-### - Fout:
-  Fout() works like out(), except that calling Printer::setFoutFd() will redirect its output making it easier to store text in debug log files, the method setFoutFd will not redirect the output of out, so that Fout() can be used to effortlesly to output into a file while out() is being used to redirect to std out in the same program. The function setFoutFd may take an int file_descriptor corresponding to an open file, or else it may take a file name either as a c_string or as a c++ string object. If it takes a filename than it will create it if it doesn't exist and append to it, not overwriting its current content.
+int main() {
+    Out::setFoutFile("output.txt");  // Opens and truncates "output.txt"
+    Out::setFoutFile("output.txt", false);  // Appends to "output.txt"
+    return 0;
+}
 
-![alt text](imgs/setFoutFd.png)
+### stdOut
 
-### - Printer::print()
-  For more output customization Printer::print() can be called, various types are handled by print() but it can only take one element at a time to print. It has two params sep and newLine, sep is a string used to define the separator used to separate elements when printing containers of size > 1, by default the separator is ", ". The param newLine can be set to true or false, true will output a newLine after printing the entire container, false will not, newLine defaults to true. The functions out and Fout take an arbitrary amount of arguments and then call Printer::print() on each one of those arguments.
+Description: This function prints the given arguments to the standard output (stdout). It works with scalar types, containers and custom objects if the std::ostream& operator<< overload is implemented.
+Template Parameters: Variadic template to accept multiple arguments of any type.
 
+int main() {
+    std::vector<int> numbers = {1, 2, 3, 4};
+    Out::stdOut("Numbers: ", numbers);  // Output to stdout: Numbers: 1 2 3 4
+    return 0;
+}
 
-## Implementation for nested containers:
-  The output function is recursively calling itself to print the elements of a container so in the case of containers it will recursively call nested containers.
+### stdErr
 
-![alt text](imgs/nested_containers.png)
-![alt text](imgs/nested_containers_result.png)
+Description: This function prints the given arguments to the standard error (stderr). It works similarly to stdOut but outputs to stderr.
 
-## Implementation for custom objects:
+### Fout
 
-- To enable output for custom objects, the user must implement an operator<< overload for std::ostream specific to the object's type.
+Description: This function works similarly to stdOut and stdErr but outputs the given arguments to a file. The output file is defined by calling setFoutFile before using this function. It throws an error if the output file is not set.
+Throws: A std::logic_error if the output file is not defined before calling this function.
 
-![alt text](imgs/custom_object.png)
+int main() {
+    Out::setFoutFile("log.txt");
+    Out::Fout("Writing to file: ", 42);  // Output to log.txt: Writing to file: 42
+    return 0;
+}
 
-OUTPUT:
+## Explanation
 
-![alt text](imgs/custom_object_result.png)
+The printing functions stdOut, stdErr, and Fout call Printer::printAll, which iterates through every argument and passes it to print(). Depending on the argument type, the appropriate print() function is invoked:
 
-### - A template print function for custom object pointers has been implemented. It will print the object provided the appropriate std::ostream operator<< overload is defined. This allows the out function to handle polymorphic objects seamlessly.
+- For scalar types, like int or std::string, the corresponding print(int a) or print(std::string s) is called.
+- For containers, like std::vector or std::list, printAll recursively calls print for each element, allowing nested data structures to be handled. For example, when printing a std::vector<int>, the print(int a) function is called for each element in the vector.
+- For custom objects, the template version of print() is invoked, which requires the implementation of std::ostream& operator<< for that object type.
+This recursive design ensures that containers, no matter how deeply nested, are printed correctly.
 
-![alt text](imgs/nested_pointer_object.png)
-
-OUTPUT:
-
-![alt text](imgs/nested_pointer_object_result.png)
-
+To see the inner workings of printAll() and print(), look into the code.
