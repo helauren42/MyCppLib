@@ -24,10 +24,11 @@
 #include <fcntl.h>
 #include <cstring>
 
+inline std::ofstream of;
+
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-inline std::ofstream of;
 
 class TypeChecker
 {
