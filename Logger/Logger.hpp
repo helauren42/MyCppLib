@@ -86,7 +86,6 @@ namespace
 	public:
 
 		static Printer printer;
-		static std::ofstream of;
 		static logType type;
 		static bool extraSpacing;
 
@@ -115,11 +114,10 @@ namespace
 }
 
 namespace {
-	Printer Logging::printer;
-	std::ofstream Logging::of;
-	logType Logging::type;
+	inline Printer Logging::printer;
+	inline logType Logging::type;
 	bool Logging::extraSpacing = true;
-	static std::mutex mtx;
+	inline std::mutex mtx;
 }
 
 namespace Logger
