@@ -584,11 +584,9 @@ namespace
 		void setFile(const std::string &file, bool trunc = true)
 		{
 			if (trunc == true) {
-				std::cout << "truncate" << std::endl;
 				of.open(file, std::ios::trunc);
 			}
 			else {
-				std::cout << "append" << std::endl;
 				of.open(file, std::ios::app);
 			}
 
