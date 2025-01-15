@@ -1,6 +1,6 @@
 # Overview
 
-PS: This project was started recently and is still in development.
+This project is still in development.
 This is a custom cpp library to improve my workflow on personal and professional projects.
 I had the intention of making these libraries standalone but by the looks of it they are somewhat dependent on each other, you could still just clone the repo, get all the .hpp and just include the ones you need.
 
