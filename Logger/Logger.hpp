@@ -95,79 +95,114 @@ public:
 
 namespace Logger
 {
-	constexpr int DEBUG = logLevel::_DEBUG;
-	constexpr int INFO = logLevel::_INFO;
-	constexpr int WARNING = logLevel::_WARNING;
-	constexpr int ERROR = logLevel::_ERROR;
-	constexpr int FATAL = logLevel::_FATAL;
+    constexpr int DEBUG = logLevel::_DEBUG;
+    constexpr int INFO = logLevel::_INFO;
+    constexpr int WARNING = logLevel::_WARNING;
+    constexpr int ERROR = logLevel::_ERROR;
+    constexpr int FATAL = logLevel::_FATAL;
 
-	inline void setExtraSpacing(const bool _value)
-	{
-		BaseLogger::extraSpacing = _value;
-	}
-	inline void setLogger(const std::string file, const int &intlevel=DEBUG, const bool trunc=true, const bool _stdout=false)
-	{
-		BaseLogger::method_level = _DEBUG;
-		BaseLogger::level = _DEBUG;
-		BaseLogger::extraSpacing = false;
-		BaseLogger::stdout = false;
+    /**
+     * @brief Sets whether extra spacing should be added between log messages.
+     * @param _value A boolean value (`true` to enable extra spacing, `false` to disable it).
+     */
+    inline void setExtraSpacing(const bool _value)
+    {
+        BaseLogger::extraSpacing = _value;
+    }
 
-		BaseLogger::setLoggerFile(file, trunc);
-		logLevel _level;
-		switch (intlevel)
-		{
-		case DEBUG:
-			_level = _DEBUG;
-			break;
-		case INFO:
-			_level = _INFO;
-			break;
-		case WARNING:
-			_level = _WARNING;
-			break;
-		case ERROR:
-			_level = _ERROR;
-			break;
-		case FATAL:
-			_level = _FATAL;
-			break;
+    /**
+     * @brief Configures the logger with the output file, log level, file truncation mode, and stdout redirection.
+     * @param file The name of the file to which logs will be written.
+     * @param intlevel The log level (e.g., `DEBUG`, `INFO`, `WARNING`, etc.). Defaults to `DEBUG`.
+     * @param trunc A boolean value (`true` to truncate the file, `false` to append to it). Defaults to `true`.
+     * @param _stdout A boolean value (`true` to enable stdout redirection, `false` to disable it). Defaults to `false`.
+     */
+    inline void setLogger(const std::string file, const int &intlevel = DEBUG, const bool trunc = true, const bool _stdout = false)
+    {
+        BaseLogger::method_level = _DEBUG;
+        BaseLogger::level = _DEBUG;
+        BaseLogger::extraSpacing = false;
+        BaseLogger::stdout = false;
 
-		default:
-			break;
-		}
-		BaseLogger::level = _level;
-		BaseLogger::stdout = _stdout;
-	}
-	template <typename... Args>
-	inline void debug(const Args &...args)
-	{
-		BaseLogger::method_level = _DEBUG;
-		BaseLogger::log(args...);
-	}
-	template <typename... Args>
-	inline void info(const Args &...args)
-	{
-		BaseLogger::method_level = _INFO;
-		BaseLogger::log(args...);
-	}
-	template <typename... Args>
-	inline void warning(const Args &...args)
-	{
-		BaseLogger::method_level = _WARNING;
-		BaseLogger::log(args...);
-	}
-	template <typename... Args>
-	inline void error(const Args &...args)
-	{
-		BaseLogger::method_level = _ERROR;
-		BaseLogger::log(args...);
-	}
-	template <typename... Args>
-	inline void fatal(const Args &...args)
-	{
-		BaseLogger::method_level = _FATAL;
-		BaseLogger::log(args...);
-	}
+        BaseLogger::setLoggerFile(file, trunc);
+        logLevel _level;
+        switch (intlevel)
+        {
+        case DEBUG:
+            _level = _DEBUG;
+            break;
+        case INFO:
+            _level = _INFO;
+            break;
+        case WARNING:
+            _level = _WARNING;
+            break;
+        case ERROR:
+            _level = _ERROR;
+            break;
+        case FATAL:
+            _level = _FATAL;
+            break;
+        default:
+            break;
+        }
+        BaseLogger::level = _level;
+        BaseLogger::stdout = _stdout;
+    }
+
+    /**
+     * @brief Logs a message at the DEBUG level.
+     * @param args... Variadic arguments representing the message to log.
+     */
+    template <typename... Args>
+    inline void debug(const Args &...args)
+    {
+        BaseLogger::method_level = _DEBUG;
+        BaseLogger::log(args...);
+    }
+
+    /**
+     * @brief Logs a message at the INFO level.
+     * @param args... Variadic arguments representing the message to log.
+     */
+    template <typename... Args>
+    inline void info(const Args &...args)
+    {
+        BaseLogger::method_level = _INFO;
+        BaseLogger::log(args...);
+    }
+
+    /**
+     * @brief Logs a message at the WARNING level.
+     * @param args... Variadic arguments representing the message to log.
+     */
+    template <typename... Args>
+    inline void warning(const Args &...args)
+    {
+        BaseLogger::method_level = _WARNING;
+        BaseLogger::log(args...);
+    }
+
+    /**
+     * @brief Logs a message at the ERROR level.
+     * @param args... Variadic arguments representing the message to log.
+     */
+    template <typename... Args>
+    inline void error(const Args &...args)
+    {
+        BaseLogger::method_level = _ERROR;
+        BaseLogger::log(args...);
+    }
+
+    /**
+     * @brief Logs a message at the FATAL level.
+     * @param args... Variadic arguments representing the message to log.
+     */
+    template <typename... Args>
+    inline void fatal(const Args &...args)
+    {
+        BaseLogger::method_level = _FATAL;
+        BaseLogger::log(args...);
+    }
 }
-
 #endif
