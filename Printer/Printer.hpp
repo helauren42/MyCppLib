@@ -1,5 +1,5 @@
-#ifndef OUT_HPP
-#define OUT_HPP
+#ifndef PRINTER_HPP
+#define PRINTER_HPP
 
 #include <sstream>
 #include <fstream>
@@ -68,7 +68,7 @@ namespace
 		{
 		};
 	};
-	class Printer
+	class BasePrinter
 	{
 
 	private:
@@ -98,11 +98,11 @@ namespace
 			{
 				if (std::next(it) == end && !TypeChecker::isHandledContainer(*it))
 				{
-					Printer::print(*it, "");
+					BasePrinter::print(*it, "");
 				}
 				else
 				{
-					Printer::print(*it, sep);
+					BasePrinter::print(*it, sep);
 				}
 
 				// to output the separator in case of nested containers
@@ -343,9 +343,9 @@ namespace
 		template <class T>
 		void print(const std::vector<T> &vec, const std::string &sep = ", ")
 		{
-			Printer::printContainerDelimiters(VECTOR, 0);
-			Printer::printBeginEnd(vec, sep);
-			Printer::printContainerDelimiters(VECTOR, 1);
+			BasePrinter::printContainerDelimiters(VECTOR, 0);
+			BasePrinter::printBeginEnd(vec, sep);
+			BasePrinter::printContainerDelimiters(VECTOR, 1);
 		}
 		/**
 		 * @brief Prints the contents of a std::list.
@@ -356,9 +356,9 @@ namespace
 		template <class T>
 		void print(const std::list<T> &my_list, const std::string &sep = ", ")
 		{
-			Printer::printContainerDelimiters(LIST, 0);
-			Printer::printBeginEnd(my_list, sep);
-			Printer::printContainerDelimiters(LIST, 1);
+			BasePrinter::printContainerDelimiters(LIST, 0);
+			BasePrinter::printBeginEnd(my_list, sep);
+			BasePrinter::printContainerDelimiters(LIST, 1);
 		}
 
 		/**
@@ -370,9 +370,9 @@ namespace
 		template <class T>
 		void print(const std::forward_list<T> &my_list, const std::string &sep = ", ")
 		{
-			Printer::printContainerDelimiters(FORWARD_LIST, 0);
-			Printer::printBeginEnd(my_list, sep);
-			Printer::printContainerDelimiters(FORWARD_LIST, 1);
+			BasePrinter::printContainerDelimiters(FORWARD_LIST, 0);
+			BasePrinter::printBeginEnd(my_list, sep);
+			BasePrinter::printContainerDelimiters(FORWARD_LIST, 1);
 		}
 		/**
 		 * @brief Prints the contents of a std::deque.
@@ -384,9 +384,9 @@ namespace
 		template <class T>
 		void print(const std::deque<T> &my_deque, const std::string &sep = ", ")
 		{
-			Printer::printContainerDelimiters(DEQUE, 0);
-			Printer::printBeginEnd(my_deque, sep);
-			Printer::printContainerDelimiters(DEQUE, 1);
+			BasePrinter::printContainerDelimiters(DEQUE, 0);
+			BasePrinter::printBeginEnd(my_deque, sep);
+			BasePrinter::printContainerDelimiters(DEQUE, 1);
 		}
 
 		/**
@@ -399,19 +399,19 @@ namespace
 		template <class T>
 		void print(std::stack<T> my_stack, const std::string &sep = ", ")
 		{
-			Printer::printContainerDelimiters(STACK, 0);
+			BasePrinter::printContainerDelimiters(STACK, 0);
 			while (!my_stack.empty())
 			{
 				auto elem = my_stack.top();
 				if (TypeChecker::isHandledContainer(elem))
-					Printer::print(elem, sep);
+					BasePrinter::print(elem, sep);
 				else
-					Printer::print(elem, "");
+					BasePrinter::print(elem, "");
 				my_stack.pop();
 				if (!my_stack.empty())
-					Printer::printSep(sep);
+					BasePrinter::printSep(sep);
 			}
-			Printer::printContainerDelimiters(STACK, 1);
+			BasePrinter::printContainerDelimiters(STACK, 1);
 		}
 
 		/**
@@ -424,19 +424,19 @@ namespace
 		template <class T>
 		void print(std::queue<T> my_queue, const std::string &sep = ", ")
 		{
-			Printer::printContainerDelimiters(QUEUE, 0);
+			BasePrinter::printContainerDelimiters(QUEUE, 0);
 			while (!my_queue.empty())
 			{
 				auto elem = my_queue.front();
 				if (TypeChecker::isHandledContainer(elem))
-					Printer::print(elem, sep);
+					BasePrinter::print(elem, sep);
 				else
-					Printer::print(elem, "");
+					BasePrinter::print(elem, "");
 				my_queue.pop();
 				if (!my_queue.empty())
-					Printer::printSep(sep);
+					BasePrinter::printSep(sep);
 			}
-			Printer::printContainerDelimiters(QUEUE, 1);
+			BasePrinter::printContainerDelimiters(QUEUE, 1);
 		}
 
 		/**
@@ -451,29 +451,29 @@ namespace
 		template <class K, class V>
 		void print(const std::map<K, V> &my_map, const std::string &sep = ", ")
 		{
-			Printer::printContainerDelimiters(MAP, 0); // Print opening delimiter
+			BasePrinter::printContainerDelimiters(MAP, 0); // Print opening delimiter
 
 			bool first = true;
 			for (const auto &pair : my_map)
 			{
 				if (!first)
 				{
-					Printer::printSep(sep);
+					BasePrinter::printSep(sep);
 				}
-				Printer::print(pair.first, "");
-				Printer::print(": ", "");
+				BasePrinter::print(pair.first, "");
+				BasePrinter::print(": ", "");
 				if (TypeChecker::isHandledContainer(pair.second))
 				{
-					Printer::print(pair.second, sep);
+					BasePrinter::print(pair.second, sep);
 				}
 				else
 				{
-					Printer::print(pair.second, "");
+					BasePrinter::print(pair.second, "");
 				}
 				first = false;
 			}
 
-			Printer::printContainerDelimiters(MAP, 1); // Print closing delimiter
+			BasePrinter::printContainerDelimiters(MAP, 1); // Print closing delimiter
 		}
 
 		/**
@@ -488,24 +488,24 @@ namespace
 		template <class T, class V>
 		void print(const std::unordered_map<T, V> &my_map, const std::string &sep = ", ")
 		{
-			Printer::printContainerDelimiters(UNORDERED_MAP, 0);
+			BasePrinter::printContainerDelimiters(UNORDERED_MAP, 0);
 
 			bool first = true;
 			for (const auto &pair : my_map)
 			{
 				if (!first)
 				{
-					Printer::printSep(sep);
+					BasePrinter::printSep(sep);
 				}
-				Printer::print(pair.first, "");
-				Printer::print(": ", "");
+				BasePrinter::print(pair.first, "");
+				BasePrinter::print(": ", "");
 				if (TypeChecker::isHandledContainer(pair.second))
-					Printer::print(pair.second, sep);
+					BasePrinter::print(pair.second, sep);
 				else
-					Printer::print(pair.second, "");
+					BasePrinter::print(pair.second, "");
 				first = false;
 			}
-			Printer::printContainerDelimiters(UNORDERED_MAP, 1);
+			BasePrinter::printContainerDelimiters(UNORDERED_MAP, 1);
 		}
 
 		/**
@@ -518,18 +518,18 @@ namespace
 		template <class T>
 		void print(const std::set<T> &my_set, const std::string &sep = ", ")
 		{
-			Printer::printContainerDelimiters(SET, 0);
+			BasePrinter::printContainerDelimiters(SET, 0);
 			const auto end = my_set.end();
 			for (auto it = my_set.begin(); it != my_set.end(); it++)
 			{
 				if (TypeChecker::isHandledContainer(*it))
-					Printer::print(*it, sep);
+					BasePrinter::print(*it, sep);
 				else
-					Printer::print(*it, "");
+					BasePrinter::print(*it, "");
 				if (std::next(it) != end)
-					Printer::printSep(sep);
+					BasePrinter::printSep(sep);
 			}
-			Printer::printContainerDelimiters(SET, 1);
+			BasePrinter::printContainerDelimiters(SET, 1);
 		}
 		/**
 		 * @brief Prints the contents of a custom object. Implementation of std::ostream operator<< overload is required.
@@ -581,10 +581,12 @@ namespace
 		 */
 		void setFile(const std::string &file, bool trunc = true)
 		{
-			if (trunc == true) {
+			if (trunc == true)
+			{
 				of.open(file, std::ios::trunc);
 			}
-			else {
+			else
+			{
 				of.open(file, std::ios::app);
 			}
 
@@ -607,7 +609,7 @@ namespace
 		template <typename T, typename... Args>
 		void printAll(const T &first, const Args &...args)
 		{
-			Printer::print(first);
+			BasePrinter::print(first);
 			if constexpr (sizeof...(args) > 0)
 			{
 				// Recursively call printAll with the remaining arguments.
@@ -618,9 +620,9 @@ namespace
 	};
 };
 
-namespace Out
+namespace Printer
 {
-	static Printer printer;
+	static BasePrinter base;
 	/**
 	 * @brief Sets the file in which the Fout function will output.
 	 *
@@ -628,9 +630,9 @@ namespace Out
 	 * @param trunc Defines the open mode truncate if true, append in false, it defaults to true.
 	 * @throws std::runtime_error if the file could not be opened.
 	 */
-	inline void setFoutFile(const std::string file, bool trunc = true)
+	inline void setFout(const std::string file, bool trunc = true)
 	{
-		printer.setFile(file, trunc);
+		base.setFile(file, trunc);
 	}
 
 	/**
@@ -642,9 +644,9 @@ namespace Out
 	template <typename... Args>
 	inline void stdOut(const Args &...args)
 	{
-		printer.printAll(args...);
-		std::cout << printer.getBufferStr() << std::endl;
-		printer.emptyBuffer();
+		base.printAll(args...);
+		std::cout << base.getBufferStr() << std::endl;
+		base.emptyBuffer();
 	}
 
 	/**
@@ -656,15 +658,15 @@ namespace Out
 	template <typename... Args>
 	inline void stdErr(const Args &...args)
 	{
-		printer.printAll(args...);
-		std::cerr << printer.getBufferStr() << std::endl;
-		printer.emptyBuffer();
+		base.printAll(args...);
+		std::cerr << base.getBufferStr() << std::endl;
+		base.emptyBuffer();
 	}
 
 	/**
 	 * @brief Outputs the given arguments to the file descriptor specified by Fout_fd.
 	 *
-	 * This function sets the file descriptor to Fout_fd and calls the Printer::printAll
+	 * This function sets the file descriptor to Fout_fd and calls the BasePrinter::printAll
 	 * function to output scalar types and container arguments.
 	 *
 	 * @tparam Args Variadic template parameter pack representing the types of the arguments.
@@ -673,11 +675,11 @@ namespace Out
 	template <typename... Args>
 	inline void Fout(const Args &...args)
 	{
-		printer.printAll(args...);
-		if (!printer.fileSet())
+		base.printAll(args...);
+		if (!base.fileSet())
 			throw std::logic_error("Output file not defined");
-		of << printer.getBufferStr() << std::endl;
-		printer.emptyBuffer();
+		of << base.getBufferStr() << std::endl;
+		base.emptyBuffer();
 	}
 }
 
