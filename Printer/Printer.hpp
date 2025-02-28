@@ -595,12 +595,10 @@ namespace
 				throw(std::runtime_error("could not open file: " + file));
 			}
 		}
-
 		bool fileSet()
 		{
 			return of.is_open();
 		}
-
 		/**
 		 * @brief Prints multiple elements to the output stream.
 		 * @param first The first element to print.
