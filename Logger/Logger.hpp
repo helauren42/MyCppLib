@@ -65,6 +65,7 @@ public:
 	static inline logLevel method_level;
 	static inline logLevel level;
 	static inline bool extraSpacing;
+	static inline bool stdout;
 
 	template <typename... Args>
 	static inline void log(const Args &...args)
@@ -73,9 +74,14 @@ public:
 		{
 			return;
 		}
-		Fout(outputTime() + outputType(method_level));
+		std::string bar = outputTime() + outputType(method_level);
+		if(stdout) {
+			stdOut(bar);
+			stdOut(args...);
+		}
+		Fout(bar);
 		Fout(args...);
-		if (extraSpacing)
+		if(extraSpacing)
 			Fout("");
 	}
 	static inline void setLoggerFile(const std::string file, const bool trunc)
@@ -99,36 +105,38 @@ namespace Logger
 	{
 		BaseLogger::extraSpacing = _value;
 	}
-	inline void setLogger(const std::string file, const int &intlevel, const bool trunc)
+	inline void setLogger(const std::string file, const int &intlevel=DEBUG, const bool trunc=true, const bool _stdout=false)
 	{
 		BaseLogger::method_level = _DEBUG;
 		BaseLogger::level = _DEBUG;
 		BaseLogger::extraSpacing = false;
+		BaseLogger::stdout = false;
 
 		BaseLogger::setLoggerFile(file, trunc);
-		logLevel level;
+		logLevel _level;
 		switch (intlevel)
 		{
 		case DEBUG:
-			level = _DEBUG;
+			_level = _DEBUG;
 			break;
 		case INFO:
-			level = _INFO;
+			_level = _INFO;
 			break;
 		case WARNING:
-			level = _WARNING;
+			_level = _WARNING;
 			break;
 		case ERROR:
-			level = _ERROR;
+			_level = _ERROR;
 			break;
 		case FATAL:
-			level = _FATAL;
+			_level = _FATAL;
 			break;
 
 		default:
 			break;
 		}
-		BaseLogger::level = level;
+		BaseLogger::level = _level;
+		BaseLogger::stdout = _stdout;
 	}
 	template <typename... Args>
 	inline void debug(const Args &...args)
