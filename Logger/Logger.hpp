@@ -101,10 +101,21 @@ namespace Logger
 	constexpr int ERROR = logLevel::_ERROR;
 	constexpr int FATAL = logLevel::_FATAL;
 
+	/**
+	 * @brief Sets whether extra spacing should be added between log messages.
+	 * @param _value A boolean value (`true` to enable extra spacing, `false` to disable it).
+	 */
 	inline void setExtraSpacing(const bool _value)
 	{
 		BaseLogger::extraSpacing = _value;
 	}
+
+	/**
+	 * @brief Configures the logger with the output file, log level, and file truncation mode.
+	 * @param file The name of the file to which logs will be written.
+	 * @param intlevel The log level (e.g., `DEBUG`, `INFO`, `WARNING`, etc.).
+	 * @param trunc A boolean value (`true` to truncate the file, `false` to append to it).
+	 */
 	inline void setLogger(const std::string file, const int &intlevel, const bool trunc)
 	{
 		BaseLogger::method_level = _DEBUG;
@@ -136,30 +147,55 @@ namespace Logger
 		}
 		BaseLogger::level = level;
 	}
+
+	/**
+	 * @brief Logs a message at the DEBUG level.
+	 * @param args... Variadic arguments representing the message to log.
+	 */
 	template <typename... Args>
 	inline void debug(const Args &...args)
 	{
 		BaseLogger::method_level = _DEBUG;
 		BaseLogger::log(args...);
 	}
+
+	/**
+	 * @brief Logs a message at the INFO level.
+	 * @param args... Variadic arguments representing the message to log.
+	 */
 	template <typename... Args>
 	inline void info(const Args &...args)
 	{
 		BaseLogger::method_level = _INFO;
 		BaseLogger::log(args...);
 	}
+
+	/**
+	 * @brief Logs a message at the WARNING level.
+	 * @param args... Variadic arguments representing the message to log.
+	 */
 	template <typename... Args>
 	inline void warning(const Args &...args)
 	{
 		BaseLogger::method_level = _WARNING;
 		BaseLogger::log(args...);
 	}
+
+	/**
+	 * @brief Logs a message at the ERROR level.
+	 * @param args... Variadic arguments representing the message to log.
+	 */
 	template <typename... Args>
 	inline void error(const Args &...args)
 	{
 		BaseLogger::method_level = _ERROR;
 		BaseLogger::log(args...);
 	}
+
+	/**
+	 * @brief Logs a message at the FATAL level.
+	 * @param args... Variadic arguments representing the message to log.
+	 */
 	template <typename... Args>
 	inline void fatal(const Args &...args)
 	{
