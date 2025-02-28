@@ -27,19 +27,19 @@ private:
 		switch (method_level)
 		{
 		case _DEBUG:
-			ret = "[DEBUG] ";
+			ret = "[DEBUG]";
 			break;
 		case _INFO:
-			ret = "[INFO] ";
+			ret = "[INFO]";
 			break;
 		case _WARNING:
-			ret = "[WARNING] ";
+			ret = "[WARNING]";
 			break;
 		case _ERROR:
-			ret = "[ERROR] ";
+			ret = "[ERROR]";
 			break;
 		case _FATAL:
-			ret = "[FATAL] ";
+			ret = "[FATAL]";
 			break;
 		default:
 			break;
@@ -57,7 +57,7 @@ private:
 
 		std::ostringstream time;
 		time << std::put_time(&timeStruct, "%Y-%m-%d %H:%M:%S");
-		ss << "[" << time.str() << "." << std::setw(3) << std::setfill('0') << ms.count() << "]" << " ";
+		ss << "[" << time.str() << "." << std::setw(3) << std::setfill('0') << ms.count() << "]";
 		return ss.str();
 	}
 
@@ -66,21 +66,15 @@ public:
 	static inline logLevel level;
 	static inline bool extraSpacing;
 
-	BaseLogger() { stdOut("Constructor called here!!!!!!!!!!!!!!!!!!!!!"); };
-
 	template <typename... Args>
 	static inline void log(const Args &...args)
 	{
 		if (method_level < level)
 		{
-			stdOut("method level: ", method_level, ", level: ", level);
 			return;
 		}
 		Fout(outputTime() + outputType(method_level));
 		Fout(args...);
-		stdOut("extra spaceing: ", extraSpacing);
-		stdOut("method level: ", method_level);
-		stdOut("level: ", level);
 		if (extraSpacing)
 			Fout("");
 	}
