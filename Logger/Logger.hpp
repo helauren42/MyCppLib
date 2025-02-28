@@ -5,164 +5,166 @@
 #include <chrono>
 #include <ctime>
 #include <iomanip>
+#include <sstream>
 
+using namespace Printer;
 
-#ifndef STRINGS_HPP
-#define STRINGS_HPP
+enum logLevel
+{
+	_DEBUG,
+	_INFO,
+	_WARNING,
+	_ERROR,
+	_FATAL
+};
 
-template<template<typename T> class Container>
-Container<std::string> split(const std::string& str, const std::string& delimiter = "\n") {
-	Container<std::string> container;
-
-	size_t start = 0;
-	size_t end = 0;
-
-	while(true) {
-		if((start = str.find_first_not_of(delimiter, start)) == std::string::npos)
+class BaseLogger
+{
+private:
+	static inline std::string outputType(logLevel method_level)
+	{
+		std::string ret;
+		switch (method_level)
+		{
+		case _DEBUG:
+			ret = "[DEBUG] ";
 			break;
-		end = str.find_first_of(delimiter, start);
-		if(end == std::string::npos)
-			end = str.length();
-		container.push_back(str.substr(start, end - start));
-		start = end+1;
+		case _INFO:
+			ret = "[INFO] ";
+			break;
+		case _WARNING:
+			ret = "[WARNING] ";
+			break;
+		case _ERROR:
+			ret = "[ERROR] ";
+			break;
+		case _FATAL:
+			ret = "[FATAL] ";
+			break;
+		default:
+			break;
+		}
+		return ret;
 	}
-	return(container);
-}
-
-#endif
-
-namespace
-{
-	enum logType
+	static inline std::string outputTime()
 	{
-		DEBUG,
-		INFO,
-		WARNING,
-		ERROR,
-		FATAL
-	};
-}
+		std::stringstream ss;
+		auto now = std::chrono::system_clock::now();
+		auto timeNow = std::chrono::system_clock::to_time_t(now);
 
-namespace
-{
-	class Logging
+		std::tm timeStruct = *std::localtime(&timeNow);
+		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
+
+		std::ostringstream time;
+		time << std::put_time(&timeStruct, "%Y-%m-%d %H:%M:%S");
+		ss << "[" << time.str() << "." << std::setw(3) << std::setfill('0') << ms.count() << "]" << " ";
+		return ss.str();
+	}
+
+public:
+	static inline logLevel method_level;
+	static inline logLevel level;
+	static inline bool extraSpacing;
+
+	BaseLogger() { stdOut("Constructor called here!!!!!!!!!!!!!!!!!!!!!"); };
+
+	template <typename... Args>
+	static inline void log(const Args &...args)
 	{
-	private:
-		static void outputType(logType type)
+		if (method_level < level)
 		{
-			switch (type)
-			{
-			case DEBUG:
-				of << "[DEBUG] ";
-				break;
-			case INFO:
-				of << "[INFO] ";
-				break;
-			case WARNING:
-				of << "[WARNING] ";
-				break;
-			case ERROR:
-				of << "[ERROR] ";
-				break;
-			case FATAL:
-				of << "[FATAL] ";
-				break;
-
-			default:
-				break;
-			}
+			stdOut("method level: ", method_level, ", level: ", level);
+			return;
 		}
-		static void outputTime() {
-			auto now = std::chrono::system_clock::now();
-			auto timeNow = std::chrono::system_clock::to_time_t(now);
-
-			std::tm timeStruct = *std::localtime(&timeNow);
-			auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
-
-			of << "[" << std::put_time(&timeStruct, "%Y-%m-%d %H:%M:%S") << "."
-				<< std::setw(3) << std::setfill('0') << ms.count() << "]" << "\n";
-		}
-
-	public:
-
-		static Printer printer;
-		static logType type;
-		static bool extraSpacing;
-
-		template <typename... Args>
-		static void log(const Args &...args)
-		{
-			if (!of.is_open())
-				throw std::logic_error("Output file not defined");
-			outputTime();
-			outputType(type);
-			printer.printAll(args...);
-			of << printer.getBufferStr() << std::endl;
-			if(extraSpacing)
-				of << std::endl;
-			printer.emptyBuffer();
-		}
-
-		static void setLoggerFile(const std::string file, const bool trunc)
-		{
-			if (trunc)
-				of.open(file);
-			else
-				of.open(file, std::ios::app);
-		}
-	};
-}
-
-namespace {
-	inline Printer Logging::printer;
-	inline logType Logging::type;
-	bool Logging::extraSpacing = true;
-	inline std::mutex mtx;
-}
+		Fout(outputTime() + outputType(method_level));
+		Fout(args...);
+		stdOut("extra spaceing: ", extraSpacing);
+		stdOut("method level: ", method_level);
+		stdOut("level: ", level);
+		if (extraSpacing)
+			Fout("");
+	}
+	static inline void setLoggerFile(const std::string file, const bool trunc)
+	{
+		if (trunc)
+			setFout(file, true);
+		else
+			setFout(file, false);
+	}
+};
 
 namespace Logger
 {
-	inline void setExtraSpacing(const bool _value) {
-		Logging::extraSpacing = _value;
-	}
+	constexpr int DEBUG = logLevel::_DEBUG;
+	constexpr int INFO = logLevel::_INFO;
+	constexpr int WARNING = logLevel::_WARNING;
+	constexpr int ERROR = logLevel::_ERROR;
+	constexpr int FATAL = logLevel::_FATAL;
 
-	inline void setLoggerFile(const std::string file, const bool trunc) {
-		Logging::setLoggerFile(file, trunc);
+	inline void setExtraSpacing(const bool _value)
+	{
+		BaseLogger::extraSpacing = _value;
+	}
+	inline void setLogger(const std::string file, const int &intlevel, const bool trunc)
+	{
+		BaseLogger::method_level = _DEBUG;
+		BaseLogger::level = _DEBUG;
+		BaseLogger::extraSpacing = false;
+
+		BaseLogger::setLoggerFile(file, trunc);
+		logLevel level;
+		switch (intlevel)
+		{
+		case DEBUG:
+			level = _DEBUG;
+			break;
+		case INFO:
+			level = _INFO;
+			break;
+		case WARNING:
+			level = _WARNING;
+			break;
+		case ERROR:
+			level = _ERROR;
+			break;
+		case FATAL:
+			level = _FATAL;
+			break;
+
+		default:
+			break;
+		}
+		BaseLogger::level = level;
 	}
 	template <typename... Args>
 	inline void debug(const Args &...args)
 	{
-		std::unique_lock<std::mutex> lock(mtx);
-		Logging::type = DEBUG;
-		Logging::log(args...);
+		BaseLogger::method_level = _DEBUG;
+		BaseLogger::log(args...);
 	}
 	template <typename... Args>
 	inline void info(const Args &...args)
 	{
-		std::unique_lock<std::mutex> lock(mtx);
-		Logging::type = INFO;
-		Logging::log(args...);
+		BaseLogger::method_level = _INFO;
+		BaseLogger::log(args...);
 	}
 	template <typename... Args>
 	inline void warning(const Args &...args)
 	{
-		std::unique_lock<std::mutex> lock(mtx);
-		Logging::type = WARNING;
-		Logging::log(args...);
+		BaseLogger::method_level = _WARNING;
+		BaseLogger::log(args...);
 	}
 	template <typename... Args>
 	inline void error(const Args &...args)
 	{
-		std::unique_lock<std::mutex> lock(mtx);
-		Logging::type = ERROR;
-		Logging::log(args...);
+		BaseLogger::method_level = _ERROR;
+		BaseLogger::log(args...);
 	}
 	template <typename... Args>
 	inline void fatal(const Args &...args)
 	{
-		std::unique_lock<std::mutex> lock(mtx);
-		Logging::type = FATAL;
-		Logging::log(args...);
+		BaseLogger::method_level = _FATAL;
+		BaseLogger::log(args...);
 	}
 }
 
