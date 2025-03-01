@@ -1,7 +1,6 @@
 #ifndef UTILS_HPP
 # define UTILS_HPP
 
-#include "../Printer/Printer.hpp"
 #include <type_traits>
 #include <vector>
 #include <list>
@@ -17,28 +16,26 @@
 
 class TypeChecker
 {
-	
-	public:
-		template <typename T>
-		static constexpr bool isHandledContainer(const T &value) {
-			return is_specialization<T, std::vector>::value || is_specialization<T, std::list>::value 
-				|| is_specialization<T, std::forward_list>::value || is_specialization<T, std::set>::value
-				|| is_specialization<T, std::map>::value || is_specialization<T, std::deque>::value 
-				|| is_specialization<T, std::stack>::value || is_specialization<T, std::queue>::value;
-		}
-		// template<teypename T>
+public:
+	template <typename T>
+	static constexpr bool isHandledContainer(const T &value)
+	{
+		return is_specialization<T, std::vector>::value || is_specialization<T, std::list>::value || is_specialization<T, std::forward_list>::value || is_specialization<T, std::set>::value || is_specialization<T, std::map>::value || is_specialization<T, std::deque>::value || is_specialization<T, std::stack>::value || is_specialization<T, std::queue>::value;
+	}
 
-	private:
-		template <typename T, template <typename...> class Template>
-		struct is_specialization : std::false_type
-		{};
+private:
+	template <typename T, template <typename...> class Template>
+	struct is_specialization : std::false_type
+	{
+	};
 
-		template <template <typename...> class Template, typename... Args>
-		struct is_specialization<Template<Args...>, Template> : std::true_type
-		{};
+	template <template <typename...> class Template, typename... Args>
+	struct is_specialization<Template<Args...>, Template> : std::true_type
+	{
+	};
 };
 
-std::string executeCommand(const std::string& command) {
+static inline std::string executeCommand(const std::string& command) {
 	std::string result;
 	int status = system(command.c_str());
 	if (WIFEXITED(status)) {
@@ -48,7 +45,7 @@ std::string executeCommand(const std::string& command) {
 }
 
 template<typename T>
-std::istream& operator>>(std::istream& is, std::vector<T>& vec) {
+static inline std::istream& operator>>(std::istream& is, std::vector<T>& vec) {
 	T value;
 	std::cin >> value;
 	vec.push_back(value);
