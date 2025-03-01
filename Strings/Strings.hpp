@@ -479,12 +479,10 @@ void	replaceSubstr(std::string& str, const std::string& from, const std::string&
  * @param remove The substring of characters to be removed.
  */
 void	removeAll(std::string& str, const std::string& remove) {
-	std::cout << "pre string: " << str << std::endl;
 	for(int i = str.size()-1; i >= 0; i--){
 		if(remove.find(str[i]) != std::string::npos)
 			str.erase(i, 1);
 	}
-	std::cout << "post string: " << str << std::endl;
 }
 
 /**
