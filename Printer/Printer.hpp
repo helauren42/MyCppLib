@@ -1,6 +1,8 @@
 #ifndef PRINTER_HPP
 #define PRINTER_HPP
 
+#include "../Utils/Utils.hpp"
+
 #include <sstream>
 #include <fstream>
 #include <string>
@@ -48,26 +50,6 @@ enum ContainerType
 
 namespace
 {
-	class TypeChecker
-	{
-	public:
-		template <typename T>
-		static constexpr bool isHandledContainer([[maybe_unused]]const T &value)
-		{
-			return is_specialization<T, std::vector>::value || is_specialization<T, std::list>::value || is_specialization<T, std::forward_list>::value || is_specialization<T, std::set>::value || is_specialization<T, std::map>::value || is_specialization<T, std::deque>::value || is_specialization<T, std::stack>::value || is_specialization<T, std::queue>::value;
-		}
-
-	private:
-		template <typename T, template <typename...> class Template>
-		struct is_specialization : std::false_type
-		{
-		};
-
-		template <template <typename...> class Template, typename... Args>
-		struct is_specialization<Template<Args...>, Template> : std::true_type
-		{
-		};
-	};
 	class BasePrinter
 	{
 
