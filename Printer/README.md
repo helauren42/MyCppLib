@@ -5,11 +5,11 @@ This library holds print functions that aim to satisfy all my needs in projects,
 ## Usage
 
   - requires c++17 or later
-  - import Printer.hpp and call Out::stdOut, Out::stdErr, Out::Fout, and Out::setFoutFile. You may add "using namespace Out" for simpler usage of the library.
+  - import Printer.hpp and call Printer::stdOut, Printer::stdErr, Printer::Fout, and Printer::setFout. You may add "using namespace Printer".
 
 ## Functions
 
-### setFoutFile
+### setFout
 
 Description: This function sets the output file where the Fout function will write. It allows specifying whether to truncate or append to the file.
 Parameters:
@@ -18,8 +18,8 @@ trunc: A boolean flag that defines the file open mode. If true, the file will be
 Throws: A std::runtime_error if the file cannot be opened.
 
 int main() {
-    Out::setFoutFile("output.txt");  // Opens and truncates "output.txt"
-    Out::setFoutFile("output.txt", false);  // Appends to "output.txt"
+    Printer::setFout("output.txt");  // Opens and truncates "output.txt"
+    Printer::setFout("output.txt", false);  // Appends to "output.txt"
     return 0;
 }
 
@@ -30,7 +30,7 @@ Template Parameters: Variadic template to accept multiple arguments of any type.
 
 int main() {
     std::vector<int> numbers = {1, 2, 3, 4};
-    Out::stdOut("Numbers: ", numbers);  // Output to stdout: Numbers: 1 2 3 4
+    Printer::stdOut("Numbers: ", numbers);  // Output to stdout: Numbers: 1 2 3 4
     return 0;
 }
 
@@ -40,12 +40,12 @@ Description: This function prints the given arguments to the standard error (std
 
 ### Fout
 
-Description: This function works similarly to stdOut and stdErr but outputs the given arguments to a file. The output file is defined by calling setFoutFile before using this function. It throws an error if the output file is not set.
+Description: This function works similarly to stdOut and stdErr but outputs the given arguments to a file. The output file is defined by calling setFout before using this function. It throws an error if the output file is not set.
 Throws: A std::logic_error if the output file is not defined before calling this function.
 
 int main() {
-    Out::setFoutFile("log.txt");
-    Out::Fout("Writing to file: ", 42);  // Output to log.txt: Writing to file: 42
+    Printer::setFout("log.txt");
+    Printer::Fout("Writing to file: ", 42);  // Output to log.txt: Writing to file: 42
     return 0;
 }
 

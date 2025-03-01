@@ -582,18 +582,12 @@ namespace
 		void setFile(const std::string &file, bool trunc = true)
 		{
 			if (trunc == true)
-			{
 				of.open(file, std::ios::trunc);
-			}
 			else
-			{
 				of.open(file, std::ios::app);
-			}
 
 			if (!of.is_open())
-			{
-				throw(std::runtime_error("could not open file: " + file));
-			}
+				throw(std::runtime_error("Could not open file: " + file + "\nmake sure to call setFout()"));
 		}
 		bool fileSet()
 		{
