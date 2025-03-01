@@ -55,11 +55,9 @@ class WBasePrinter
 public:
 	WBasePrinter()
 	{
-		std::cout << "WBasePrinter constructor called" << std::endl;
 	}
 	~WBasePrinter()
 	{
-		std::cout << "WBasePrinter destructor called" << std::endl;
 	}
 
 	enum OutputDest
@@ -88,7 +86,6 @@ public:
 		{
 			std::ofstream of(file, std::ios::trunc);
 		}
-		std::cout << "setFile: " << file << std::endl;
 	}
 	static bool fileSet()
 	{
@@ -216,7 +213,7 @@ public:
 		wbuffer << a;
 		wbuffer << L"\"";
 		wbuffer << sep;
-		flushBuffer();
+		flushBuffer(true);
 	}
 
 	/**
@@ -230,7 +227,7 @@ public:
 		wbuffer << a;
 		wbuffer << L"\"";
 		wbuffer << sep;
-		flushBuffer();
+		flushBuffer(true);
 	}
 
 	/**
@@ -244,7 +241,7 @@ public:
 		wbuffer << a;
 		wbuffer << L"\"";
 		wbuffer << sep;
-		flushBuffer();
+		flushBuffer(true);
 	}
 
 	/**
@@ -698,7 +695,6 @@ public:
 	}
 	static void flushBuffer(const bool wchar = false)
 	{
-		// std::cout << "flush buffer wchar: " << wchar << ", dest: " << dest << ", file: " << file << std::endl;
 		if (wchar)
 		{
 			switch (dest)
