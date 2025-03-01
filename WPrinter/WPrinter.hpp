@@ -1,6 +1,8 @@
 #ifndef WPRINTER_HPP
 #define WPRINTER_HPP
 
+#include "../Utils/Utils.hpp"
+
 #include <sstream>
 #include <fstream>
 #include <string>
@@ -56,27 +58,7 @@ namespace
 		STDERR,
 		FOUT
 	};
-	class TypeChecker
-	{
-	public:
-		template <typename T>
-		static constexpr bool isHandledContainer(const T &value)
-		{
-			return is_specialization<T, std::vector>::value || is_specialization<T, std::list>::value || is_specialization<T, std::forward_list>::value || is_specialization<T, std::set>::value || is_specialization<T, std::map>::value || is_specialization<T, std::deque>::value || is_specialization<T, std::stack>::value || is_specialization<T, std::queue>::value;
-		}
-
-	private:
-		template <typename T, template <typename...> class Template>
-		struct is_specialization : std::false_type
-		{
-		};
-
-		template <template <typename...> class Template, typename... Args>
-		struct is_specialization<Template<Args...>, Template> : std::true_type
-		{
-		};
-	};
-	class BasePrinter
+	class WBasePrinter
 	{
 
 	private:
@@ -112,11 +94,11 @@ namespace
 			{
 				if (std::next(it) == end && !TypeChecker::isHandledContainer(*it))
 				{
-					BasePrinter::print(*it, "");
+					WBasePrinter::print(*it, "");
 				}
 				else
 				{
-					BasePrinter::print(*it, sep);
+					WBasePrinter::print(*it, sep);
 				}
 
 				// to output the separator in case of nested containers
@@ -411,9 +393,9 @@ namespace
 		template <class T>
 		void print(const std::vector<T> &vec, const std::string &sep = ", ")
 		{
-			BasePrinter::printContainerDelimiters(VECTOR, 0);
-			BasePrinter::printBeginEnd(vec, sep);
-			BasePrinter::printContainerDelimiters(VECTOR, 1);
+			WBasePrinter::printContainerDelimiters(VECTOR, 0);
+			WBasePrinter::printBeginEnd(vec, sep);
+			WBasePrinter::printContainerDelimiters(VECTOR, 1);
 			flushBuffer();
 		}
 		/**
@@ -425,9 +407,9 @@ namespace
 		template <class T>
 		void print(const std::list<T> &my_list, const std::string &sep = ", ")
 		{
-			BasePrinter::printContainerDelimiters(LIST, 0);
-			BasePrinter::printBeginEnd(my_list, sep);
-			BasePrinter::printContainerDelimiters(LIST, 1);
+			WBasePrinter::printContainerDelimiters(LIST, 0);
+			WBasePrinter::printBeginEnd(my_list, sep);
+			WBasePrinter::printContainerDelimiters(LIST, 1);
 			flushBuffer();
 		}
 
@@ -440,9 +422,9 @@ namespace
 		template <class T>
 		void print(const std::forward_list<T> &my_list, const std::string &sep = ", ")
 		{
-			BasePrinter::printContainerDelimiters(FORWARD_LIST, 0);
-			BasePrinter::printBeginEnd(my_list, sep);
-			BasePrinter::printContainerDelimiters(FORWARD_LIST, 1);
+			WBasePrinter::printContainerDelimiters(FORWARD_LIST, 0);
+			WBasePrinter::printBeginEnd(my_list, sep);
+			WBasePrinter::printContainerDelimiters(FORWARD_LIST, 1);
 			flushBuffer();
 		}
 		/**
@@ -455,9 +437,9 @@ namespace
 		template <class T>
 		void print(const std::deque<T> &my_deque, const std::string &sep = ", ")
 		{
-			BasePrinter::printContainerDelimiters(DEQUE, 0);
-			BasePrinter::printBeginEnd(my_deque, sep);
-			BasePrinter::printContainerDelimiters(DEQUE, 1);
+			WBasePrinter::printContainerDelimiters(DEQUE, 0);
+			WBasePrinter::printBeginEnd(my_deque, sep);
+			WBasePrinter::printContainerDelimiters(DEQUE, 1);
 			flushBuffer();
 		}
 
@@ -471,19 +453,19 @@ namespace
 		template <class T>
 		void print(std::stack<T> my_stack, const std::string &sep = ", ")
 		{
-			BasePrinter::printContainerDelimiters(STACK, 0);
+			WBasePrinter::printContainerDelimiters(STACK, 0);
 			while (!my_stack.empty())
 			{
 				auto elem = my_stack.top();
 				if (TypeChecker::isHandledContainer(elem))
-					BasePrinter::print(elem, sep);
+					WBasePrinter::print(elem, sep);
 				else
-					BasePrinter::print(elem, "");
+					WBasePrinter::print(elem, "");
 				my_stack.pop();
 				if (!my_stack.empty())
-					BasePrinter::printSep(sep);
+					WBasePrinter::printSep(sep);
 			}
-			BasePrinter::printContainerDelimiters(STACK, 1);
+			WBasePrinter::printContainerDelimiters(STACK, 1);
 			flushBuffer();
 		}
 
@@ -497,19 +479,19 @@ namespace
 		template <class T>
 		void print(std::queue<T> my_queue, const std::string &sep = ", ")
 		{
-			BasePrinter::printContainerDelimiters(QUEUE, 0);
+			WBasePrinter::printContainerDelimiters(QUEUE, 0);
 			while (!my_queue.empty())
 			{
 				auto elem = my_queue.front();
 				if (TypeChecker::isHandledContainer(elem))
-					BasePrinter::print(elem, sep);
+					WBasePrinter::print(elem, sep);
 				else
-					BasePrinter::print(elem, "");
+					WBasePrinter::print(elem, "");
 				my_queue.pop();
 				if (!my_queue.empty())
-					BasePrinter::printSep(sep);
+					WBasePrinter::printSep(sep);
 			}
-			BasePrinter::printContainerDelimiters(QUEUE, 1);
+			WBasePrinter::printContainerDelimiters(QUEUE, 1);
 			flushBuffer();
 		}
 
@@ -525,29 +507,29 @@ namespace
 		template <class K, class V>
 		void print(const std::map<K, V> &my_map, const std::string &sep = ", ")
 		{
-			BasePrinter::printContainerDelimiters(MAP, 0); // Print opening delimiter
+			WBasePrinter::printContainerDelimiters(MAP, 0); // Print opening delimiter
 
 			bool first = true;
 			for (const auto &pair : my_map)
 			{
 				if (!first)
 				{
-					BasePrinter::printSep(sep);
+					WBasePrinter::printSep(sep);
 				}
-				BasePrinter::print(pair.first, "");
-				BasePrinter::print(": ", "");
+				WBasePrinter::print(pair.first, "");
+				WBasePrinter::print(": ", "");
 				if (TypeChecker::isHandledContainer(pair.second))
 				{
-					BasePrinter::print(pair.second, sep);
+					WBasePrinter::print(pair.second, sep);
 				}
 				else
 				{
-					BasePrinter::print(pair.second, "");
+					WBasePrinter::print(pair.second, "");
 				}
 				first = false;
 			}
 
-			BasePrinter::printContainerDelimiters(MAP, 1); // Print closing delimiter
+			WBasePrinter::printContainerDelimiters(MAP, 1); // Print closing delimiter
 			flushBuffer();
 		}
 
@@ -563,24 +545,24 @@ namespace
 		template <class T, class V>
 		void print(const std::unordered_map<T, V> &my_map, const std::string &sep = ", ")
 		{
-			BasePrinter::printContainerDelimiters(UNORDERED_MAP, 0);
+			WBasePrinter::printContainerDelimiters(UNORDERED_MAP, 0);
 
 			bool first = true;
 			for (const auto &pair : my_map)
 			{
 				if (!first)
 				{
-					BasePrinter::printSep(sep);
+					WBasePrinter::printSep(sep);
 				}
-				BasePrinter::print(pair.first, "");
-				BasePrinter::print(": ", "");
+				WBasePrinter::print(pair.first, "");
+				WBasePrinter::print(": ", "");
 				if (TypeChecker::isHandledContainer(pair.second))
-					BasePrinter::print(pair.second, sep);
+					WBasePrinter::print(pair.second, sep);
 				else
-					BasePrinter::print(pair.second, "");
+					WBasePrinter::print(pair.second, "");
 				first = false;
 			}
-			BasePrinter::printContainerDelimiters(UNORDERED_MAP, 1);
+			WBasePrinter::printContainerDelimiters(UNORDERED_MAP, 1);
 			flushBuffer();
 		}
 
@@ -594,18 +576,18 @@ namespace
 		template <class T>
 		void print(const std::set<T> &my_set, const std::string &sep = ", ")
 		{
-			BasePrinter::printContainerDelimiters(SET, 0);
+			WBasePrinter::printContainerDelimiters(SET, 0);
 			const auto end = my_set.end();
 			for (auto it = my_set.begin(); it != my_set.end(); it++)
 			{
 				if (TypeChecker::isHandledContainer(*it))
-					BasePrinter::print(*it, sep);
+					WBasePrinter::print(*it, sep);
 				else
-					BasePrinter::print(*it, "");
+					WBasePrinter::print(*it, "");
 				if (std::next(it) != end)
-					BasePrinter::printSep(sep);
+					WBasePrinter::printSep(sep);
 			}
-			BasePrinter::printContainerDelimiters(SET, 1);
+			WBasePrinter::printContainerDelimiters(SET, 1);
 			flushBuffer();
 		}
 		/**
@@ -641,26 +623,27 @@ namespace
 		}
 		void wprintToFile(){
 			std::wofstream wof;
-			if (trunc == true)
-				wof.open(file, std::ios::trunc);
-			else
-				wof.open(file, std::ios::app);
+			wof.open(file, std::ios::app);
+
 			if (!wof.is_open())
 				throw(std::runtime_error("Could not open file: " + file + "\nmake sure to call setFout()"));
-			wof << wbuffer.str() << std::endl;
+			wof << wbuffer.str();
+			wof.flush();
+			wof.close();
 		}
-		void printToFile(){
+		void printToFile(const std::string& content) {
+			
 			std::ofstream of;
-			if (trunc == true)
-				of.open(file, std::ios::trunc);
-			else
-				of.open(file, std::ios::app);
+			of.open(file, std::ios::app);
+			
 			if (!of.is_open())
-				throw(std::runtime_error("Could not open file: " + file + "\nmake sure to call setFout()"));
-			of << cbuffer.str() << std::endl;
+				throw std::runtime_error("Could not open file: " + file);
+			of << content;
+			of.close();
 		}
 		void flushBuffer(const bool wchar = false)
 		{
+			// std::cout << "flush buffer wchar: " << wchar << ", dest: " << dest << ", file: " << file << std::endl;
 			if (wchar)
 			{
 				switch (dest)
@@ -680,16 +663,17 @@ namespace
 				wbuffer = std::wstringstream();
 			}
 			else {
+				std::string content = cbuffer.str();
 				switch (dest)
 				{
 				case STDOUT:
-					std::cout << cbuffer.str();
+					std::cout << content;
 					break;
 				case STDERR:
-					std::cerr << cbuffer.str();
+					std::cerr << content;
 					break;
 				case FOUT:
-					printToFile();
+					printToFile(content);
 					break;
 				default:
 					break;
@@ -712,12 +696,15 @@ namespace
 		 */
 		void setFile(const std::string &_file, const bool _trunc = true)
 		{
-			file = _file;
+			this->file = _file;
 			trunc = _trunc;
+			if(trunc){
+				std::ofstream of(file, std::ios::trunc);
+			}
 		}
 		bool fileSet()
 		{
-			return file.empty() == false;
+			return this->file.empty() == false;
 		}
 		/**
 		 * @brief Prints multiple elements to the output stream.
@@ -727,7 +714,7 @@ namespace
 		template <typename T, typename... Args>
 		void printAll(const T &first, const Args &...args)
 		{
-			BasePrinter::print(first);
+			WBasePrinter::print(first);
 			if constexpr (sizeof...(args) > 0)
 			{
 				// Recursively call printAll with the remaining arguments.
@@ -743,7 +730,7 @@ namespace
 
 namespace WPrinter
 {
-	static BasePrinter base;
+	static WBasePrinter base;
 	/**
 	 * @brief Sets the file in which the Fout function will output.
 	 *
@@ -787,7 +774,7 @@ namespace WPrinter
 	/**
 	 * @brief Outputs the given arguments to the file descriptor specified by Fout_fd.
 	 *
-	 * This function sets the file descriptor to Fout_fd and calls the BasePrinter::printAll
+	 * This function sets the file descriptor to Fout_fd and calls the WBasePrinter::printAll
 	 * function to output scalar types and container arguments.
 	 *
 	 * @tparam Args Variadic template parameter pack representing the types of the arguments.
