@@ -391,7 +391,7 @@ std::string	toKebabCase(const std::string& str, const int& mode = spaceSeparated
  * @return std::string The input string with leading characters removed.
  */
 std::string lstrip(const std::string& str, const std::string& remove = WHITE_SPACES) {
-	int i = 0;
+	size_t i = 0;
 
 	while(i < str.length()) {
 
@@ -457,7 +457,7 @@ std::string strip(const std::string& str, const std::string& remove = WHITE_SPAC
  * @param from The substring to be replaced.
  * @param to The substring to replace `from` with.
  */
-void	replaceAll(std::string& str, const std::string& from, const std::string& to) {
+void	replaceSubstr(std::string& str, const std::string& from, const std::string& to) {
 	size_t start_pos = 0;
 
 	while (true) {
@@ -479,7 +479,12 @@ void	replaceAll(std::string& str, const std::string& from, const std::string& to
  * @param remove The substring of characters to be removed.
  */
 void	removeAll(std::string& str, const std::string& remove) {
-	replaceAll(str, remove, "");
+	std::cout << "pre string: " << str << std::endl;
+	for(int i = str.size()-1; i >= 0; i--){
+		if(remove.find(str[i]) != std::string::npos)
+			str.erase(i, 1);
+	}
+	std::cout << "post string: " << str << std::endl;
 }
 
 /**
