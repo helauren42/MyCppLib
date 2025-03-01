@@ -2,12 +2,11 @@
 #define LOGGER_HPP
 
 #include "../Printer/Printer.hpp"
+#include "../WPrinter/WPrinter.hpp"
 #include <chrono>
 #include <ctime>
 #include <iomanip>
 #include <sstream>
-
-using namespace Printer;
 
 enum logLevel
 {
@@ -76,20 +75,42 @@ public:
 		}
 		std::string bar = outputTime() + outputType(method_level);
 		if(stdout) {
-			stdOut(bar);
-			stdOut(args...);
+			Printer::stdOut(bar);
+			Printer::stdOut(args...);
 		}
-		Fout(bar);
-		Fout(args...);
+		Printer::Fout(bar);
+		Printer::Fout(args...);
 		if(extraSpacing)
-			Fout("");
+			Printer::Fout("");
+	}
+    template <typename... Args>
+	static inline void wlog(const Args &...args)
+	{
+		if (method_level < level)
+		{
+			return;
+		}
+		std::string bar = outputTime() + outputType(method_level);
+        // Printer::stdOut("stdout: ", stdout);
+		if(stdout) {
+			WPrinter::stdOut(bar);
+			WPrinter::stdOut(args...);
+		}
+		WPrinter::Fout(bar);
+		WPrinter::Fout(args...);
+		if(extraSpacing)
+			WPrinter::Fout("");
 	}
 	static inline void setLoggerFile(const std::string file, const bool trunc)
 	{
-		if (trunc)
-			setFout(file, true);
-		else
-			setFout(file, false);
+		if (trunc) {
+			Printer::setFout(file, true);
+			WPrinter::setFout(file, true);
+        }
+		else {
+			Printer::setFout(file, false);
+			WPrinter::setFout(file, false);
+        }
 	}
 };
 
@@ -203,6 +224,61 @@ namespace Logger
     {
         BaseLogger::method_level = _FATAL;
         BaseLogger::log(args...);
+    }
+    
+    /**
+     * @brief Logs a message at the DEBUG level.
+     * @param args... Variadic arguments representing the message to log.
+     */
+    template <typename... Args>
+    inline void wdebug(const Args &...args)
+    {
+        BaseLogger::method_level = _DEBUG;
+        BaseLogger::wlog(args...);
+    }
+
+    /**
+     * @brief Logs a message at the INFO level.
+     * @param args... Variadic arguments representing the message to log.
+     */
+    template <typename... Args>
+    inline void winfo(const Args &...args)
+    {
+        BaseLogger::method_level = _INFO;
+        BaseLogger::wlog(args...);
+    }
+
+    /**
+     * @brief Logs a message at the WARNING level.
+     * @param args... Variadic arguments representing the message to log.
+     */
+    template <typename... Args>
+    inline void wwarning(const Args &...args)
+    {
+        BaseLogger::method_level = _WARNING;
+        BaseLogger::wlog(args...);
+    }
+
+    /**
+     * @brief Logs a message at the ERROR level.
+     * @param args... Variadic arguments representing the message to log.
+     */
+    template <typename... Args>
+    inline void werror(const Args &...args)
+    {
+        BaseLogger::method_level = _ERROR;
+        BaseLogger::wlog(args...);
+    }
+
+    /**
+     * @brief Logs a message at the FATAL level.
+     * @param args... Variadic arguments representing the message to log.
+     */
+    template <typename... Args>
+    inline void wfatal(const Args &...args)
+    {
+        BaseLogger::method_level = _FATAL;
+        BaseLogger::wlog(args...);
     }
 }
 #endif
