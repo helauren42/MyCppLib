@@ -33,21 +33,7 @@
 
 class WBasePrinter
 {
-	enum ContainerType
-	{
-		VECTOR,
-		LIST,
-		FORWARD_LIST,
-		DEQUE,
-		STACK,
-		QUEUE,
-		MAP,
-		UNORDERED_MAP,
-		UNORDERED_SET,
-		SET,
-		CUSTOM
-	};
-
+	
 public:
 	WBasePrinter()
 	{
@@ -62,6 +48,28 @@ public:
 		STDERR,
 		FOUT
 	};
+
+	static void flushBuffer()
+	{
+		wbuffer << std::endl;
+		const std::wstring content = wbuffer.str();
+		switch (dest)
+		{
+		case STDOUT:
+			// std::cout << "ready to out:" << std::endl;
+			std::wcout << wbuffer.str();
+			break;
+		case STDERR:
+			std::wcerr << wbuffer.str();
+			break;
+		case FOUT:
+			wprintToFile();
+			break;
+		default:
+			break;
+		}
+		wbuffer = std::wstringstream();
+	}
 
 	static void setOutputDest(OutputDest _dest)
 	{
@@ -103,10 +111,6 @@ public:
 			// This will print each element.
 			printAll(args...);
 		}
-	}
-	static void printNewLine()
-	{
-		print(L"\n");
 	}
 
 private:
@@ -194,7 +198,6 @@ private:
 		{
 			wbuffer << delimiter[1];
 		}
-		flushBuffer();
 	}
 
 	/**
@@ -206,7 +209,6 @@ private:
 	{
 		wbuffer << a;
 		wbuffer << sep;
-		flushBuffer(true);
 	}
 
 	/**
@@ -218,7 +220,6 @@ private:
 	{
 		wbuffer << a;
 		wbuffer << sep;
-		flushBuffer(true);
 	}
 
 	/**
@@ -230,7 +231,6 @@ private:
 	{
 		wbuffer << a.c_str();
 		wbuffer << sep;
-		flushBuffer();
 	}
 
 	/**
@@ -242,7 +242,6 @@ private:
 	{
 		wbuffer << a.str().c_str();
 		wbuffer << sep;
-		flushBuffer();
 	}
 	/**
 	 * @brief Prints a single character to the output stream.
@@ -253,7 +252,6 @@ private:
 	{
 		wbuffer << a;
 		wbuffer << sep;
-		flushBuffer();
 	}
 
 	/**
@@ -265,7 +263,6 @@ private:
 	{
 		wbuffer << s;
 		wbuffer << sep;
-		flushBuffer();
 	}
 
 	/**
@@ -280,7 +277,6 @@ private:
 		std::wstring s = wss.str();
 		wbuffer << s;
 		wbuffer << sep;
-		flushBuffer();
 	}
 	/**
 	 * @brief Prints a double to the output stream.
@@ -294,7 +290,6 @@ private:
 		std::wstring s = wss.str();
 		wbuffer << s;
 		wbuffer << sep;
-		flushBuffer();
 	}
 	/**
 	 * @brief Prints a boolean value to the output stream.
@@ -308,7 +303,6 @@ private:
 		else
 			wbuffer << "false";
 		wbuffer << sep;
-		flushBuffer();
 	}
 
 	/**
@@ -323,7 +317,6 @@ private:
 		std::wstring s = wss.str();
 		wbuffer << s;
 		wbuffer << sep;
-		flushBuffer();
 	}
 	/**
 	 * @brief Prints a long integer to the output stream.
@@ -337,7 +330,6 @@ private:
 		std::wstring s = wss.str();
 		wbuffer << s;
 		wbuffer << sep;
-		flushBuffer();
 	}
 	/**
 	 * @brief Prints a long long integer to the output stream.
@@ -351,7 +343,6 @@ private:
 		std::wstring s = wss.str();
 		wbuffer << s;
 		wbuffer << sep;
-		flushBuffer();
 	}
 
 	/**
@@ -366,7 +357,6 @@ private:
 		std::wstring s = wss.str();
 		wbuffer << s;
 		wbuffer << sep;
-		flushBuffer();
 	}
 
 	/**
@@ -381,7 +371,6 @@ private:
 		std::wstring s = wss.str();
 		wbuffer << s;
 		wbuffer << sep;
-		flushBuffer();
 	}
 
 	/**
@@ -396,7 +385,6 @@ private:
 		std::wstring s = wss.str();
 		wbuffer << s;
 		wbuffer << sep;
-		flushBuffer();
 	}
 
 	/**
@@ -411,7 +399,6 @@ private:
 		WBasePrinter::printContainerDelimiters(VECTOR, 0);
 		WBasePrinter::printBeginEnd(vec, sep);
 		WBasePrinter::printContainerDelimiters(VECTOR, 1);
-		flushBuffer();
 	}
 	/**
 	 * @brief Prints the contents of a std::list.
@@ -425,7 +412,6 @@ private:
 		WBasePrinter::printContainerDelimiters(LIST, 0);
 		WBasePrinter::printBeginEnd(my_list, sep);
 		WBasePrinter::printContainerDelimiters(LIST, 1);
-		flushBuffer();
 	}
 
 	/**
@@ -440,7 +426,6 @@ private:
 		WBasePrinter::printContainerDelimiters(FORWARD_LIST, 0);
 		WBasePrinter::printBeginEnd(my_list, sep);
 		WBasePrinter::printContainerDelimiters(FORWARD_LIST, 1);
-		flushBuffer();
 	}
 	/**
 	 * @brief Prints the contents of a std::deque.
@@ -455,7 +440,6 @@ private:
 		WBasePrinter::printContainerDelimiters(DEQUE, 0);
 		WBasePrinter::printBeginEnd(my_deque, sep);
 		WBasePrinter::printContainerDelimiters(DEQUE, 1);
-		flushBuffer();
 	}
 
 	/**
@@ -481,7 +465,6 @@ private:
 				WBasePrinter::printSep(sep);
 		}
 		WBasePrinter::printContainerDelimiters(STACK, 1);
-		flushBuffer();
 	}
 
 	/**
@@ -507,7 +490,6 @@ private:
 				WBasePrinter::printSep(sep);
 		}
 		WBasePrinter::printContainerDelimiters(QUEUE, 1);
-		flushBuffer();
 	}
 
 	/**
@@ -545,7 +527,6 @@ private:
 		}
 
 		WBasePrinter::printContainerDelimiters(MAP, 1); // Print closing delimiter
-		flushBuffer();
 	}
 
 	/**
@@ -578,7 +559,6 @@ private:
 			first = false;
 		}
 		WBasePrinter::printContainerDelimiters(UNORDERED_MAP, 1);
-		flushBuffer();
 	}
 
 	/**
@@ -603,7 +583,6 @@ private:
 				WBasePrinter::printSep(sep);
 		}
 		WBasePrinter::printContainerDelimiters(SET, 1);
-		flushBuffer();
 	}
 	/**
 	 * @brief Prints the contents of a custom object. Implementation of std::ostream operator<< overload is required.
@@ -621,7 +600,6 @@ private:
 		wbuffer << s;
 		if (!sep.empty())
 			wbuffer << sep;
-		flushBuffer();
 	}
 
 	template <class T>
@@ -634,7 +612,6 @@ private:
 		wbuffer << s;
 		if (!sep.empty())
 			wbuffer << sep;
-		flushBuffer();
 	}
 	static void wprintToFile()
 	{
@@ -648,26 +625,21 @@ private:
 		wof.flush();
 		wof.close();
 	}
-	static void flushBuffer(const bool wchar = false)
+	enum ContainerType
 	{
-		const std::wstring content = wbuffer.str();
-		switch (dest)
-		{
-		case STDOUT:
-			// std::cout << "ready to out:" << std::endl;
-			std::wcout << wbuffer.str();
-			break;
-		case STDERR:
-			std::wcerr << wbuffer.str();
-			break;
-		case FOUT:
-			wprintToFile();
-			break;
-		default:
-			break;
-		}
-		wbuffer = std::wstringstream();
-	}
+		VECTOR,
+		LIST,
+		FORWARD_LIST,
+		DEQUE,
+		STACK,
+		QUEUE,
+		MAP,
+		UNORDERED_MAP,
+		UNORDERED_SET,
+		SET,
+		CUSTOM
+	};
+
 };
 
 namespace WPrinter
@@ -696,7 +668,7 @@ namespace WPrinter
 	{
 		base.setOutputDest(WBasePrinter::STDOUT);
 		base.printAll(args...);
-		base.printNewLine();
+		base.flushBuffer();
 	}
 
 	/**
@@ -710,7 +682,7 @@ namespace WPrinter
 	{
 		base.setOutputDest(WBasePrinter::STDERR);
 		base.printAll(args...);
-		base.printNewLine();
+		base.flushBuffer();
 	}
 
 	/**
@@ -729,7 +701,7 @@ namespace WPrinter
 		if (!base.fileSet())
 			throw std::logic_error("Output file not defined");
 		base.printAll(args...);
-		base.printNewLine();
+		base.flushBuffer();
 	}
 }
 

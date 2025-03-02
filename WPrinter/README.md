@@ -1,6 +1,6 @@
 # Explanation
 
-Works the same as Printer except that WPrinter can also handle printing wide characters like wchar_t and wstring. WPrinter unlike Printer does not store data inside of a buffer before printing, every argument passed to WPrinter's print methods will be printed one after the other.
+Works the same as Printer except that WPrinter can also handle printing wide characters like wchar_t and wstring. Using std::cout and std::wcout in the same project may cause issues, so if you to print wide characteres in your project, you may want to only use WPrinter and not Printer. WPrinter can handle non wide characters.
 
 # Usage
 
