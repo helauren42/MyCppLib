@@ -2,6 +2,7 @@
 #define WPRINTER_HPP
 
 #include "../Utils/Utils.hpp"
+#include "../Strings/Strings.hpp"
 
 #include <sstream>
 #include <fstream>
@@ -138,7 +139,6 @@ public:
 		const auto end = container.end();
 
 		std::string new_sep = sep;
-		bool newLine = false;
 
 		for (auto it = container.begin(); it != container.end(); it++)
 		{
@@ -207,12 +207,13 @@ public:
 	 * @param a The wide string to print.
 	 * @param sep The separator string to print after the string.
 	 */
-	static void print(const std::wstring &a, const std::wstring &sep = L"")
+	static void print(const std::wstring &a, const std::string& sep = "")
 	{
+		const std::wstring &_sep = StringToWString(sep);
 		wbuffer << L"\"";
 		wbuffer << a;
 		wbuffer << L"\"";
-		wbuffer << sep;
+		wbuffer << _sep;
 		flushBuffer(true);
 	}
 
@@ -221,12 +222,13 @@ public:
 	 * @param a The wide-character string to print.
 	 * @param sep The separator string to print after the string.
 	 */
-	static void print(const wchar_t *a, const std::wstring &sep = L"")
+	static void print(const wchar_t *a, const std::string &sep = "")
 	{
+		const std::wstring &_sep = StringToWString(sep);
 		wbuffer << L"\"";
 		wbuffer << a;
 		wbuffer << L"\"";
-		wbuffer << sep;
+		wbuffer << _sep;
 		flushBuffer(true);
 	}
 
@@ -235,12 +237,13 @@ public:
 	 * @param a The wide character to print.
 	 * @param sep The separator string to print after the string.
 	 */
-	static void print(const wchar_t a, const std::wstring &sep = L"")
+	static void print(const wchar_t a, const std::string &sep = "")
 	{
+		const std::wstring &_sep = StringToWString(sep);
 		wbuffer << L"\"";
 		wbuffer << a;
 		wbuffer << L"\"";
-		wbuffer << sep;
+		wbuffer << _sep;
 		flushBuffer(true);
 	}
 
