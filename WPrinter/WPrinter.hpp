@@ -33,7 +33,7 @@
 
 class WBasePrinter
 {
-	
+
 public:
 	WBasePrinter()
 	{
@@ -227,7 +227,7 @@ private:
 	 * @param a The string to print.
 	 * @param sep The separator string to print after the string.
 	 */
-	static void print(const std::wstring& a, const std::wstring &sep = L"")
+	static void print(const std::wstring &a, const std::wstring &sep = L"")
 	{
 		wbuffer << a.c_str();
 		wbuffer << sep;
@@ -238,7 +238,7 @@ private:
 	 * @param a The string to print.
 	 * @param sep The separator string to print after the string.
 	 */
-	static void print(const std::wstringstream& a, const std::wstring &sep = L"")
+	static void print(const std::wstringstream &a, const std::wstring &sep = L"")
 	{
 		wbuffer << a.str().c_str();
 		wbuffer << sep;
@@ -262,6 +262,17 @@ private:
 	static void print(const char *s, const std::wstring &sep = L"")
 	{
 		wbuffer << s;
+		wbuffer << sep;
+	}
+
+	/**
+	 * @brief Prints a string to the output stream.
+	 * @param a The string to print.
+	 * @param sep The separator string to print after the string.
+	 */
+	static void print(const std::string &a, const std::wstring &sep = L"")
+	{
+		wbuffer << a.c_str();
 		wbuffer << sep;
 	}
 
@@ -616,7 +627,7 @@ private:
 	static void wprintToFile()
 	{
 		std::wofstream wof;
-		
+
 		wof.open(file, std::ios::app);
 
 		if (!wof.is_open())
@@ -639,7 +650,6 @@ private:
 		SET,
 		CUSTOM
 	};
-
 };
 
 namespace WPrinter
