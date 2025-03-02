@@ -1,0 +1,8 @@
+[5.779] [PARSE ERROR] Unknown DCS escape code: zz
+[5.779] [PARSE ERROR] Unknown CSI code: 'm' with start_modifier: '␀' and end_modifier: '%' and parameters: '0'
+[13.139] The application is trying to use xterm's modifyOtherKeys. This is superseded by the kitty keyboard protocol https://sw.kovidgoyal.net/kitty/keyboard-protocol. The application should be updated to use that.
+[13.140] The application is trying to use xterm's modifyOtherKeys. This is superseded by the kitty keyboard protocol https://sw.kovidgoyal.net/kitty/keyboard-protocol. The application should be updated to use that.
+[21.936] [PARSE ERROR] Unknown DCS escape code: zz
+[21.936] [PARSE ERROR] Unknown CSI code: 'm' with start_modifier: '␀' and end_modifier: '%' and parameters: '0'
+[35.215] The application is trying to use xterm's modifyOtherKeys. This is superseded by the kitty keyboard protocol https://sw.kovidgoyal.net/kitty/keyboard-protocol. The application should be updated to use that.
+[35.215] The application is trying to use xterm's modifyOtherKeys. This is superseded by the kitty keyboard protocol https://sw.kovidgoyal.net/kitty/keyboard-protocol. The application should be updated to use that.
