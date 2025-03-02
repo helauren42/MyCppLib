@@ -143,7 +143,7 @@ private:
 		{
 			if (std::next(it) == end && !TypeChecker::isHandledContainer(*it))
 			{
-				WBasePrinter::print(*it, "");
+				WBasePrinter::print(*it, L"");
 			}
 			else
 			{
@@ -394,7 +394,7 @@ private:
 	 * @param sep The separator to use between elements (default is ", ").
 	 */
 	template <class T>
-	static void print(const std::vector<T> &vec, const std::wstring &sep = ", ")
+	static void print(const std::vector<T> &vec, const std::wstring &sep = L", ")
 	{
 		WBasePrinter::printContainerDelimiters(VECTOR, 0);
 		WBasePrinter::printBeginEnd(vec, sep);
@@ -407,7 +407,7 @@ private:
 	 * @param sep The separator to use between elements (default is ", ").
 	 */
 	template <class T>
-	static void print(const std::list<T> &my_list, const std::wstring &sep = ", ")
+	static void print(const std::list<T> &my_list, const std::wstring &sep = L", ")
 	{
 		WBasePrinter::printContainerDelimiters(LIST, 0);
 		WBasePrinter::printBeginEnd(my_list, sep);
@@ -421,7 +421,7 @@ private:
 	 * @param sep The separator to use between elements (default is ", ").
 	 */
 	template <class T>
-	static void print(const std::forward_list<T> &my_list, const std::wstring &sep = ", ")
+	static void print(const std::forward_list<T> &my_list, const std::wstring &sep = L", ")
 	{
 		WBasePrinter::printContainerDelimiters(FORWARD_LIST, 0);
 		WBasePrinter::printBeginEnd(my_list, sep);
@@ -435,7 +435,7 @@ private:
 	 *             - uses ", " as separator between elements by default.
 	 */
 	template <class T>
-	static void print(const std::deque<T> &my_deque, const std::wstring &sep = ", ")
+	static void print(const std::deque<T> &my_deque, const std::wstring &sep = L", ")
 	{
 		WBasePrinter::printContainerDelimiters(DEQUE, 0);
 		WBasePrinter::printBeginEnd(my_deque, sep);
@@ -450,7 +450,7 @@ private:
 	 *             - uses ", " as separator between elements by default.
 	 */
 	template <class T>
-	static void print(std::stack<T> my_stack, const std::wstring &sep = ", ")
+	static void print(std::stack<T> my_stack, const std::wstring &sep = L", ")
 	{
 		WBasePrinter::printContainerDelimiters(STACK, 0);
 		while (!my_stack.empty())
@@ -475,7 +475,7 @@ private:
 	 *             - uses ", " as separator between elements by default.
 	 */
 	template <class T>
-	static void print(std::queue<T> my_queue, const std::wstring &sep = ", ")
+	static void print(std::queue<T> my_queue, const std::wstring &sep = L", ")
 	{
 		WBasePrinter::printContainerDelimiters(QUEUE, 0);
 		while (!my_queue.empty())
@@ -502,7 +502,7 @@ private:
 	 *             - uses ", " as separator between elements by default.
 	 */
 	template <class K, class V>
-	static void print(const std::map<K, V> &my_map, const std::wstring &sep = ", ")
+	static void print(const std::map<K, V> &my_map, const std::wstring &sep = L", ")
 	{
 		WBasePrinter::printContainerDelimiters(MAP, 0); // Print opening delimiter
 
@@ -539,7 +539,7 @@ private:
 	 *             - uses ", " as separator between elements by default.
 	 */
 	template <class T, class V>
-	static void print(const std::unordered_map<T, V> &my_map, const std::wstring &sep = ", ")
+	static void print(const std::unordered_map<T, V> &my_map, const std::wstring &sep = L", ")
 	{
 		WBasePrinter::printContainerDelimiters(UNORDERED_MAP, 0);
 
@@ -569,7 +569,7 @@ private:
 	 *             - uses ", " as separator between elements by default.
 	 */
 	template <class T>
-	static void print(const std::set<T> &my_set, const std::wstring &sep = ", ")
+	static void print(const std::set<T> &my_set, const std::wstring &sep = L", ")
 	{
 		WBasePrinter::printContainerDelimiters(SET, 0);
 		const auto end = my_set.end();
@@ -594,9 +594,9 @@ private:
 	static void print(const T &object, const std::wstring &sep = L"",
 					  typename std::enable_if<std::is_class<T>::value>::type * = nullptr)
 	{
-		std::stringstream ss;
+		std::wstringstream ss;
 		ss << object;
-		std::wstring s(ss.str());
+		std::wstring s = ss.str();
 		wbuffer << s;
 		if (!sep.empty())
 			wbuffer << sep;
@@ -606,9 +606,9 @@ private:
 	static void print(const T *object, const std::wstring &sep = L"",
 					  typename std::enable_if<std::is_class<T>::value>::type * = nullptr)
 	{
-		std::stringstream ss;
+		std::wstringstream ss;
 		ss << object;
-		std::wstring s(ss.str());
+		std::wstring s = ss.str();
 		wbuffer << s;
 		if (!sep.empty())
 			wbuffer << sep;
