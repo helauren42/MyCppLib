@@ -34,3 +34,5 @@ Outputs your system time in millieseconds, the log level and then your arguments
   
 #
 PS: Feel free to provide suggestions
+I thought I really needed a wide character printer for one of my projects so here it is, though after building I realised that I probably didn't need it but it was too late..
+https://github.com/helauren42/MyCppLib/tree/main/WPrinter
