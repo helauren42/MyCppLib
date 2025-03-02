@@ -2,6 +2,9 @@
 #define STRINGS_HPP
 
 #include <iostream>
+#include <cstdlib>
+#include <stdlib.h>
+#include <string>
 
 // using namespace std;
 
@@ -16,6 +19,24 @@ enum {
 	snakeCase,
 	kebabCase,
 };
+
+std::wstring StringToWString(const std::string& str)
+{
+	std::wstring wstr;
+	size_t size;
+	wstr.resize(str.length());
+	mbstowcs(&wstr[0], str.c_str(), str.size());
+	return wstr;
+}
+
+std::string WStringToString(const std::wstring& wstr)
+{
+	std::string str;
+	size_t size;
+	str.resize(wstr.length());
+	wcstombs(&str[0], &wstr[0], wstr.size());
+	return str;
+}
 
 /**
  * @brief Checks if a character is a whitespace character.
@@ -94,19 +115,6 @@ bool hasDelim(const std::string& str, const std::string& delimiter) {
     return str.find_first_of(delimiter) != std::string::npos;
 }
 
-bool isOnlyDelim(const std::string& str, const char& delimiter) {
-    for (char ch : str) {
-        if (ch != delimiter) {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool isOnlyDelim(const std::string& str, const std::string& delimiter) {
-    return str.find_first_not_of(delimiter) == std::string::npos;
-}
-
 int countChar(const std::string& str, const char& c) {
 	int count = 0;
 	for(int i = 0; str[i]; i++) {
@@ -140,50 +148,6 @@ std::string joinStrings(const Container<std::string>& container, const std::stri
 }
 
 /**
- * @brief Joins a queue of strings into a single string with an optional separator.
- * 
- * This function concatenates all strings in the input queue `container` into a
- * single string, with each string separated by the specified `sep` (separator).
- * The queue must hold `std::string` elements. The queue will be emptied as a
- * result of this operation.
- * 
- * @param container The queue of strings to join.
- * @param sep The separator string to insert between each string. Defaults to an empty string.
- * @return std::string The concatenated string.
- */
-std::string joinStrings(std::queue<std::string>& container, const std::string& sep = " ") {
-	std::string ret;
-	while (!container.empty()) {
-		ret += container.front();
-		container.pop();
-	}
-	ret = ret.substr(0, ret.length() - sep.length());
-	return ret;
-}
-
-/**
- * @brief Joins a stack of strings into a single string with an optional separator.
- * 
- * This function concatenates all strings in the input stack `container` into a
- * single string, with each string separated by the specified `sep` (separator).
- * The stack must hold `std::string` elements. The stack will be emptied as a
- * result of this operation.
- * 
- * @param container The stack of strings to join.
- * @param sep The separator string to insert between each string. Defaults to an empty string.
- * @return std::string The concatenated string.
- */
-std::string joinStrings(std::stack<std::string>& container, const std::string& sep = " ") {
-	std::string ret;
-	while (!container.empty()) {
-		ret += container.top();
-		container.pop();
-	}
-	ret = ret.substr(0, ret.length() - sep.length());
-	return ret;
-}
-
-/**
  * @brief Splits a string into substrings based on a delimiter and stores the results in a container.
  * 
  * This function splits the input string `str` into substrings using the specified `delimiter`.
@@ -211,62 +175,6 @@ Container<std::string> split(const std::string& str, const std::string& delimite
 		start = end+1;
 	}
 	return(container);
-}
-
-/**
- * @brief Splits a string into substrings based on a delimiter and keeps the delimiters in the result.
- * 
- * This function splits the input string `str` into substrings using the specified `delimiter`.
- * Unlike the standard split function, this function keeps the delimiters as part of the resulting substrings.
- * The resulting substrings are stored in a container of type `Container<std::string>`.
- * 
- * @tparam Container A template template parameter representing the container type that holds `std::string` elements.
- * @param str The input string to be split.
- * @param delimiter The delimiter string used to split the input string. Defaults to newline character ("\n").
- * @return Container<std::string> A container holding the resulting substrings, including the delimiters.
- */
-template<template<typename T> class Container>
-Container<std::string> splitKeep(const std::string& str, const std::string& delimiter = "\n") {
-	Container<std::string> container;
-
-	size_t	start = 0;
-	size_t	end = 0;
-	bool	isDelimiter = delimiter.find(str[0]) != std::string::npos;
-
-	while(true) {
-		
-		if(isDelimiter) {
-			end = str.find_first_not_of(delimiter, start);
-		}
-		else if (!isDelimiter) {
-			end = str.find_first_of(delimiter, start);
-		}
-		if(end == std::string::npos)
-			end = str.length();
-
-		container.push_back(str.substr(start, end - start));
-		if(!str[end+1])
-			break;
-		isDelimiter = delimiter.find(str[end]) != std::string::npos;
-		start = end;
-		if(start >= str.length())
-			break;
-	}
-
-	Container<std::string> cont2;
-	std::string temp;
-	for(auto it = container.begin(); it != container.end(); it++) {
-		if(hasDelim(*it, delimiter)) {
-			temp += *it;
-		}
-		else {
-			cont2.push_back(temp + *it);
-			temp = "";
-		}
-	}
-	if(temp != "")
-		cont2.push_back(temp);
-	return cont2;
 }
 
 /**
@@ -308,75 +216,6 @@ std::string toUpperCase(const std::string& str) {
 			c = std::toupper(c);
 	}
 	return result;
-}
-
-std::string	toCamelCase(const std::string& str, const int& mode = spaceSeparated) {
-	std::string ret;
-	if(mode == camelCase)
-		return(ret = str, ret);
-
-	ret = toLowerCase(str);
-	std::string delimiter = [mode]() -> std::string {
-		if (mode == kebabCase) return "-";
-		if (mode == snakeCase) return "_";
-		return WHITE_SPACES;
-	}();
-
-	std::vector<std::string> vec = split<std::vector>(ret, delimiter);
-
-	for(auto it = vec.begin(); it != vec.end(); it++) {
-		if((*it)[0])
-			(*it)[0] = std::toupper((*it)[0]);
-	}
-	ret = joinStrings<std::vector>(vec, "");
-	ret[0] = std::tolower(ret[0]);
-	return ret;
-}
-
-std::string	toSnakeCase(const std::string& str, const int& mode = spaceSeparated) {
-	std::string ret;
-	if(mode == snakeCase)
-		return(ret = str, ret);
-
-	ret = str;
-	std::string delimiter = [mode]() -> std::string {
-		if (mode == camelCase) return UPPER_CASE;
-		if (mode == kebabCase) return "-";
-		return WHITE_SPACES;
-	}();
-
-	std::vector<std::string> vec;
-	if(mode == camelCase)
-		vec = splitKeep<std::vector>(ret, delimiter);
-	else
-		vec = split<std::vector>(ret, delimiter);
-
-	ret = joinStrings<std::vector>(vec, "_");
-	ret = toLowerCase(ret);
-	return ret;
-}
-
-std::string	toKebabCase(const std::string& str, const int& mode = spaceSeparated) {
-	std::string ret;
-	if(mode == kebabCase)
-		return(ret = str, ret);
-
-	ret = str;
-	std::string delimiter = [mode]() -> std::string {
-		if (mode == camelCase) return UPPER_CASE;
-		if (mode == snakeCase) return "_";
-		return WHITE_SPACES;
-	}();
-
-	std::vector<std::string> vec;
-	if(mode == camelCase)
-		vec = splitKeep<std::vector>(ret, delimiter);
-	else
-		vec = split<std::vector>(ret, delimiter);
-
-	ret = joinStrings<std::vector>(vec, "-");
-	ret = toLowerCase(ret);
-	return ret;
 }
 
 /**
