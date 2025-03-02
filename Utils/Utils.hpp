@@ -18,7 +18,7 @@ class TypeChecker
 {
 public:
 	template <typename T>
-	static constexpr bool isHandledContainer(const T &value)
+	static constexpr bool isHandledContainer([[maybe_unused]]const T &value)
 	{
 		return is_specialization<T, std::vector>::value || is_specialization<T, std::list>::value || is_specialization<T, std::forward_list>::value || is_specialization<T, std::set>::value || is_specialization<T, std::map>::value || is_specialization<T, std::deque>::value || is_specialization<T, std::stack>::value || is_specialization<T, std::queue>::value;
 	}
