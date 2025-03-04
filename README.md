@@ -14,6 +14,10 @@ I had the intention of making these libraries standalone but by the looks of it 
 
  - Usage: import Printer.hpp into your project and call stdOut(), stdErr() or fout(). Call setFoutFile(), pass desired output file and set option to truncate as argument .
 
+### WPrinter/WPrinter.hpp
+
+  Functions like WPrinter but it can also handle wide character outputs.
+
 ### Logger
 
 Uses the print function from Printer.hpp to output parameters into a file!
@@ -31,8 +35,6 @@ Outputs your system time in millieseconds, the log level and then your arguments
 ### Strings/Strings.hpp
 
 - some string manipulation functions
-  
+
 #
 PS: Feel free to provide suggestions
-I thought I really needed a wide character printer for one of my projects so here it is, though after building I realised that I probably didn't need it but it was too late..
-https://github.com/helauren42/MyCppLib/tree/main/WPrinter
