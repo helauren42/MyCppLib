@@ -211,7 +211,12 @@ inline void removeAll(std::string& str, const std::string& remove) {
 inline std::wstring wremoveAll(const std::wstring& str, const std::wstring& remove) {
     std::wstring wret;
     for(int i = 0; str[i]; i++){
-        if (remove.find((str[i]) == std::wstring::npos))
+        bool copy = true;
+        for(int j = 0; remove[j]; j++){
+            if(remove[j] == str[i])
+                copy = false;
+        }
+        if(copy)
             wret += str[i];
     }
     return wret;
