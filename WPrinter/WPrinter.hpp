@@ -85,13 +85,13 @@ public:
 	static void setFile(const std::string &_file, const bool _trunc = true)
 	{
 		file = _file.c_str();
-		_trunc;
 		if (_trunc)
 		{
-			std::wofstream wof(file, std::ios::trunc);
+			std::wofstream wof(file, std::ios::out | std::ios::trunc);
 			wof.close();
 		}
 	}
+	
 	static bool fileSet()
 	{
 		return file.empty() == false;
@@ -241,6 +241,16 @@ private:
 	static void print(const std::wstringstream &a, const std::wstring &sep = L"")
 	{
 		wbuffer << a.str().c_str();
+		wbuffer << sep;
+	}
+	/**
+	 * @brief Prints a string to the output stream.
+	 * @param a The string to print.
+	 * @param sep The separator string to print after the string.
+	 */
+	static void print(const std::wostringstream &a, const std::wstring &sep = L"")
+	{
+		wbuffer << a.rdbuf();
 		wbuffer << sep;
 	}
 	/**
@@ -628,10 +638,10 @@ private:
 	{
 		std::wofstream wof;
 
-		wof.open(file, std::ios::app);
+		wof.open(file, std::ios::out | std::ios::app);
 
 		if (!wof.is_open())
-			throw(std::runtime_error("Could not open file, make sure to call setFout()"));
+			throw(std::runtime_error("Could not open file: "));
 		wof << wbuffer.str();
 		wof.flush();
 		wof.close();

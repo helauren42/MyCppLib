@@ -5,6 +5,7 @@
 #include "../WPrinter/WPrinter.hpp"
 #include <chrono>
 #include <ctime>
+
 #include <iomanip>
 #include <sstream>
 
@@ -225,7 +226,7 @@ namespace Logger
         BaseLogger::method_level = _FATAL;
         BaseLogger::log(args...);
     }
-    
+
     /**
      * @brief Logs a message at the DEBUG level.
      * @param args... Variadic arguments representing the message to log.
